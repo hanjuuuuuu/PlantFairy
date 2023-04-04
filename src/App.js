@@ -12,25 +12,28 @@ const App = () => {
   const [onLight, setOnLight] = useState(false);
   const [onFunction, setOnFunction] = useState(false);
 
-  const userOrderPlant = {
-    "experience": "",
-    "time": "",
-    "address": "",
-    "size": "",
-    "light": "",
-    "function": ""
-  }
+  // const userOrderPlant = {
+  //   "experience": "",
+  //   "time": "",
+  //   "address": "",
+  //   "size": "",
+  //   "light": "",
+  //   "function": ""
+  // }
 
+  const userOrderPlant = [];
+  
   const handleExperienceButton = (event) => {
     const name = event.target.value;
     if(name === 'yes'){
       userOrderPlant.experience = "";
     }
     else{
-      userOrderPlant.experience = "초보자가";
+      //userOrderPlant.experience = "초보자가";
+      userOrderPlant.push("초보자가");
     }
     setOnExperience(true);
-    console.log(userOrderPlant);
+    //console.log(userOrderPlant);
   }
 
   const handleTimeButton = (event) => {
@@ -38,10 +41,11 @@ const App = () => {
     if(name === 'yes')
       userOrderPlant.time = "주기적으로 참여하며";
     else{
-      userOrderPlant.time = "체계적인 관리없이";
+      //userOrderPlant.time = "체계적인 관리없이";
+      userOrderPlant.push(" 체계적인 관리없이 ");
     }
     setOnTime(true);
-    console.log(userOrderPlant);
+    //console.log(userOrderPlant);
   }
   
   const handleAddressButton = (event) => {
@@ -49,10 +53,11 @@ const App = () => {
     if(name === 'yes')
       userOrderPlant.address = "실내에서 키우고";
     else{
-      userOrderPlant.address = "실외에서 키우고";
+      //userOrderPlant.address = "실외에서 키우고";
+      userOrderPlant.push("실외에서 키우고");
     }
     setOnAddress(true);
-    console.log(userOrderPlant);
+    //console.log(userOrderPlant);
   }
 
   const handleSizeButton = (event) => {
@@ -63,10 +68,11 @@ const App = () => {
       userOrderPlant.address = "중간 크기의";
     }
     else{
-      userOrderPlant.address = "작은 크기의";
+      //userOrderPlant.address = "작은 크기의";
+      userOrderPlant.push(" 작은 크기의 ");
     }
     setOnSize(true);
-    console.log(userOrderPlant);
+    //console.log(userOrderPlant);
   }
 
   const handleLightButton = (event) => {
@@ -77,7 +83,8 @@ const App = () => {
       userOrderPlant.address = "빛을 적당히 받는";
     }
     else{
-      userOrderPlant.address = "빛을 적게 받는";
+      //userOrderPlant.address = "빛을 적게 받는";
+      userOrderPlant.push("빛을 적게 받는");
     }
     setOnLight(true);
     console.log(userOrderPlant);
@@ -86,9 +93,11 @@ const App = () => {
   const handleFunctionButton = (event) => {
     const name = event.target.value;
     if(name === 'yes')
-      userOrderPlant.address = "공기정화";
-    else if(name = ''){
-      userOrderPlant.address = "장식";
+      //userOrderPlant.address = "공기정화";
+      userOrderPlant.push(" 공기정화 ");
+    else if(name = 'no'){
+      //userOrderPlant.address = "장식";
+      userOrderPlant.push(" 장식 ");
     }
     setOnFunction(true);
     console.log(userOrderPlant);
