@@ -1,5 +1,5 @@
 import {Form, Radio, Button} from 'antd';
-import React, {useState}from 'react';
+import React, {useState} from 'react';
 
 const App = () => {
   /**
@@ -10,116 +10,114 @@ const App = () => {
   const [onAddress, setOnAddress] = useState(false);
   const [onSize, setOnSize] = useState(false);
   const [onLight, setOnLight] = useState(false);
-  const [onFunction, setOnFunction] = useState(false);
-
-  // const userOrderPlant = {
-  //   "experience": "",
-  //   "time": "",
-  //   "address": "",
-  //   "size": "",
-  //   "light": "",
-  //   "function": ""
-  // }
-
-  const userOrderPlant = [];
+  const [onFunctions, setOnFunctions] = useState(false);
+  const [experience, setExperience] = useState("");
+  const [time, setTime] = useState("");
+  const [address, setAddress] = useState("");
+  const [size, setSize] = useState("");
+  const [light, setLight] = useState("");
+  const [functions, setFunctions] = useState("");
   
   const handleExperienceButton = (event) => {
     const name = event.target.value;
-    if(name === 'yes'){
-      userOrderPlant.experience = "";
-    }
-    else{
-      //userOrderPlant.experience = "초보자가";
-      userOrderPlant.push("초보자가");
-    }
+    if(name === 'yes')
+      setExperience("");
+    else
+      setExperience("초보자가");
     setOnExperience(true);
-    //console.log(userOrderPlant);
   }
 
   const handleTimeButton = (event) => {
     const name = event.target.value;
     if(name === 'yes')
-      userOrderPlant.time = "주기적으로 참여하며";
+      setTime("주기적으로 참여하며");
     else{
-      //userOrderPlant.time = "체계적인 관리없이";
-      userOrderPlant.push(" 체계적인 관리없이 ");
+      setTime("체계적인 관리없이");
     }
     setOnTime(true);
-    //console.log(userOrderPlant);
   }
   
   const handleAddressButton = (event) => {
     const name = event.target.value;
     if(name === 'yes')
-      userOrderPlant.address = "실내에서 키우고";
+      setAddress("실내에서 키우고");
     else{
-      //userOrderPlant.address = "실외에서 키우고";
-      userOrderPlant.push("실외에서 키우고");
+      setAddress("실외에서 키우고");
     }
     setOnAddress(true);
-    //console.log(userOrderPlant);
   }
 
   const handleSizeButton = (event) => {
     const name = event.target.value;
-    if(name === 'yes')
-      userOrderPlant.address = "큰 크기의";
-    else if(name == ''){
-      userOrderPlant.address = "중간 크기의";
+    if(name === '크다')
+      setSize("큰 크기의");
+    else if(name === '중간'){
+      setSize("중간 크기의");
     }
     else{
-      //userOrderPlant.address = "작은 크기의";
-      userOrderPlant.push(" 작은 크기의 ");
+      setSize("작은 크기의");
     }
     setOnSize(true);
-    //console.log(userOrderPlant);
   }
 
   const handleLightButton = (event) => {
     const name = event.target.value;
-    if(name === 'yes')
-      userOrderPlant.address = "빛을 많이 받는";
-    else if(name ==''){
-      userOrderPlant.address = "빛을 적당히 받는";
+    if(name === '많다')
+      setLight("빛을 많이 받는");
+    else if(name ==='적당하다'){
+      setLight("빛을 적당히 받는");
     }
     else{
-      //userOrderPlant.address = "빛을 적게 받는";
-      userOrderPlant.push("빛을 적게 받는");
+      setLight("빛을 적게 받는");
     }
     setOnLight(true);
-    console.log(userOrderPlant);
   }
 
-  const handleFunctionButton = (event) => {
+  const handleFunctionsButton = (event) => {
     const name = event.target.value;
-    if(name === 'yes')
-      //userOrderPlant.address = "공기정화";
-      userOrderPlant.push(" 공기정화 ");
-    else if(name = 'no'){
-      //userOrderPlant.address = "장식";
-      userOrderPlant.push(" 장식 ");
+    if(name === '공기정화'){
+      setFunctions("공기정화용");
     }
-    setOnFunction(true);
-    console.log(userOrderPlant);
+    else if(name === '장식'){
+      setFunctions("장식용");
+    }
+    else{
+      setFunctions("공기정화용이면서 장식용인");
+    }
+    setOnFunctions(true);
+    console.log(experience,time,address,size,light,functions, "식물 추천 4가지 각각 사진 및 특성, 종류, 키우기 난이도를 알려줘")
   }
-
+  console.log(experience,time,address,size,light,functions);
   return (
-    onFunction?<div>추천중입니다.</div>
-    : onLight? <div className="Function">
+    onFunctions?<div>추천중입니다.</div>
+    : onLight? <div className="Functions">
   <p>
     원하는 식물의 기능이 있나요?
   </p>
   <div>
-    <button value="yes" onClick={handleFunctionButton}>공기 정화</button>
-    <button value="no" onClick={handleFunctionButton}>장식</button>
+    <button value="공기정화" onClick={handleFunctionsButton}>공기 정화</button>
+    <br></br>
+    <br></br>
+    <button value="장식" onClick={handleFunctionsButton}>장식</button>
+    <br></br>
+    <br></br>
+    <button value="둘다" onClick={handleFunctionsButton}>둘 다 원해요</button>
+    <br></br>
+    <br></br>
+    <button value="상관없어요" onClick={handleFunctionsButton}>상관없어요</button>
   </div> </div>: 
   onSize ? <div className="Light">
       <p>
         광량 조건은 어떻게 되나요?
       </p>
       <div>
-        <button value="yes" onClick={handleLightButton}>많다</button>
-        <button value="no" onClick={handleLightButton}>적당하다</button>
+        <button value="많다" onClick={handleLightButton}>많다</button>
+        <br></br>
+        <br></br>
+        <button value="적당하다" onClick={handleLightButton}>적당하다</button>
+        <br></br>
+        <br></br>
+        <button value="적다" onClick={handleLightButton}>적다</button>
       </div>
       </div> :
     onAddress ? <div className="Size">
@@ -127,8 +125,13 @@ const App = () => {
         원하는 식물의 크기가 있나요?
       </p>
       <div>
-        <button value="yes" onClick={handleSizeButton}>크다</button>
-        <button value="no" onClick={handleSizeButton}>중간</button>
+        <button value="크다" onClick={handleSizeButton}>크다</button>
+        <br></br>
+        <br></br>
+        <button value="중간" onClick={handleSizeButton}>중간</button>
+        <br></br>
+        <br></br>
+        <button value="작다" onClick={handleSizeButton}>작다</button>
       </div>
       </div> :
     onTime? <div className="Address">
@@ -137,6 +140,8 @@ const App = () => {
       </p>
       <div>
         <button value="yes" onClick={handleAddressButton}>실내</button>
+        <br></br>
+        <br></br>
         <button value="no" onClick={handleAddressButton}>실외</button>
       </div>
       </div> :
@@ -146,6 +151,8 @@ const App = () => {
       </p>
       <div>
         <button value="yes" onClick={handleTimeButton}>주기적으로 참여 가능</button>
+        <br></br>
+        <br></br>
         <button value="no" onClick={handleTimeButton}>체계적인 관리 없이도 잘 자랐으면 좋겠음</button>
       </div>
       </div> : 
@@ -155,6 +162,8 @@ const App = () => {
       </p>
       <div>
         <button value="yes" onClick={handleExperienceButton}>yes</button>
+        <br></br>
+        <br></br>
         <button value="no" onClick={handleExperienceButton}>no</button>
       </div>
   </div>
