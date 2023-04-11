@@ -1,5 +1,6 @@
 import {Form, Radio, Button} from 'antd';
 import React, {useState} from 'react';
+import './App.css';
 
 const App = () => {
   /**
@@ -17,6 +18,9 @@ const App = () => {
   const [size, setSize] = useState("");
   const [light, setLight] = useState("");
   const [functions, setFunctions] = useState("");
+
+  const [message, setMessage] = useState('');
+  const [response, setResponse] = useState('');
   
   const handleExperienceButton = (event) => {
     const name = event.target.value;
@@ -88,36 +92,69 @@ const App = () => {
     console.log(experience,time,address,size,light,functions, "식물 추천 4가지 각각 사진 및 특성, 종류, 키우기 난이도를 알려줘")
   }
   console.log(experience,time,address,size,light,functions);
+  const text = `${experience} ${time} ${address} ${size} ${light} ${functions}`;
+  console.log('text: ', text);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    fetch('http://localhost:3001/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message }),
+    })
+      .then((res) => res.json())
+      .then((data) => setResponse(data.message));
+  };
+
   return (
-    onFunctions?<div>추천중입니다.</div>
+    onFunctions?<div>
+      <form onSubmit={handleSubmit}>
+        <button className='btn' type='submit' value={`${text}`} onClick={() => setMessage(`${text}`)}>
+          결과를 보시겠습니까?
+        </button>
+      </form>
+      <div>
+        {Array.isArray(response) &&
+          response.map((plant) => (
+            <div key={plant.name}>
+              <button>{plant.name}</button>
+              <p>{plant.context}</p>
+            </div>
+          ))}
+      </div>
+    </div>
     : onLight? <div className="Functions">
-  <p>
-    원하는 식물의 기능이 있나요?
-  </p>
-  <div>
-    <button value="공기정화" onClick={handleFunctionsButton}>공기 정화</button>
+      <header>식물요정</header>
+      <p>
+      원하는 식물의 기능이 있나요?
+    </p>
+    <div>
+    <button className='btn' value="공기정화" onClick={handleFunctionsButton}>공기 정화</button>
     <br></br>
     <br></br>
-    <button value="장식" onClick={handleFunctionsButton}>장식</button>
+    <button className='btn' value="장식" onClick={handleFunctionsButton}>장식</button>
     <br></br>
     <br></br>
-    <button value="둘다" onClick={handleFunctionsButton}>둘 다 원해요</button>
+    <button className='btn' value="둘다" onClick={handleFunctionsButton}>둘 다 원해요</button>
     <br></br>
     <br></br>
-    <button value="상관없어요" onClick={handleFunctionsButton}>상관없어요</button>
+    <button className='btn' value="상관없어요" onClick={handleFunctionsButton}>상관없어요</button>
   </div> </div>: 
   onSize ? <div className="Light">
+    <header>식물요정</header>
       <p>
         광량 조건은 어떻게 되나요?
       </p>
       <div>
-        <button value="많다" onClick={handleLightButton}>많다</button>
+        <button className='btn' value="많다" onClick={handleLightButton}>많다</button>
         <br></br>
         <br></br>
-        <button value="적당하다" onClick={handleLightButton}>적당하다</button>
+        <button className='btn' value="적당하다" onClick={handleLightButton}>적당하다</button>
         <br></br>
         <br></br>
-        <button value="적다" onClick={handleLightButton}>적다</button>
+        <button className='btn' value="적다" onClick={handleLightButton}>적다</button>
       </div>
       </div> :
     onAddress ? <div className="Size">
@@ -125,46 +162,49 @@ const App = () => {
         원하는 식물의 크기가 있나요?
       </p>
       <div>
-        <button value="크다" onClick={handleSizeButton}>크다</button>
+        <button className='btn' value="크다" onClick={handleSizeButton}>크다</button>
         <br></br>
         <br></br>
-        <button value="중간" onClick={handleSizeButton}>중간</button>
+        <button className='btn' value="중간" onClick={handleSizeButton}>중간</button>
         <br></br>
         <br></br>
-        <button value="작다" onClick={handleSizeButton}>작다</button>
+        <button className='btn' value="작다" onClick={handleSizeButton}>작다</button>
       </div>
       </div> :
     onTime? <div className="Address">
+      <header>식물요정</header>
       <p>
         식물을 키우는 장소는 어디인가요?
       </p>
       <div>
-        <button value="yes" onClick={handleAddressButton}>실내</button>
+        <button className='btn' value="yes" onClick={handleAddressButton}>실내</button>
         <br></br>
         <br></br>
-        <button value="no" onClick={handleAddressButton}>실외</button>
+        <button className='btn' value="no" onClick={handleAddressButton}>실외</button>
       </div>
       </div> :
     onExperience? <div className="Time">
+      <header></header>
       <p>
         식물 관리에 참여할 수 있는 시간이 얼마나 되나요?
       </p>
       <div>
-        <button value="yes" onClick={handleTimeButton}>주기적으로 참여 가능</button>
+        <button className='btn' value="yes" onClick={handleTimeButton}>주기적으로 참여 가능</button>
         <br></br>
         <br></br>
-        <button value="no" onClick={handleTimeButton}>체계적인 관리 없이도 잘 자랐으면 좋겠음</button>
+        <button className='btn' value="no" onClick={handleTimeButton}>체계적인 관리 없이도 잘 자랐으면 좋겠음</button>
       </div>
       </div> : 
       <div className="Experience">
+        <header>식물요정</header>
       <p>
         식물을 키워본 적이 있으신가요?
       </p>
       <div>
-        <button value="yes" onClick={handleExperienceButton}>yes</button>
+        <button className='btn' value="yes" onClick={handleExperienceButton}>yes</button>
         <br></br>
         <br></br>
-        <button value="no" onClick={handleExperienceButton}>no</button>
+        <button className='btn' value="no" onClick={handleExperienceButton}>no</button>
       </div>
   </div>
   );

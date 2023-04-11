@@ -36,3 +36,30 @@
     transform: rotate(360deg);
   }
 }
+
+*{
+  background-color: #EBF8DC;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  margin-top: 100px;
+}
+
+header{
+  position: fixed;
+  top: 0;
+}
+
+p{
+  text-align: center;
+  padding-bottom: 10px;
+}
+
+.btn {
+  background-color: #00B849;
+  text-align: center;
+  padding: 5px 20px 5px 20px;
+  margin:auto;
+  display: block;
+  border: outset #00B849;
+  border-radius: 5px;
+}
