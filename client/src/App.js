@@ -2,6 +2,8 @@ import { createBrowserRouter, RouterProvider, Route } from 'react-router-dom';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Home from './pages/Home';
+import Recommend from './pages/Recommend';
+import Main from './pages/Main';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 //import './common.scss';
@@ -35,6 +37,10 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <Login />,
+  },
+  {
+    path: '/main',
+    element: <Main />,
   },
 ]);
 
