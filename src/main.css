@@ -23,6 +23,7 @@
     width: 25%;
     padding: 100px 10px 100px 10px;
     margin: 5% 0% 0% 5%;
+  
 }
 .slots{
     border: outset #8ED03B;
@@ -31,4 +32,10 @@
     width: 20%;
     padding: 80px 10px 80px 10px;
     margin: 0% 5% 0% 0%;
+}
+.tableprint{
+  width: 50%;
+  position: absolute;
+  left: 35%;
+  top: 25%;
 }

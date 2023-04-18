@@ -158,6 +158,7 @@ const App = () => {
       </div>
       </div> :
     onAddress ? <div className="Size">
+      <header>식물요정</header>
       <p>
         원하는 식물의 크기가 있나요?
       </p>
