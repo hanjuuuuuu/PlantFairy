@@ -1,0 +1,102 @@
+@font-face {
+  font-family: '스스로넷 칠백삼';
+  src: url('../font/Room\ No.703.ttf');
+}
+
+.App {
+  text-align: center;
+}
+
+body {
+  background-color: #f3f9ec;
+}
+
+footer h10 {
+  font-size: 110px;
+}
+
+footer {
+  background-color: #684f00;
+  color: #684f00;
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+}
+
+.under {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.top h2 {
+  text-align: center;
+  font-size: 30px;
+  font-style: normal;
+  font-weight: bolder;
+  color: #71a436;
+  font-family: '스스로넷 칠백삼';
+}
+
+.top button {
+  border-radius: 10px;
+  width: 100px;
+  height: 40px;
+  border: 3px solid #847e7e;
+  background-color: #71a436;
+  font-size: 20px;
+  color: #fff;
+  font-family: '스스로넷 칠백삼';
+}
+
+.space {
+  width: 50px;
+  height: auto;
+  display: inline-block;
+}
+
+.space h3 {
+  font-size: 20px;
+  color: #71a436;
+  font-family: '맑은 고딕';
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

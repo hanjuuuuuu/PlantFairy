@@ -13,9 +13,7 @@ import './style.scss';
 const Layout = () => {
   return (
     <div>
-      <Navbar />
       <Home />
-      <Footer />
     </div>
   );
 };
