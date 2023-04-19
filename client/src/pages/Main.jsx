@@ -59,8 +59,8 @@ const Main = () => {
       dataIndex: 'plant_name',
     },
     {
-      title: '식물 종류',
-      dataIndex: 'plant_kind',
+      title: '식물 특성',
+      dataIndex: 'plant_characteristic',
     },
     {
       title: '키우기 난이도',
@@ -70,10 +70,10 @@ const Main = () => {
 
   const data = [
     {
-      key: '1',
-      plant_name: '산세베이리아',
-      plant_kind: '다육이',
-      plant_level: '초보가 키울만한',
+      key:'1',
+      plant_name: '비트 (Begonia)',
+      plant_characteristic: '비트는 대부분 작고 다양한 형태를 가진 작은 식물로, 강한 광학효과를 얻기 위해 실내에서 자주 기르는 편이다. 충분한 습도와 중간 조명이 필요하며, 온도 차이가 많거나 습도가 너무 낮으면 식물이 약해질 수 있다.',
+      plant_level: '초보가 키울만한'
     },
   ];
 
@@ -90,56 +90,41 @@ const Main = () => {
       });
   };
 
-  return isCommunity ? (
-    <Community />
-  ) : isInfo ? (
-    <Info />
-  ) : isRecommend ? (
-    <Recommend />
-  ) : (
-    <div>
-      <br></br>
-      <h2>식물요정</h2>
-      <br></br>
-      <div>메인페이지</div>
-      <br></br>
-      <span>
-        <button className='slot'> db</button>
-        <Table columns={columns} pagination={false} dataSource={data} size='middle' />
-      </span>
-      <menu className='btnmenu'>
-        <button className='menubtn' onClick={onInfo}>
-          마이페이지
-        </button>
-        <br></br>
-        <button className='menubtn' onClick={onCommunity}>
-          커뮤니티
-        </button>
-        <br></br>
-        <button className='menubtn'>To-do list</button>
-        <br></br>
-        <button className='menubtn'>로그아웃</button>
-      </menu>
-      <br></br>
-      <br></br>
-      <Button className='slots' onClick={onRecommend}>
-        {' '}
-        +{' '}
-      </Button>
-      <Button className='slots' disabled>
-        {' '}
-        +{' '}
-      </Button>
-      <Button className='slots' disabled>
-        {' '}
-        +{' '}
-      </Button>
-      <Button className='slots' disabled>
-        {' '}
-        +{' '}
-      </Button>
-    </div>
-  );
+  return (isCommunity ? <Community /> :
+        isInfo ? <Info /> :
+        isRecommend ? 
+        <Recommend /> :
+        <div>
+            <br></br>
+            <h2>식물요정</h2>
+            <br></br>
+            <div>메인페이지</div>
+            <br></br>
+            <div>
+                <Button className="slot"> plant </Button>
+            </div>
+            <div>
+                <Table  className="tableprint" columns={columns} pagination={false} dataSource={data} size="middle" />
+            </div>
+            <menu className="btnmenu"> 
+                <button className="menubtn" onClick={onInfo}>마이페이지</button>
+                <br></br>
+                <button className="menubtn" onClick={onCommunity}>커뮤니티</button>
+                <br></br>
+                <button className="menubtn" >To-do list</button>
+                <br></br>
+                <button className="menubtn">로그아웃</button>
+            </menu>
+            <br></br>
+            <br></br>
+            <div style={{marginLeft: '50%'}}>레벨이 올라가면 슬롯이 확장됩니다!</div>
+            <Button className="slots" onClick={onRecommend}> + </Button>
+            <Button className="slots" disabled onClick={onRecommend}> + </Button>
+            <Button className="slots" disabled onClick={onRecommend}> + </Button>
+            <Button className="slots"disabled onClick={onRecommend}> + </Button>
+            
+        </div>
+    );
 };
 
 export default Main;

@@ -34,7 +34,7 @@ const Register = () => {
         <input required type='email' placeholder='email' name='email' onChange={handleChange} />
         <input required type='password' placeholder='password' name='password' onChange={handleChange} />
         <button onClick={handleSubmit}>Register</button>
-        {err && <p>{err}</p>}
+        {err && <p>{JSON.stringify(err)}</p>}
         <span>
           Do you have an account? <Link to='/login'>Login</Link>
         </span>

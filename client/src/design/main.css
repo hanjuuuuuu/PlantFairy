@@ -1,5 +1,5 @@
-* {
-  background-color: #ebf8dc;
+*{
+  background-color: #EBF8DC;
   font-family: 'Courier New', Courier, monospace;
   font-weight: bold;
   margin-top: 0px;
@@ -7,28 +7,35 @@
 }
 
 .menubtn {
-  background-color: #ebf8dc;
-  border: outset #8ed03b;
-  border-radius: 5px;
-  background-color: white;
-  padding: 10px 10px 5px 10px;
-  width: 20%;
-  margin: 0% 0% 1% 75%;
-}
+    background-color: #EBF8DC;
+    border: outset #8ED03B;
+    border-radius: 5px;
+    background-color: white;
+    padding: 10px 10px 5px 10px;
+    width: 20%;
+    margin: 0% 0% 1% 75%;
+  }
 
 .slot {
-  border: outset #8ed03b;
-  background-color: white;
-  border-radius: 40px;
-  width: 25%;
-  padding: 100px 10px 100px 10px;
-  margin: 5% 0% 0% 5%;
+    border: outset #8ED03B;
+    background-color: white;
+    border-radius: 40px;
+    width: 25%;
+    padding: 100px 10px 100px 10px;
+    margin: 5% 0% 0% 5%;
+  
 }
-.slots {
-  border: outset #8ed03b;
-  background-color: white;
-  border-radius: 40px;
-  width: 20%;
-  padding: 80px 10px 80px 10px;
-  margin: 0% 5% 0% 0%;
+.slots{
+    border: outset #8ED03B;
+    background-color: white;
+    border-radius: 40px;
+    width: 20%;
+    padding: 80px 10px 80px 10px;
+    margin: 0% 5% 0% 0%;
+}
+.tableprint{
+  width: 50%;
+  position: absolute;
+  left: 35%;
+  top: 20%;
 }
