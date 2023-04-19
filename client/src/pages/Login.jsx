@@ -25,7 +25,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await login(inputs);
-      navigate('/');
+      navigate('/main');
     } catch (err) {
       setError(err.response.data);
     }
