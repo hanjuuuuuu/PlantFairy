@@ -1,14 +1,9 @@
-$lightGreen: #b9e7e7;
+$lightGreen: #ebf8dc;
 
 .app {
   //display: flex;
   //justify-content: center;
   .container {
-    //width: 1024px;
-
-    //.link {
-    //text-decoration: none;
-    //color: inherit;
     //}
     //LOGIN & REGISTER
 
@@ -21,9 +16,12 @@ $lightGreen: #b9e7e7;
       background-color: $lightGreen;
 
       h1 {
-        font-size: 20px;
-        color: teal;
-        margin-bottom: 20px;
+        text-align: center;
+        font-size: 30px;
+        font-style: normal;
+        font-weight: bolder;
+        font-family: '스스로넷 칠백삼';
+        color: #71a436;
       }
 
       form {
@@ -41,11 +39,13 @@ $lightGreen: #b9e7e7;
         }
 
         button {
-          padding: 10px;
-          border: none;
-          background-color: teal;
-          cursor: pointer;
-          color: white;
+          width: 100%;
+          padding: 15px;
+          border: 1px solid #847e7e;
+          background-color: #71a436;
+          font-size: 20px;
+          font-family: '스스로넷 칠백삼';
+          color: #fff;
         }
 
         p {
