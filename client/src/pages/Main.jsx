@@ -7,22 +7,6 @@ import Recommend from './Recommend.jsx';
 import Community from './Community.jsx';
 import Info from './MyPage.jsx';
 
-//메인페이지. 키우는 식물 슬롯들이 출력되고 +버튼을 누르면 식물을 추천해주고 등록할 수 있게 한다.
-
-// function getItem(label, key, icon, children, type) {
-//     return {
-//         key,
-//         icon,
-//         children,
-//         label,
-//         type,
-//     };
-// }
-// const items = [
-//     getItem('마이페이지', '마이페이지'), getItem('커뮤니티', '커뮤니티'),
-//     getItem('To-do list', 'To-do list'), getItem('로그아웃', '로그아웃')
-// ];
-
 const Main = () => {
   /**
    *  페이지에서 사용하는 상태변수
@@ -59,8 +43,8 @@ const Main = () => {
       dataIndex: 'plant_name',
     },
     {
-      title: '식물 종류',
-      dataIndex: 'plant_kind',
+      title: '식물 특성',
+      dataIndex: 'plant_characteristic',
     },
     {
       title: '키우기 난이도',
@@ -71,24 +55,29 @@ const Main = () => {
   const data = [
     {
       key: '1',
-      plant_name: '산세베이리아',
-      plant_kind: '다육이',
+      plant_name: '비트 (Begonia)',
+      plant_characteristic:
+        '비트는 대부분 작고 다양한 형태를 가진 작은 식물로, 강한 광학효과를 얻기 위해 실내에서 자주 기르는 편이다. 충분한 습도와 중간 조명이 필요하며, 온도 차이가 많거나 습도가 너무 낮으면 식물이 약해질 수 있다.',
       plant_level: '초보가 키울만한',
     },
   ];
 
-  const onUserPlantPrint = (userplantnum) => {
-    //db에서 식물 정보 가져와 출력
-    axios
-      .post('/', { userplantnum: userplantnum })
-      .then((res) => {
-        console.log(res.data);
-        setUserPlantInfo(res.data);
-      })
-      .catch((err) => {
-        console.log(err.res);
-      });
-  };
+  // const onUserPlantPrint = (userplantnum) => {    //db에서 식물 정보 가져와 출력
+  //     axios.post("/plantpicture",
+  //     {userplantnum: userplantnum}
+  //     )
+  //     .then((res)=> {
+  //         console.log(res.data);
+  //         setUserPlantInfo(res.data);
+  //     })
+  //     .catch((err) => {
+  //         console.log(err.res);
+  //     })
+  // };
+
+  // useEffect(()=> {
+  //     onUserPlantPrint();
+  // }, [])
 
   return isCommunity ? (
     <Community />
@@ -103,10 +92,12 @@ const Main = () => {
       <br></br>
       <div>메인페이지</div>
       <br></br>
-      <span>
-        <button className='slot'> db</button>
-        <Table columns={columns} pagination={false} dataSource={data} size='middle' />
-      </span>
+      <div>
+        <Button className='slot'> plant </Button>
+      </div>
+      <div>
+        <Table className='tableprint' columns={columns} pagination={false} dataSource={data} size='middle' />
+      </div>
       <menu className='btnmenu'>
         <button className='menubtn' onClick={onInfo}>
           마이페이지
@@ -122,19 +113,20 @@ const Main = () => {
       </menu>
       <br></br>
       <br></br>
+      <div style={{ marginLeft: '50%' }}>레벨이 올라가면 슬롯이 확장됩니다!</div>
       <Button className='slots' onClick={onRecommend}>
         {' '}
         +{' '}
       </Button>
-      <Button className='slots' disabled>
+      <Button className='slots' disabled onClick={onRecommend}>
         {' '}
         +{' '}
       </Button>
-      <Button className='slots' disabled>
+      <Button className='slots' disabled onClick={onRecommend}>
         {' '}
         +{' '}
       </Button>
-      <Button className='slots' disabled>
+      <Button className='slots' disabled onClick={onRecommend}>
         {' '}
         +{' '}
       </Button>

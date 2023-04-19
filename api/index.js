@@ -20,7 +20,6 @@ const configuration = new Configuration({
   apiKey: process.env.API_KEY,
 });
 const openai = new OpenAIApi(configuration);
-
 app.post('/', async (req, res) => {
   const { message } = req.body;
   console.log(message);
@@ -65,6 +64,6 @@ app.post('/', async (req, res) => {
   }
 });
 
-app.listen(3001, () => {
+app.listen(8800, () => {
   console.log('Connected...');
 });
