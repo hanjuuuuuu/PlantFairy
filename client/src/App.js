@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Home from './pages/Home';
 import Recommend from './pages/Recommend';
 import Main from './pages/Main';
+import Info from './pages/MyPage';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 //import './common.scss';
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
     path: '/main',
     element: <Main />,
   },
+  {
+    path: '/info',
+    element: <Info />,
+  }
 ]);
 
 function App() {

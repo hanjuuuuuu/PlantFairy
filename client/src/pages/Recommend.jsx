@@ -1,6 +1,7 @@
-import { Form, Radio, Button } from 'antd';
+import { Form, Radio, Button, Modal, Card, Col, Row, Space, Table } from 'antd';
 import React, { useState } from 'react';
 import '../design/recommend.css';
+import axios from 'axios';
 
 const App = () => {
   /**
@@ -19,10 +20,16 @@ const App = () => {
   const [size, setSize] = useState('');
   const [light, setLight] = useState('');
   const [functions, setFunctions] = useState('');
+  const [open, setOpen] = useState(false);
 
   const [message, setMessage] = useState('');
   const [response, setResponse] = useState('');
+  const [recommendPlant, setrecommendPlant] = useState([]);
 
+  /**
+   *
+   *  화면에서 사용하는 이벤트를 정의
+   */
   const handleExperienceButton = (event) => {
     const name = event.target.value;
     if (name === 'yes') setExperience('');
@@ -76,10 +83,32 @@ const App = () => {
       setFunctions('공기정화용');
     } else if (name === '장식') {
       setFunctions('장식용');
-    } else {
+    } else if (name === '둘다'){
       setFunctions('공기정화용이면서 장식용인');
+    } else {
+      setFunctions('');
     }
     setOnFunctions(true);
+  };
+
+  const showModal = () => {
+    setOpen(true);
+  };
+  const handleOk = async () => {    //식물 등록 버튼 누르면 userplant 테이블에 저장 후 메인페이지로 이동
+    axios.post("http://localhost:8800/plantenroll",
+      {plantname: "sunflower"}
+    )
+    .then((response)=> {
+        alert("등록되었습니다");
+        console.log(response.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+    setOpen(false);
+  };
+  const handleCancel = () => {
+    setOpen(false);
   };
 
   const text = `${experience} ${time} ${address} ${size} ${light} ${functions}`;
@@ -87,7 +116,7 @@ const App = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch('http://localhost:3001/', {
+    fetch('http://localhost:8800/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -98,7 +127,34 @@ const App = () => {
       .then((data) => setResponse(data.message));
   };
 
-  //console.log(experience, time, address, size, light, functions);
+  // const columns = [
+  //   {
+  //       title: '이름',
+  //       dataIndex: 'plant.name',
+  //       key: 'name',
+  //       render: (text) => <a>{text}</a>,
+  //   },
+  //   {
+  //       title: '특성',
+  //       dataIndex: 'plant_characteristic',
+  //       key: 'characteristic',
+  //   },
+  //   {
+  //       title: '키우기 난이도',
+  //       key: 'plant_level',
+  //       render: (text, record, index) => (
+  //           <Space size="middle">
+  //               <Button record={record} onClick={showModal} >수정</Button> 
+  //               <Button record={record} onClick={showModal} >삭제</Button> 
+  //           </Space>
+  //       ),
+  //   },
+  //   {
+  //     title: '사진',
+  //     dataIndex: 'plant_picture'
+  //   }
+  //   ];
+
 
   // '-' 이거 split
   return onFunctions ? (
@@ -108,17 +164,36 @@ const App = () => {
           결과를 보시겠습니까?
         </button>
       </form>
-      <div>
+      <p>
         {Array.isArray(response) &&
           response.map((plant) => (
             <div key={plant.name}>
-              <button>{plant.name}</button>
-              <p>{plant.context}</p>
+              <Button key={plant.name} className='recbtn' onClick={showModal}>{plant.name}</Button>
+              <Modal 
+                  title="식물요정" 
+                  open={open} 
+                  onOk={handleOk} 
+                  onCancel={handleCancel}
+                  footer={[
+                    <Button key="enroll" onClick={handleOk}>
+                      등록
+                    </Button>,
+                    <Button key="cancel" onClick={handleCancel}>
+                      취소
+                    </Button>
+                  ]}
+                >
+                <p className='enroll'>이 식물을 키우시겠습니까?</p>
+              </Modal>
+              <br></br>
+              <div>{plant.context}</div>
+              <br></br>
             </div>
           ))}
-      </div>
+      </p>
     </div>
-  ) : onLight ? (
+  )
+ : onLight ? (
     <div className='Functions'>
       <p>원하는 식물의 기능이 있나요?</p>
       <div>
