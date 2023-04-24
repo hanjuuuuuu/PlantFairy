@@ -1,7 +1,8 @@
-import { Form, Radio, Button, Modal, Card, Col, Row, Space, Table } from 'antd';
-import React, { useState } from 'react';
+import { Button, Modal, Space, Spin } from 'antd';
+import React, { useState, useEffect } from 'react';
 import '../design/recommend.css';
 import axios from 'axios';
+import Main from './Main';
 
 const App = () => {
   /**
@@ -21,10 +22,12 @@ const App = () => {
   const [light, setLight] = useState('');
   const [functions, setFunctions] = useState('');
   const [open, setOpen] = useState(false);
+  const [isMain, setIsMain] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [message, setMessage] = useState('');
   const [response, setResponse] = useState('');
-  const [recommendPlant, setrecommendPlant] = useState([]);
+  const [recommendPlant, setrecommendPlant] = useState('');
 
   /**
    *
@@ -91,16 +94,21 @@ const App = () => {
     setOnFunctions(true);
   };
 
-  const showModal = () => {
+  const showModal = (event) => {
+    const name = event.target.value;
+    setrecommendPlant(name);
     setOpen(true);
   };
   const handleOk = async () => {    //식물 등록 버튼 누르면 userplant 테이블에 저장 후 메인페이지로 이동
     axios.post("http://localhost:8800/plantenroll",
-      {plantname: "sunflower"}
+      {plantname: recommendPlant,
+        }
     )
     .then((response)=> {
         alert("등록되었습니다");
         console.log(response.data);
+        setIsMain(true);
+        
     })
     .catch((error) => {
       console.log(error);
@@ -114,86 +122,82 @@ const App = () => {
   const text = `${experience} ${time} ${address} ${size} ${light} ${functions}`;
   console.log('text: ', text);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    fetch('http://localhost:8800/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ message }),
-    })
-      .then((res) => res.json())
-      .then((data) => setResponse(data.message));
+  const handleSubmit = async (e) => {
+    //setTimeout(setLoading(false), 7000);    //로딩화면 끄기
+    console.log(loading);
+    try{
+      e.preventDefault();
+      setLoading(true);
+      const response = await fetch('http://localhost:8800/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message }),
+      })
+        //.then((res) => res.json())
+        const result = await response.json()
+        .then((data) => setResponse(data.message), setLoading(false));
+  } catch(error){
+    window.alert(error);
+  }
   };
-
-  // const columns = [
-  //   {
-  //       title: '이름',
-  //       dataIndex: 'plant.name',
-  //       key: 'name',
-  //       render: (text) => <a>{text}</a>,
-  //   },
-  //   {
-  //       title: '특성',
-  //       dataIndex: 'plant_characteristic',
-  //       key: 'characteristic',
-  //   },
-  //   {
-  //       title: '키우기 난이도',
-  //       key: 'plant_level',
-  //       render: (text, record, index) => (
-  //           <Space size="middle">
-  //               <Button record={record} onClick={showModal} >수정</Button> 
-  //               <Button record={record} onClick={showModal} >삭제</Button> 
-  //           </Space>
-  //       ),
-  //   },
-  //   {
-  //     title: '사진',
-  //     dataIndex: 'plant_picture'
-  //   }
-  //   ];
 
 
   // '-' 이거 split
-  return onFunctions ? (
+  return isMain ? <Main /> :
+  onExperience ? onTime ? onAddress? onSize? onLight? onFunctions? loading? (
     <div>
-      <form onSubmit={handleSubmit}>
-        <button className='btn' type='submit' value={`${text}`} onClick={() => setMessage(`${text}`)}>
-          결과를 보시겠습니까?
-        </button>
-      </form>
-      <p>
-        {Array.isArray(response) &&
-          response.map((plant) => (
-            <div key={plant.name}>
-              <Button key={plant.name} className='recbtn' onClick={showModal}>{plant.name}</Button>
-              <Modal 
-                  title="식물요정" 
-                  open={open} 
-                  onOk={handleOk} 
-                  onCancel={handleCancel}
-                  footer={[
-                    <Button key="enroll" onClick={handleOk}>
-                      등록
-                    </Button>,
-                    <Button key="cancel" onClick={handleCancel}>
-                      취소
-                    </Button>
-                  ]}
-                >
-                <p className='enroll'>이 식물을 키우시겠습니까?</p>
-              </Modal>
-              <br></br>
-              <div>{plant.context}</div>
-              <br></br>
-            </div>
-          ))}
-      </p>
-    </div>
-  )
- : onLight ? (
+    <form onSubmit={handleSubmit}>
+      <button className='btn' type='submit' value={`${text}`} onClick={() => {setMessage(`${text}`)}}>
+        결과를 보시겠습니까?
+      </button>
+    </form>
+    <br></br>
+    <br></br>
+  <div className='spin'>
+  <Space
+    direction="vertical"
+  >
+      <Spin tip="Loading" size="large">
+        <div className="content" />
+      </Spin>
+  </Space>
+  </div></div>): ( <div>
+    <form onSubmit={handleSubmit}>
+      <button className='btn' type='submit' value={`${text}`} onClick={() => {setMessage(`${text}`)}}>
+        결과를 보시겠습니까?
+      </button>
+    </form>
+    <br></br>
+    <br></br>
+    <div>
+  {Array.isArray(response) &&
+    response.map((plant) => (
+      <div className='recommend' key={plant.name}>
+        <button value={plant.name} className='recbtn' onClick={showModal}>{plant.name}</button>
+        <Modal 
+            title="식물요정" 
+            open={open} 
+            onOk={handleOk} 
+            onCancel={handleCancel}
+            footer={[
+              <Button key="enroll" onClick={handleOk}>
+                등록
+              </Button>,
+              <Button key="cancel" onClick={handleCancel}>
+                취소
+              </Button>
+            ]}
+          >
+          <h2 className='enroll'>{recommendPlant} 키우시겠습니까?</h2>
+        </Modal>
+        <br></br>
+        <div>{plant.context}</div>
+        <br></br>
+      </div>
+    ))}
+</div></div>):(
     <div className='Functions'>
       <p>원하는 식물의 기능이 있나요?</p>
       <div>
@@ -217,7 +221,7 @@ const App = () => {
         </button>
       </div>{' '}
     </div>
-  ) : onSize ? (
+  ) :(
     <div className='Light'>
       <p>광량 조건은 어떻게 되나요?</p>
       <div>
@@ -236,7 +240,7 @@ const App = () => {
         </button>
       </div>
     </div>
-  ) : onAddress ? (
+  ):(
     <div className='Size'>
       <p>원하는 식물의 크기가 있나요?</p>
       <div>
@@ -255,7 +259,7 @@ const App = () => {
         </button>
       </div>
     </div>
-  ) : onTime ? (
+  ):(
     <div className='Address'>
       <p>식물을 키우는 장소는 어디인가요?</p>
       <div>
@@ -269,35 +273,32 @@ const App = () => {
         </button>
       </div>
     </div>
-  ) : onExperience ? (
-    <div className='Time'>
-      <p>식물 관리에 참여할 수 있는 시간이 얼마나 되나요?</p>
-      <div>
-        <button className='btn' value='yes' onClick={handleTimeButton}>
-          주기적으로 참여 가능
-        </button>
-        <br></br>
-        <br></br>
-        <button className='btn' value='no' onClick={handleTimeButton}>
-          체계적인 관리 없이도 잘 자랐으면 좋겠음
-        </button>
-      </div>
+  ):(<div className='Time'>
+  <p>식물 관리에 참여할 수 있는 시간이 얼마나 되나요?</p>
+  <div>
+    <button className='btn' value='yes' onClick={handleTimeButton}>
+      주기적으로 참여 가능
+    </button>
+    <br></br>
+    <br></br>
+    <button className='btn' value='no' onClick={handleTimeButton}>
+      체계적인 관리 없이도 잘 자랐으면 좋겠음
+    </button>
+  </div>
+</div>):(<div className='Experience'>
+    <p>식물을 키워본 적이 있으신가요?</p>
+    <div>
+      <button className='btn' value='yes' onClick={handleExperienceButton}>
+        yes
+      </button>
+      <br></br>
+      <br></br>
+      <button className='btn' value='no' onClick={handleExperienceButton}>
+        no
+      </button>
     </div>
-  ) : (
-    <div className='Experience'>
-      <p>식물을 키워본 적이 있으신가요?</p>
-      <div>
-        <button className='btn' value='yes' onClick={handleExperienceButton}>
-          yes
-        </button>
-        <br></br>
-        <br></br>
-        <button className='btn' value='no' onClick={handleExperienceButton}>
-          no
-        </button>
-      </div>
-    </div>
-  );
+  </div>)
+  
 };
 
 export default App;

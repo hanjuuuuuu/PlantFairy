@@ -14,7 +14,8 @@ const Main = () => {
   const [isRecommend, setIsRecommend] = useState(false);
   const [isInfo, setIsInfo] = useState(false);
   const [isCommunity, setIsCommunity] = useState(false);
-  const [userPlantInfo, setUserPlantInfo] = useState('');
+  const [userPlantEnroll, setUserPlantEnroll] = useState('');
+  const [userPlantInfo, setUserPlantInfo] = useState([]);
 
   /**
    *
@@ -47,27 +48,21 @@ const Main = () => {
       dataIndex: 'plant_characteristic',
     },
     {
-      title: '키우기 난이도',
-      dataIndex: 'plant_level',
+      //title: '키우기 난이도',
+      //dataIndex: 'plant_level',
     },
   ];
 
-  const data = [
-    {
-      key:'1',
-      plant_name: '비트 (Begonia)',
-      plant_characteristic: '비트는 대부분 작고 다양한 형태를 가진 작은 식물로, 강한 광학효과를 얻기 위해 실내에서 자주 기르는 편이다. 충분한 습도와 중간 조명이 필요하며, 온도 차이가 많거나 습도가 너무 낮으면 식물이 약해질 수 있다.',
-      plant_level: '초보가 키울만한'
-    },
-  ];
 
-  const onUserPlantPrint = (userplantnum) => {    //db에서 식물 사진 정보 가져와 출력
+  const onUserPlantPrint = (userplantnum) => {    //user_plant 테이블에서 사용자의 식물 정보 가져와 출력
       axios.post("http://localhost:8800/plantpicture",
-      {userplantnum: 1}
+      {userplantnum: 12}   //1대신 userplantnum입력
       )
       .then((res)=> {
-          console.log(res.data[0].plant_name);
-          setUserPlantInfo(res.data[0].plant_name);
+          console.log(res.data[0].plant_name);    //plant_picture로 변경
+          setUserPlantEnroll(res.data[0].plant_name);   //plant_picture로 변경
+          console.log(res.data[0]);
+          setUserPlantInfo(res.data);   
       })
       .catch((err) => {
           console.log(err.res);
@@ -75,7 +70,11 @@ const Main = () => {
   };
 
   useEffect(()=> {
-      onUserPlantPrint();
+      async function getTableData() {
+        const data = await onUserPlantPrint(12);
+        setUserPlantInfo(data);
+      };
+      getTableData(); 
   }, [])
 
   return (isCommunity ? <Community /> :
@@ -89,10 +88,10 @@ const Main = () => {
             <div>메인페이지</div>
             <br></br>
             <div>
-                <Button className="slot"> {userPlantInfo} </Button>
+                <Button className="slot"> {userPlantEnroll} </Button>
             </div>
             <div>
-                <Table className="tableprint" columns={columns} pagination={false} dataSource={data} size="middle" />
+                <Table className="tableprint" columns={columns} pagination={false} dataSource={userPlantInfo} size="middle" />
             </div>
             <menu className="btnmenu"> 
                 <button className="menubtn" onClick={onInfo}>마이페이지</button>

@@ -10,12 +10,12 @@ header {
   top: 0;
 }
 
-p {
+/* p {
   text-align: center;
   padding-bottom: 10px;
   margin-top: 200px;
   margin-bottom: 100px;
-}
+} */
 
 .btn {
   background-color: #00b849;
@@ -27,6 +27,7 @@ p {
   border-radius: 5px;
 }
 .recbtn {
+  text-align: center;
   background-color: pink;
   padding: 1.5%;
   border: outset;
@@ -35,4 +36,9 @@ p {
 .enroll {
   background-color: white;
 }
+
+.spin {
+    padding:10% 50% 10% 50%;
+    width: '50%',
+  }
 
