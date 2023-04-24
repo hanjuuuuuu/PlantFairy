@@ -1,40 +1,46 @@
-* {
-  background-color: #ebf8dc;
-  font-family: 'Courier New', Courier, monospace;
+*{
+  background-color: #EBF8DC;
+  font-family: '스스로넷 칠백삼','Courier New', Courier;
   font-weight: bold;
+  font-weight: normal;
   margin-top: 0px;
   margin-left: 5px;
+  color: black;
 }
 
 .menubtn {
-  background-color: #ebf8dc;
-  border: outset #8ed03b;
-  border-radius: 5px;
-  background-color: white;
-  padding: 10px 10px 5px 10px;
-  width: 20%;
-  margin: 0% 0% 1% 75%;
-}
+    background-color: #EBF8DC;
+    border: outset #8ED03B;
+    border-radius: 5px;
+    background-color: white;
+    padding: 10px 10px 5px 10px;
+    width: 30%;
+    margin: 0px 0px 1px 800px;
+  
+  }
 
 .slot {
-  border: outset #8ed03b;
-  background-color: white;
-  border-radius: 40px;
-  width: 25%;
-  padding: 100px 10px 100px 10px;
-  margin: 5% 0% 0% 5%;
+    border: outset #8ED03B;
+    background-color: white;
+    border-radius: 40px;
+    width: 300px;
+    padding: 100px 10px 100px 10px;
+    margin: 100px 0px 0px 5px;
+  
 }
-.slots {
-  border: outset #8ed03b;
-  background-color: white;
-  border-radius: 40px;
-  width: 20%;
-  padding: 80px 10px 80px 10px;
-  margin: 0% 5% 0% 0%;
+.slots{
+    border: outset #8ED03B;
+    background-color: white;
+    border-radius: 40px;
+    width: 200px;
+    padding: 80px 10px 80px 10px;
+    margin: 80px 50px 0px 0px;
+
 }
-.tableprint {
+.tableprint{
   width: 50%;
+  height: 20%;
   position: absolute;
-  left: 35%;
-  top: 25%;
+  left: 400px;
+  top: 200px;
 }

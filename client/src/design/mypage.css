@@ -1,0 +1,198 @@
+*{
+    background-color: #EBF8DC;
+}
+.App {
+    text-align: left;
+    margin-left: 30px;
+    font-size: 13px;
+}
+
+.App h1 {
+    margin-left: 30px;
+}
+
+body {
+    float: left;
+    background-color: #F3F9EC;
+    font-family: '스스로넷 칠백삼';
+    color: #71A436;
+}
+
+.header {
+    float: left;
+    margin-left: 35px;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: bolder;
+    font-family: '스스로넷 칠백삼';
+    color: #71A436;   
+}
+
+.header h2 {
+    float: left;
+    margin-left: 35px;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: bolder;
+    font-family: '스스로넷 칠백삼';
+    color: #71A436;   
+}
+
+.quick1 {
+    margin-left: 35px;
+    float: left;
+    width: 270px;
+    height: 270px;
+    background-color: #fff;
+    margin-right: 20px;
+    border-radius: 20px;
+    text-align: left;
+    box-sizing: border-box;
+    border: 3px solid #847E7E;
+}
+
+.quick1 h3 {
+    text-align: center;
+    top : 30%;
+    font-size: 25px;
+    font-style: normal;
+    font-weight: bolder;
+    font-family: '스스로넷 칠백삼';
+    color: #000;
+}
+
+.text h4 {
+    left : 320px;
+    top : 155px;
+    margin-left: 30px;
+    font-size: 18px;
+    color: #000; 
+    position: absolute;
+    left: 35%;
+    font-family: '스스로넷 칠백삼';
+    font-weight: normal;
+}
+
+.text h5 {
+    left : 320px;
+    top : 180px;
+    margin-left: 30px;
+    font-size: 18px;
+    color: #000; 
+    position: absolute;
+    left: 35%;
+    font-family: '스스로넷 칠백삼';
+    font-weight: normal;
+}
+
+.text h6 {
+    left : 320px;
+    top : 205px;
+    margin-left: 30px;
+    font-size: 18px;
+    color: #000; 
+    position: absolute;
+    left: 35%;
+    font-family: '스스로넷 칠백삼';
+    font-weight: normal;
+}
+
+.text h7 {
+    left : 320px;
+    top : 230px;
+    margin-left: 30px;
+    font-size: 18px;
+    color: #000; 
+    position: absolute;
+    left: 35%;
+    font-family: '스스로넷 칠백삼';
+    font-weight: normal;
+}
+
+.text h8 {
+    left : 320px;
+    top : 255px;
+    margin-left: 30px;
+    font-size: 18px;
+    color: #000; 
+    position: absolute;
+    left: 35%;
+    font-family: '스스로넷 칠백삼';
+    font-weight: normal;
+}
+
+.box2 button {
+    margin-left: 35px;
+    width: 270px;
+    height: 40px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-family: '스스로넷 칠백삼';
+}
+
+.space {
+    width: 50px;
+    height: auto;
+    display: inline-block;
+}
+
+.level{
+    box-sizing: border-box;
+    background-color: white;
+    width: 150px;
+    padding: 15px;
+    border: solid #8ED03B;
+    border-radius: 10px;
+    box-shadow: 10px;
+    position:absolute;
+    top: 25%;
+    right: 20%;
+    color: black;
+    font-style: normal;
+    font-weight: bolder;
+    font-family: '스스로넷 칠백삼';
+}
+.level h10{
+    background-color: white;
+}
+.level h11{
+    background-color: white;
+}
+
+
+
+.App-logo {
+    height: 40vmin;
+    pointer-events: none;
+}
+
+
+@media (prefers-reduced-motion: no-preference) {
+    .App-logo {
+        animation: App-logo-spin infinite 20s linear;
+    }
+}
+
+.App-header {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+
+.App-link {
+    color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
