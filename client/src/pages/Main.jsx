@@ -79,6 +79,19 @@ const Main = () => {
   //     onUserPlantPrint();
   // }, [])
 
+  const handleClick = () => {
+    axios
+      .get('http://localhost:3000/images/hello') // 식물 이름을 넣어줍니다.
+      .then((response) => {
+        console.log(response.data); // 요청 결과를 콘솔에 출력합니다.
+        const image = document.createElement('img');
+        image.src = `data:image/jpeg;base64,${response.data}`;
+        document.body.appendChild(image);
+      })
+      .catch((error) => {
+        console.error(error); // 에러가 발생하면 콘솔에 출력합니다.
+      });
+  };
   return isCommunity ? (
     <Community />
   ) : isInfo ? (
@@ -93,7 +106,7 @@ const Main = () => {
       <div>메인페이지</div>
       <br></br>
       <div>
-        <Button className='slot'> plant </Button>
+        <Button onClick={handleClick}>Get Plant Image</Button>
       </div>
       <div>
         <Table className='tableprint' columns={columns} pagination={false} dataSource={data} size='middle' />

@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/api/auth', authRoutes);
 
 const configuration = new Configuration({
-  apiKey: process.env.API_KEY,
+  apiKey: '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',
 });
 const openai = new OpenAIApi(configuration);
 
@@ -33,7 +33,7 @@ app.post('/recommend', async (req, res) => {
   try {
     const response = await openai.createCompletion({
       model: 'text-davinci-003',
-      prompt: `Recommend 3 names of plants for ${message} and explain plant characteristics. Translate the names and characteristics into Korean`,
+      prompt: `It recommends and explains the 3 plants in the ${message}, and the answer format is 1.2.3. Number it like this, use : to distinguish between the plant name and description, translate it into Korean, and print only Korean.`,
       max_tokens: 1000,
       temperature: 0.8,
     });
@@ -41,20 +41,19 @@ app.post('/recommend', async (req, res) => {
     console.log(response.data);
 
     if (response.data && response.data.choices) {
-      const plantRecommendations = response.data.choices[0].text
+      plantRecommendations = response.data.choices[0].text
         .trim()
         .split(/\d+\./)
-        .filter(Boolean)
+        .filter((recommendation) => recommendation)
         .map((recommendation) => {
-          const [name, context] = recommendation.trim().split(/:\s+|-/);
-          const [engName, korName] = name.split(/\s+\(|\)/).filter(Boolean);
-          return { engName: engName, korName: korName, context: context };
+          const [name, context] = (recommendation || '').trim().split(/:\s+/);
+          return { name, context };
         });
 
       // MySQL 데이터베이스에 데이터 삽입
-      const sqlInsert = 'INSERT INTO plant(korName, engName, context) VALUES (?, ?, ?)';
+      const sqlInsert = 'INSERT INTO plant(plant_name, context) VALUES (?, ?)';
       plantRecommendations.forEach((recommendation) => {
-        db.query(sqlInsert, [recommendation.korName, recommendation.engName, recommendation.context || ''], (err, result) => {
+        db.query(sqlInsert, [recommendation.name, recommendation.context || ''], (err, result) => {
           if (err) {
             console.log(err);
           }
@@ -72,7 +71,7 @@ app.post('/recommend', async (req, res) => {
 });
 
 // 여기는 돈나감!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-/*
+
 app.post('/', async (req, res) => {
   //const { message } = req.body;
   //console.log(message);
@@ -97,7 +96,7 @@ app.post('/', async (req, res) => {
     for (let i = 0; i < images.length; i++) {
       const options = {
         url: images[i],
-        dest: 'sources/${i}.png',
+        dest: '../../sources',
       };
 
       download
@@ -105,9 +104,9 @@ app.post('/', async (req, res) => {
         .then(({ filename }) => {
           console.log('Saved to', filename); // saved to /path/to/dest/image.jpg
 
-          const imagePath = path.join(options.dest, filename).replace(/\\/g, '/');
+          const imagePath = path.join('sources/', path.basename(filename)).replace(/\\/g, '/');
           // Save the path to the database
-          db.query(`UPDATE plant SET img ='${imagePath}' WHERE engName='${plantRecommendations[i].name}'`, (error, results) => {
+          db.query(`UPDATE plant SET img ='${imagePath}' WHERE plant_name='${plantRecommendations[i].name}'`, (error, results) => {
             if (error) {
               console.log(error);
               res.status(500).send('Error saving image path to the database');
@@ -127,7 +126,7 @@ app.post('/', async (req, res) => {
   } else {
     res.status(500).send('Error creating images');
   }
-});*/
+});
 
 // 이미지 받아오는 기능
 /*

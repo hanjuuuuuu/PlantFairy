@@ -1,5 +1,6 @@
-import { Form, Radio, Button } from 'antd';
+//import { Form, Radio, Button } from 'antd';
 import React, { useState } from 'react';
+import axios from 'axios';
 import '../design/recommend.css';
 
 const App = () => {
@@ -20,52 +21,57 @@ const App = () => {
   const [light, setLight] = useState('');
   const [functions, setFunctions] = useState('');
 
+  // const [message, setMessage] = useState('');
+  // const [response, setResponse] = useState('');
+
   const [message, setMessage] = useState('');
-  const [response, setResponse] = useState('');
+  const [plantRecommendations, setPlantRecommendations] = useState([]);
+  const [image, setImage] = useState('');
+  const [plantImages, setPlantImages] = useState([]);
 
   const handleExperienceButton = (event) => {
     const name = event.target.value;
-    if (name === 'yes') setExperience('');
-    else setExperience('초보자가');
+    if (name === 'yes') setExperience('experienced person');
+    else setExperience('beginner');
     setOnExperience(true);
   };
 
   const handleTimeButton = (event) => {
     const name = event.target.value;
-    if (name === 'yes') setTime('주기적으로 참여하며');
+    if (name === 'yes') setTime('Can participate periodically');
     else {
-      setTime('체계적인 관리없이');
+      setTime('hope it grows well without systematic management');
     }
     setOnTime(true);
   };
 
   const handleAddressButton = (event) => {
     const name = event.target.value;
-    if (name === 'yes') setAddress('실내에서 키우고');
+    if (name === 'yes') setAddress('Indoor');
     else {
-      setAddress('실외에서 키우고');
+      setAddress('Outdoor');
     }
     setOnAddress(true);
   };
 
   const handleSizeButton = (event) => {
     const name = event.target.value;
-    if (name === '크다') setSize('큰 크기의');
+    if (name === '크다') setSize('big');
     else if (name === '중간') {
-      setSize('중간 크기의');
+      setSize('medium');
     } else {
-      setSize('작은 크기의');
+      setSize('small');
     }
     setOnSize(true);
   };
 
   const handleLightButton = (event) => {
     const name = event.target.value;
-    if (name === '많다') setLight('빛을 많이 받는');
+    if (name === '많다') setLight('receiving a lot of sunlight');
     else if (name === '적당하다') {
-      setLight('빛을 적당히 받는');
+      setLight('get enough sunlight');
     } else {
-      setLight('빛을 적게 받는');
+      setLight('less sunlight');
     }
     setOnLight(true);
   };
@@ -73,11 +79,13 @@ const App = () => {
   const handleFunctionsButton = (event) => {
     const name = event.target.value;
     if (name === '공기정화') {
-      setFunctions('공기정화용');
+      setFunctions('for air purification');
     } else if (name === '장식') {
-      setFunctions('장식용');
+      setFunctions('for decoration');
+    } else if (name === '둘 다 원해요') {
+      setFunctions('for air purication and decoration');
     } else {
-      setFunctions('공기정화용이면서 장식용인');
+      setFunctions('no matter');
     }
     setOnFunctions(true);
   };
@@ -85,22 +93,21 @@ const App = () => {
   const text = `${experience} ${time} ${address} ${size} ${light} ${functions}`;
   console.log('text: ', text);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    fetch('http://localhost:3001/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ message }),
-    })
-      .then((res) => res.json())
-      .then((data) => setResponse(data.message));
+    try {
+      // plant recommendations API call
+      const res1 = await axios.post('http://localhost:8800/recommend', { message });
+      setPlantRecommendations(res1.data.message);
+
+      //plant image creation API call
+      const res2 = await axios.post('http://localhost:8800/', { message });
+      setPlantImages(res2.data.images);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  //console.log(experience, time, address, size, light, functions);
-
-  // '-' 이거 split
   return onFunctions ? (
     <div>
       <form onSubmit={handleSubmit}>
@@ -108,14 +115,28 @@ const App = () => {
           결과를 보시겠습니까?
         </button>
       </form>
+
       <div>
-        {Array.isArray(response) &&
-          response.map((plant) => (
-            <div key={plant.name}>
-              <button>{plant.name}</button>
-              <p>{plant.context}</p>
-            </div>
+        <h3>Plant Recommendations:</h3>
+        <ul>
+          {plantRecommendations.map((recommendation, idx) => (
+            <li key={idx}>
+              <h4>{recommendation.name}</h4>
+              <p>{recommendation.context}</p>
+            </li>
           ))}
+        </ul>
+      </div>
+
+      <div>
+        <h3>Plant Images:</h3>
+        {plantImages.length > 0 && (
+          <div>
+            {plantImages.map((imageUrl, idx) => (
+              <img key={idx} src={imageUrl} alt={`generated image ${idx}`} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   ) : onLight ? (
