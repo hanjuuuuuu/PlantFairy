@@ -4,7 +4,7 @@ import '../design/recommend.css';
 import axios from 'axios';
 import Main from './Main';
 
-const App = () => {
+const App = ({usernum, buttonValue}) => {
   /**
    * 페이지에서 사용하는 상태변수
    */
@@ -28,6 +28,10 @@ const App = () => {
   const [message, setMessage] = useState('');
   const [response, setResponse] = useState('');
   const [recommendPlant, setrecommendPlant] = useState('');
+  const [plantContext, setPlantContext] = useState('');
+  const [plantRecommendations, setPlantRecommendations] = useState([]);
+  const [image, setImage] = useState('');
+  const [plantImages, setPlantImages] = useState([]);
 
   /**
    *
@@ -94,14 +98,27 @@ const App = () => {
     setOnFunctions(true);
   };
 
+  //main에서 버튼 값 받아오기
+  console.log('recommend usernum', usernum);
+  console.log('recommend button',buttonValue);
+
   const showModal = (event) => {
-    const name = event.target.value;
-    setrecommendPlant(name);
+    const value = event.target.value;
+    const text = value.split(',');
+    console.log(text[0]);
+    setrecommendPlant(text[0]);
+    setPlantContext(text[1]);
     setOpen(true);
   };
   const handleOk = async () => {    //식물 등록 버튼 누르면 userplant 테이블에 저장 후 메인페이지로 이동
+    console.log('button',buttonValue)
     axios.post("http://localhost:8800/plantenroll",
-      {plantname: recommendPlant,
+      { usernum: usernum,
+        plantmain: buttonValue,
+        plantname: recommendPlant,
+        plantpicture: 'png',
+        plantcharacteristic: plantContext,
+        plantlevel: 1,        //난이도로 변경하기
         }
     )
     .then((response)=> {
@@ -123,7 +140,6 @@ const App = () => {
   console.log('text: ', text);
 
   const handleSubmit = async (e) => {
-    //setTimeout(setLoading(false), 7000);    //로딩화면 끄기
     console.log(loading);
     try{
       e.preventDefault();
@@ -135,15 +151,26 @@ const App = () => {
         },
         body: JSON.stringify({ message }),
       })
-        //.then((res) => res.json())
-        const result = await response.json()
-        .then((data) => setResponse(data.message), setLoading(false));
+
+      // plant recommendations API call
+      //const res1 = await axios.post('http://localhost:8800/recommend', { message });
+      //setPlantRecommendations(res1.data.message);
+
+      //plant image creation API call
+      const res2 = await axios.post('http://localhost:8800/', { message });
+      setPlantImages(res2.data.images);
+
+      //.then((res) => res.json())
+      const result = await response.json()
+      .then((data) => setResponse(data.message), setLoading(false));
   } catch(error){
     window.alert(error);
   }
   };
 
+  useEffect(() => {
 
+  },[])
   // '-' 이거 split
   return isMain ? <Main /> :
   onExperience ? onTime ? onAddress? onSize? onLight? onFunctions? loading? (
@@ -175,7 +202,7 @@ const App = () => {
   {Array.isArray(response) &&
     response.map((plant) => (
       <div className='recommend' key={plant.name}>
-        <button value={plant.name} className='recbtn' onClick={showModal}>{plant.name}</button>
+        <button value={[[plant.name], [plant.context]]} className='recbtn' onClick={showModal}>{plant.name}</button>
         <Modal 
             title="식물요정" 
             open={open} 

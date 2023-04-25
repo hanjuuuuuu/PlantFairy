@@ -27,7 +27,7 @@ body {
    padding: 20px;
 }
 
-.loginBox input{
+.loginBox inputs{
    
    width: calc(100% - 34px);
    padding: 15px;

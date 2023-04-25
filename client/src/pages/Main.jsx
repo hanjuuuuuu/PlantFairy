@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Table } from 'antd';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 import '../design/main.css';
 //import App from './App.js';
 import Recommend from './Recommend.jsx';
@@ -14,7 +15,13 @@ const Main = () => {
   const [isRecommend, setIsRecommend] = useState(false);
   const [isInfo, setIsInfo] = useState(false);
   const [isCommunity, setIsCommunity] = useState(false);
-  const [userPlantEnroll, setUserPlantEnroll] = useState('');
+  const [userPlantEnroll0, setUserPlantEnroll0] = useState('+');
+  const [userPlantEnroll1, setUserPlantEnroll1] = useState('+');
+  const [userPlantEnroll2, setUserPlantEnroll2] = useState('+');
+  const [userPlantEnroll3, setUserPlantEnroll3] = useState('+');
+  const [userPlantEnroll4, setUserPlantEnroll4] = useState('+');
+  const [buttonValue, setButtonValue] = useState('');
+
   const [userPlantInfo, setUserPlantInfo] = useState([]);
 
   /**
@@ -25,8 +32,9 @@ const Main = () => {
     console.log('click', e);
   };
 
-  const onRecommend = () => {
-    //슬롯 + 누르면 추천페이지로 이동
+  const onRecommend = (e) => {  //슬롯 + 누르면 추천페이지로 이동, 버튼에 따라 식물 출력 자리 지정
+    const name = e.target.value;
+    setButtonValue(name);
     setIsRecommend(true);
   };
   const onInfo = () => {
@@ -48,21 +56,29 @@ const Main = () => {
       dataIndex: 'plant_characteristic',
     },
     {
-      //title: '키우기 난이도',
-      //dataIndex: 'plant_level',
+      title: '키우기 난이도',
+      dataIndex: 'plant_level',
     },
   ];
 
+  //login에서 user_num 받아오기
+  const { state } = useLocation();
+  console.log('usernum',state);
+  console.log('mainbutton',buttonValue)
 
-  const onUserPlantPrint = (userplantnum) => {    //user_plant 테이블에서 사용자의 식물 정보 가져와 출력
+  const userMainPlant = () => {     //메인 식물 변경할 수 있게
+
+  }
+
+  const onUserPlantPrint = () => {    //user_plant 테이블에서 사용자의 식물 정보 가져와 메인 식물 정보 테이블로 출력
       axios.post("http://localhost:8800/plantpicture",
-      {userplantnum: 12}   //1대신 userplantnum입력
+      {userplantnum: state}   
       )
-      .then((res)=> {
-          console.log(res.data[0].plant_name);    //plant_picture로 변경
-          setUserPlantEnroll(res.data[0].plant_name);   //plant_picture로 변경
+      .then((res)=> {  
+          setUserPlantEnroll0(res.data[0].plant_picture);     //메인 식물 이미지 
+          setUserPlantEnroll1(res.data[0].plant_name);   
           console.log(res.data[0]);
-          setUserPlantInfo(res.data);   
+          setUserPlantInfo(res.data);       //메인 식물 이름, 특성, 키우기 난이도
       })
       .catch((err) => {
           console.log(err.res);
@@ -71,7 +87,7 @@ const Main = () => {
 
   useEffect(()=> {
       async function getTableData() {
-        const data = await onUserPlantPrint(12);
+        const data = await onUserPlantPrint();
         setUserPlantInfo(data);
       };
       getTableData(); 
@@ -80,7 +96,7 @@ const Main = () => {
   return (isCommunity ? <Community /> :
         isInfo ? <Info /> :
         isRecommend ? 
-        <Recommend /> :
+        <Recommend usernum={state} buttonValue={buttonValue}/> :
         <div>
             <br></br>
             <h2>식물요정</h2>
@@ -88,7 +104,7 @@ const Main = () => {
             <div>메인페이지</div>
             <br></br>
             <div>
-                <Button className="slot"> {userPlantEnroll} </Button>
+                <Button className="slot" onClick={userMainPlant}> {userPlantEnroll0} </Button>
             </div>
             <div>
                 <Table className="tableprint" columns={columns} pagination={false} dataSource={userPlantInfo} size="middle" />
@@ -105,10 +121,10 @@ const Main = () => {
             <br></br>
             <br></br>
             <div style={{marginLeft: '50%'}}>레벨이 올라가면 슬롯이 확장됩니다!</div>
-            <Button className="slots" onClick={onRecommend}> + </Button>
-            <Button className="slots" disabled onClick={onRecommend}> + </Button>
-            <Button className="slots" disabled onClick={onRecommend}> + </Button>
-            <Button className="slots"disabled onClick={onRecommend}> + </Button>
+            <Button value="1" className="slots" onClick={onRecommend}> {userPlantEnroll1} </Button>
+            <Button value="2" className="slots" disabled onClick={onRecommend}> {userPlantEnroll2} </Button>
+            <Button value="3" className="slots" disabled onClick={onRecommend}> {userPlantEnroll3} </Button>
+            <Button value="4" className="slots"disabled onClick={onRecommend}> {userPlantEnroll4} </Button>
         </div>
     );
 };

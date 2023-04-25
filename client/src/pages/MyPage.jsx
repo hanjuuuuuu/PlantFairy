@@ -1,11 +1,12 @@
 import '../design/mypage.css';
+import image11 from '../img/image11.png'
 
 const Info = () => {
   return (
     <div className="App">
       
       {/* 헤더 */}
-      <img src='../img/image11.png' alt="My Image" width="100" height="100"/>
+      <img src={image11} alt="My Image" width="100" height="100"/>
       <h1> 마이 페이지 </h1>
       <br></br>
       <br></br>

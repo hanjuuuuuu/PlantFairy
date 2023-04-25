@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/authContext';
 
-import '../design/login.css';
+// import '../login.css';
 // import '../common.css';
 
 const Login = () => {
@@ -24,45 +24,26 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login(inputs);
-      navigate('/main');
+      let getUserNum = await login(inputs);
+      console.log('tgtgt',getUserNum);
+      navigate('/main', {state: getUserNum});
     } catch (err) {
-      setError(err.response.data);
+      setError(JSON.stringify (err));
     }
   };
 
-  return  (
-    <div className="App">
-      <div className = "loginBox">
-    <img  alt="My Image" width="100" height="100"/> 
-    
-    <h1> 식물요정 </h1>
-  <address>
-    <p> 식물요정 웹 사이트에 오신 걸 환영합니다. </p>
-  </address>
-
-  <form>
-        <label for = "userId"></label>
-        <input type = "text" id = "userId" placeholder="아이디" />
-        <p>
-            <label for = "userPw"></label>
-        <input type = "password" id = "userPw" placeholder="패스워드" />
-        </p>
-        <button type="submit">로그인</button>
-        
-      <footer>
-        <div className="link">
-          회원가입 하시겠습니까? 
-        <a href="#">
-            회원가입
-          </a>
-
-      </div>
-    </footer>
+  return (
+    <div className='auth'>
+      <h1>로그인</h1>
+      <form>
+        <input required type='text' placeholder='username' name='username' onChange={handleChange} />
+        <input required type='password' placeholder='password' name='password' onChange={handleChange} />
+        <button onClick={handleSubmit}>Login</button>
+        {err && <p>{err}</p>}
+        <span>
+          Don`t you have an account? <Link to='/register'>회원가입</Link>
+        </span>
       </form>
-
-
-    </div>
     </div>
   );
 };
