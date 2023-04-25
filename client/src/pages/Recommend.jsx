@@ -121,7 +121,7 @@ const App = () => {
         <ul>
           {plantRecommendations.map((recommendation, idx) => (
             <li key={idx}>
-              <h4>{recommendation.name}</h4>
+              <h4>{recommendation.korName}</h4>
               <p>{recommendation.context}</p>
             </li>
           ))}

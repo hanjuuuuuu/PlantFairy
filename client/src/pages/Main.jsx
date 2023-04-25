@@ -80,12 +80,13 @@ const Main = () => {
   // }, [])
 
   const handleClick = () => {
+    //const encodedString = encodeURIComponent('고사리');
     axios
-      .get('http://localhost:3000/images/hello') // 식물 이름을 넣어줍니다.
+      .get(`http://localhost:8800/images/hello`) // 식물 이름을 넣어줍니다.
       .then((response) => {
-        console.log(response.data); // 요청 결과를 콘솔에 출력합니다.
+        // console.log(response.data); // 요청 결과를 콘솔에 출력합니다.
         const image = document.createElement('img');
-        image.src = `data:image/jpeg;base64,${response.data}`;
+        image.src = `data:image/png;base64,${response.data}`;
         document.body.appendChild(image);
       })
       .catch((error) => {

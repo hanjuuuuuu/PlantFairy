@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/api/auth', authRoutes);
 
 const configuration = new Configuration({
-  apiKey: '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',
+  apiKey: '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',
 });
 const openai = new OpenAIApi(configuration);
 
@@ -33,7 +33,7 @@ app.post('/recommend', async (req, res) => {
   try {
     const response = await openai.createCompletion({
       model: 'text-davinci-003',
-      prompt: `It recommends and explains the 3 plants in the ${message}, and the answer format is 1.2.3. Number it like this, use : to distinguish between the plant name and description, translate it into Korean, and print only Korean.`,
+      prompt: `The three plants in ${message} are recommended and explained, and the answer format is numbered as 1.2.3 and translated into Korean and Korean plant names and English plant names are separated by -, and English plant names and Korean plant descriptions are separated by :`,
       max_tokens: 1000,
       temperature: 0.8,
     });
@@ -47,13 +47,18 @@ app.post('/recommend', async (req, res) => {
         .filter((recommendation) => recommendation)
         .map((recommendation) => {
           const [name, context] = (recommendation || '').trim().split(/:\s+/);
-          return { name, context };
+          const [korName, englishName] = name.trim().split(' - ');
+          return { korName: korName, englishName: englishName, context };
         });
 
+      // for (const recommendation of plantRecommendations) {
+      //   console.log(`${recommendation.korName} - ${recommendation.englishName}: ${recommendation.context}`);
+      // }
+
       // MySQL 데이터베이스에 데이터 삽입
-      const sqlInsert = 'INSERT INTO plant(plant_name, context) VALUES (?, ?)';
+      const sqlInsert = 'INSERT INTO plant(plant_name, eng_Name, context) VALUES (?, ?, ?)';
       plantRecommendations.forEach((recommendation) => {
-        db.query(sqlInsert, [recommendation.name, recommendation.context || ''], (err, result) => {
+        db.query(sqlInsert, [recommendation.korName, recommendation.englishName, recommendation.context || ''], (err, result) => {
           if (err) {
             console.log(err);
           }
@@ -84,7 +89,7 @@ app.post('/', async (req, res) => {
 
   for (let i = 0; i < plantRecommendations.length; i++) {
     const response = await openai.createImage({
-      prompt: `${plantRecommendations[i].name}`,
+      prompt: `${plantRecommendations[i].englishName}`,
       n: 1,
       size: '256x256',
     });
@@ -106,7 +111,7 @@ app.post('/', async (req, res) => {
 
           const imagePath = path.join('sources/', path.basename(filename)).replace(/\\/g, '/');
           // Save the path to the database
-          db.query(`UPDATE plant SET img ='${imagePath}' WHERE plant_name='${plantRecommendations[i].name}'`, (error, results) => {
+          db.query(`UPDATE plant SET img ='${imagePath}' WHERE eng_Name='${plantRecommendations[i].englishName}'`, (error, results) => {
             if (error) {
               console.log(error);
               res.status(500).send('Error saving image path to the database');
@@ -129,12 +134,12 @@ app.post('/', async (req, res) => {
 });
 
 // 이미지 받아오는 기능
-/*
-app.get('/images/:engName', (req, res) => {
-  const engName = req.params.engName.replace(/\n/g, '');
-  console.log(`engName = ${engName}`);
 
-  db.query(`SELECT img FROM plant WHERE engName = '${engName}'`, (err, result) => {
+app.get('/images/:plantName', (req, res) => {
+  const plant_name = decodeURIComponent(req.params.plantName).replace(/\n/g, '');
+  console.log('----', plant_name);
+
+  db.query(`SELECT img FROM plant WHERE plant_name = '${plant_name}'`, (err, result) => {
     if (err) {
       console.error(err);
       return res.status(500).send('Server Error');
@@ -151,11 +156,10 @@ app.get('/images/:engName', (req, res) => {
       return res.status(404).send('Image not found');
     }
     const imgFile = fs.readFileSync(imgPath);
-    res.writeHead(200, { 'Content-Type': 'image/png' }); 
+    res.writeHead(200, { 'Content-Type': 'image/png' });
     res.end(Buffer.from(imgFile).toString('base64'));
   });
 });
-*/
 
 app.listen(8800, () => {
   console.log('Connected...');

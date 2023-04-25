@@ -5,6 +5,8 @@ import jwt from 'jsonwebtoken';
 export const register = (req, res) => {
   //CHECK EXISTING USER
   const q = 'SELECT * FROM user WHERE user_id= ? OR user_name = ?';
+  console.log(req.body.user_id);
+  console.log(req.body.user_name);
 
   db.query(q, [req.body.user_id, req.body.user_name], (err, data) => {
     if (err) return res.status(500).json(err);
