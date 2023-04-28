@@ -7,27 +7,28 @@ import dayLocaleData from 'dayjs/plugin/localeData';
 dayjs.extend(dayLocaleData);
 
 const Todo = () => {
-    const [value, onChange] = useState(new Date());
+    //const [value, onChange] = useState(new Date());
     const { token } = theme.useToken();
     const onPanelChange = (value, mode) => {
     console.log(value.format('YYYY-MM-DD'), mode);
     };
 
     const wrapperStyle = {
-        width: 1000,
+        width: "80%",
         border: `1px solid ${token.colorBorderSecondary}`,
         borderRadius: token.borderRadiusLG,
     };
 
     return (
-        <div style={wrapperStyle}>
+        <div style={wrapperStyle} >
             <br></br>
-        <Calendar
+        <Calendar 
+            className='calendar'
             fullscreen={false}
             headerRender={({ value, type, onChange, onTypeChange }) => {
             const start = 0;
             const end = 12;
-            const monthOptions = [];
+            const monthOptions = [];  
             let current = value.clone();
             const localeData = value.localeData();
             const months = [];
@@ -54,15 +55,17 @@ const Todo = () => {
             }
             return (
               <div
+                className='margins'
                 style={{
-                  padding: 8,
+                  paddingBottom: 20,
                 }}
               >
-                <Typography.Title level={4}>투두 리스트</Typography.Title>
+                <Typography.Title className='title' level={4}>투두 리스트</Typography.Title>
                 <Row gutter={8}>
                   <Col>
                     <Radio.Group
-                      size="small"
+                      className='radio'
+                      size="big"
                       onChange={(e) => onTypeChange(e.target.value)}
                       value={type}
                     >
@@ -72,9 +75,9 @@ const Todo = () => {
                   </Col>
                   <Col>
                     <Select
-                      size="small"
+                      size="big"
                       dropdownMatchSelectWidth={false}
-                      className="my-year-select"
+                      className="radio"
                       value={year}
                       onChange={(newYear) => {
                         const now = value.clone().year(newYear);
@@ -86,8 +89,9 @@ const Todo = () => {
                   </Col>
                   <Col>
                     <Select
-                      size="small"
+                      size="big"
                       dropdownMatchSelectWidth={false}
+                      className="radio"
                       value={month}
                       onChange={(newMonth) => {
                         const now = value.clone().month(newMonth);
@@ -103,7 +107,13 @@ const Todo = () => {
           }}
           onPanelChange={onPanelChange}
         />
+        <div>
+          <p>
+            투두리스트 출력
+          </p>
+        </div>
       </div>
+
     );
 
 

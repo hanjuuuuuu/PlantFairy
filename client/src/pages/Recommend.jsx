@@ -168,18 +168,9 @@ const App = ({usernum, buttonValue}) => {
   };
 
   useEffect(() => {
-    async function getTableData() {
-      const data0 = await onUserPlantPrint();
-      // const data1 = await onUserPlantSlot();
-      setUserPlantInfo(data0);
-      //setUserPlantEnroll1(data1);
-    };	      
-    getTableData(); 	    
+
   },[])
 
-  useEffect(() => {
-    onUserPlantSlot();
-  })
   
   // '-' 이거 split
   return isMain ? <Main /> :
