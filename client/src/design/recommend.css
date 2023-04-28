@@ -10,18 +10,31 @@ header {
   top: 0;
 }
 
-/* p {
+p {
   text-align: center;
   padding-bottom: 10px;
-  margin-top: 200px;
-  margin-bottom: 100px;
-} */
+  margin: 100px 50px 30px 350px;
+  
+}
 
 .btn {
   background-color: #00b849;
   text-align: center;
   padding: 5px 20px 5px 20px;
   margin: auto;
+  margin-top: 20px;
+  margin-left: 400px;
+  display: block;
+  border: outset #00b849;
+  border-radius: 5px;
+}
+.resultbtn{
+  background-color: #00b849;
+  text-align: center;
+  padding: 5px 20px 5px 20px;
+  margin: auto;
+  margin-top: 200px;
+  margin-left: 400px;
   display: block;
   border: outset #00b849;
   border-radius: 5px;
@@ -38,7 +51,6 @@ header {
 }
 
 .spin {
-    padding:10% 50% 10% 50%;
-    width: '50%',
+    padding:50px 50px 10px 450px;
+    width: '100px',
   }
-

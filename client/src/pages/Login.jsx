@@ -25,8 +25,7 @@ const Login = () => {
     e.preventDefault();
     try {
       let getUserNum = await login(inputs);
-      console.log('tgtgt',getUserNum);
-      navigate('/main', {state: getUserNum});
+      navigate('/main', { state: getUserNum });
     } catch (err) {
       setError(JSON.stringify (err));
     }

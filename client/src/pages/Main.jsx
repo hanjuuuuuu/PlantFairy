@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Table } from 'antd';
+import { Button, Table, Modal } from 'antd';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import '../design/main.css';
@@ -66,18 +66,23 @@ const Main = () => {
   console.log('usernum',state);
   console.log('mainbutton',buttonValue)
 
-  const userMainPlant = () => {     //메인 식물 변경할 수 있게
+  const userMainPlant = () => {     //메인 식물 변경할 수 있게하기(main 0으로 바꾸기)
+    axios.post("http://localhost:8800/plantall",
+    {userplantnum: state})
+    .then((res) => {
+
+    })
 
   }
 
   const onUserPlantPrint = () => {    //user_plant 테이블에서 사용자의 식물 정보 가져와 메인 식물 정보 테이블로 출력
       axios.post("http://localhost:8800/plantpicture",
-      {userplantnum: state}   
+      {usernum: state}   
       )
       .then((res)=> {  
           setUserPlantEnroll0(res.data[0].plant_picture);     //메인 식물 이미지 
-          setUserPlantEnroll1(res.data[0].plant_name);   
-          console.log(res.data[0]);
+          console.log('mainplant',res.data[0]);
+          //setUserPlantEnroll1(res.data[0].plant_name);   
           setUserPlantInfo(res.data);       //메인 식물 이름, 특성, 키우기 난이도
       })
       .catch((err) => {
@@ -85,13 +90,36 @@ const Main = () => {
       })
   };
 
+  const onUserPlantSlot = () => {    //user_plant 테이블에서 사용자의 식물 정보 가져와 슬롯별 식물 이미지 출력
+    axios.post("http://localhost:8800/plantslot",
+    {usernum: state,
+      slotnum: buttonValue}   
+    )
+    .then((res)=> {  
+        //setUserPlantEnroll0(res.data[0].plant_picture);     //메인 식물 이미지 
+        setUserPlantEnroll1(res.data[0].plant_picture);   
+        console.log('slot',res.data[0]);
+        //setUserPlantInfo(res.data);       //메인 식물 이름, 특성, 키우기 난이도
+    })
+    .catch((err) => {
+        console.log(err);
+    })
+};
+
   useEffect(()=> {
       async function getTableData() {
-        const data = await onUserPlantPrint();
-        setUserPlantInfo(data);
+        const data0 = await onUserPlantPrint();
+       // const data1 = await onUserPlantSlot();
+        setUserPlantInfo(data0);
+        //setUserPlantEnroll1(data1);
       };
       getTableData(); 
+      
   }, [])
+
+  useEffect(() => {
+    onUserPlantSlot();
+  })
 
   return (isCommunity ? <Community /> :
         isInfo ? <Info /> :

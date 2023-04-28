@@ -113,7 +113,7 @@ const App = ({usernum, buttonValue}) => {
   const handleOk = async () => {    //식물 등록 버튼 누르면 userplant 테이블에 저장 후 메인페이지로 이동
     console.log('button',buttonValue)
     axios.post("http://localhost:8800/plantenroll",
-      { usernum: usernum,
+      { usernum: 2,
         plantmain: buttonValue,
         plantname: recommendPlant,
         plantpicture: 'png',
@@ -125,7 +125,6 @@ const App = ({usernum, buttonValue}) => {
         alert("등록되었습니다");
         console.log(response.data);
         setIsMain(true);
-        
     })
     .catch((error) => {
       console.log(error);
@@ -176,7 +175,7 @@ const App = ({usernum, buttonValue}) => {
   onExperience ? onTime ? onAddress? onSize? onLight? onFunctions? loading? (
     <div>
     <form onSubmit={handleSubmit}>
-      <button className='btn' type='submit' value={`${text}`} onClick={() => {setMessage(`${text}`)}}>
+      <button className='resultbtn' type='submit' value={`${text}`} onClick={() => {setMessage(`${text}`)}}>
         결과를 보시겠습니까?
       </button>
     </form>
@@ -192,7 +191,7 @@ const App = ({usernum, buttonValue}) => {
   </Space>
   </div></div>): ( <div>
     <form onSubmit={handleSubmit}>
-      <button className='btn' type='submit' value={`${text}`} onClick={() => {setMessage(`${text}`)}}>
+      <button className='resultbtn' type='submit' value={`${text}`} onClick={() => {setMessage(`${text}`)}}>
         결과를 보시겠습니까?
       </button>
     </form>
