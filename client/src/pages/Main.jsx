@@ -125,7 +125,7 @@ const Main = () => {
         isInfo ? <Info /> :
         isRecommend ? 
         <Recommend usernum={state} buttonValue={buttonValue}/> :
-        <div>
+        <div className='main'>
             <br></br>
             <h2>식물요정</h2>
             <br></br>
