@@ -23,8 +23,9 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login(inputs);
-      navigate('/main');
+      let getUserNum = await login(inputs);
+      console.log('user_num: ', getUserNum);
+      navigate('/main', { state: getUserNum });
     } catch (err) {
       setError(err.response.data);
     }
@@ -65,23 +66,3 @@ const Login = () => {
 };
 
 export default Login;
-
-/*
-const Login = () => {
-  return (
-    <div className='auth'>
-      <h1>로그인</h1>
-      <form>
-        <input required type='text' placeholder='username' name='username' onChange={handleChange} />
-        <input required type='password' placeholder='password' name='password' onChange={handleChange} />
-        <button onClick={handleSubmit}>Login</button>
-        {err && <p>{err}</p>}
-        <span>
-          Don`t you have an account? <Link to='/register'>회원가입</Link>
-        </span>
-      </form>
-    </div>
-  );
-};
-
-export default Login;*/

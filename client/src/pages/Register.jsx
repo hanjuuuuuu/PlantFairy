@@ -31,7 +31,7 @@ const Register = () => {
   };
 
   return (
-    <div className='auth'>
+    <div className='App'>
       <img src={image11} alt='My Image' width='100' height='100' />
       <h1> 식물요정 </h1>
 

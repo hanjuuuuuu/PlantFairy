@@ -1,6 +1,7 @@
 import express from 'express';
 import authRoutes from './routes/auth.js';
 import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
 import cors from 'cors';
 import mysql from 'mysql';
 import * as dotenv from 'dotenv';
@@ -14,13 +15,15 @@ dotenv.config();
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+// app.use(express.json());
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use('/api/auth', authRoutes);
 
 const configuration = new Configuration({
-  apiKey: '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',
+  apiKey: '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',
 });
 const openai = new OpenAIApi(configuration);
 
@@ -56,7 +59,7 @@ app.post('/recommend', async (req, res) => {
       // }
 
       // MySQL 데이터베이스에 데이터 삽입
-      const sqlInsert = 'INSERT INTO plant(plant_name, eng_Name, context) VALUES (?, ?, ?)';
+      const sqlInsert = 'INSERT IGNORE INTO plant(plant_name, eng_Name, context) VALUES (?, ?, ?)';
       plantRecommendations.forEach((recommendation) => {
         db.query(sqlInsert, [recommendation.korName, recommendation.englishName, recommendation.context || ''], (err, result) => {
           if (err) {
@@ -75,8 +78,71 @@ app.post('/recommend', async (req, res) => {
   }
 });
 
-// 여기는 돈나감!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// 메인 페이지에 출력할 메인 식물 정보 전달
+app.post('/plantpicture', async (req, res) => {
+  let plantpicture = req.body.usernum;
+  console.log('picture------', plantpicture);
 
+  const sqluserplant = `SELECT user_plant_num AS "key", plant_name, plant_characteristic, plant_level, plant_picture FROM user_plant WHERE plant_main = 0 AND user_num = '${plantpicture}'`;
+  db.query(sqluserplant, plantpicture, (err, data) => {
+    if (!err) {
+      res.send(data);
+    } else {
+      console.log(err);
+    }
+  });
+});
+
+// 메인 페이지에서 메인으로 지정할 식물 고를 수 있게 사용자의 등록된 전체 식물 이름 전달
+app.post('/plantall', async (req, res) => {
+  let userplantnum = req.body.userplantnum;
+
+  const sqluserplant = 'SELECT user_plant_num AS "key", plant_name FROM user_plant WHERE user_num = ?';
+  db.query(sqluserplant, userplantnum, (err, data) => {
+    if (!err) {
+      res.send(data);
+    } else {
+      console.log(err);
+    }
+  });
+});
+
+//메인 페이지에 출력할 슬롯 별 식물 정보 전달
+app.post('/plantslot', async (req, res) => {
+  let slotnum = req.body.slotnum;
+  let usernum = req.body.usernum;
+  //console.log('slotnum',slotnum);
+
+  const sqluserplant = 'SELECT user_plant_num AS "key",plant_name, plant_picture FROM user_plant WHERE user_num = ? AND plant_main = 1';
+  db.query(sqluserplant, usernum, (err, data) => {
+    if (!err) {
+      res.send(data);
+    } else {
+      console.log(err);
+    }
+  });
+});
+
+app.post('/plantenroll', async (req, res) => {
+  let usernum = req.body.usernum;
+  let plantname = req.body.plantname;
+  let plantmain = req.body.plantmain;
+  let plantpicture = req.body.plantpicture;
+  let plantcharacteristic = req.body.plantcharacteristic;
+  let plantlevel = req.body.plantlevel;
+  console.log('enroll', plantname);
+
+  const sqlplantenroll = 'INSERT INTO user_plant (user_num, plant_name, plant_main, plant_characteristic, plant_level) values(?, ?, ?, ?, ?)';
+  db.query(sqlplantenroll, [usernum, plantname, plantmain, plantcharacteristic, plantlevel], (err, data) => {
+    if (!err) {
+      res.send(data);
+    } else {
+      console.log(err);
+    }
+  });
+});
+
+// 여기는 돈나감!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 app.post('/', async (req, res) => {
   //const { message } = req.body;
   //console.log(message);
@@ -134,10 +200,8 @@ app.post('/', async (req, res) => {
 });
 
 // 이미지 받아오는 기능
-
-app.get('/images/:plantName', (req, res) => {
-  const plant_name = decodeURIComponent(req.params.plantName).replace(/\n/g, '');
-  console.log('----', plant_name);
+app.get('/imagespath/:plantName', (req, res) => {
+  const plant_name = req.params.plantName.replace(/\n/g, '');
 
   db.query(`SELECT img FROM plant WHERE plant_name = '${plant_name}'`, (err, result) => {
     if (err) {
@@ -150,7 +214,26 @@ app.get('/images/:plantName', (req, res) => {
     }
 
     const imgPath = result[0].img;
-    console.log(`imgPath = ${imgPath}`);
+    res.send(imgPath);
+  });
+});
+
+app.get('/images/:plantName', (req, res) => {
+  const plant_name = req.params.plantName.replace(/\n/g, '');
+  console.log('----', plant_name);
+
+  // plant_name 대신 영어이름으로 바꾸기
+  db.query(`SELECT img FROM plant WHERE plant_name = '${plant_name}'`, (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Server Error');
+    }
+
+    if (result.length === 0) {
+      return res.status(404).send('Plant not found');
+    }
+
+    const imgPath = result[0].img;
     const imgExists = fs.existsSync(imgPath);
     if (!imgExists) {
       return res.status(404).send('Image not found');

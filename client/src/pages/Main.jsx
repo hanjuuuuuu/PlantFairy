@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Table } from 'antd';
+import { Button, Table, Modal } from 'antd';
 import axios from 'axios';
 import '../design/main.css';
+import { useLocation } from 'react-router-dom';
 //import App from './App.js';
 import Recommend from './Recommend.jsx';
 import Community from './Community.jsx';
@@ -14,10 +15,18 @@ const Main = () => {
   const [isRecommend, setIsRecommend] = useState(false);
   const [isInfo, setIsInfo] = useState(false);
   const [isCommunity, setIsCommunity] = useState(false);
-  const [userPlantInfo, setUserPlantInfo] = useState([]);
+  const [userPlantEnroll0, setUserPlantEnroll0] = useState('+');
+  const [userPlantEnroll1, setUserPlantEnroll1] = useState('+');
+  const [userPlantEnroll2, setUserPlantEnroll2] = useState('+');
+  const [userPlantEnroll3, setUserPlantEnroll3] = useState('+');
+  const [userPlantEnroll4, setUserPlantEnroll4] = useState('+');
+  const [buttonValue, setButtonValue] = useState('');
+
+  const [userPlantInfo, setUserPlantInfo] = useState(null);
+  const [plantImage, setPlantImage] = useState([]);
+  const [recommendPlant, setrecommendPlant] = useState('');
 
   /**
-   *
    *  화면에서 사용하는 이벤트를 정의
    */
   const onClick = (e) => {
@@ -52,65 +61,123 @@ const Main = () => {
     },
   ];
 
-  const data = [
-    {
-      key: '1',
-      plant_name: '비트 (Begonia)',
-      plant_characteristic:
-        '비트는 대부분 작고 다양한 형태를 가진 작은 식물로, 강한 광학효과를 얻기 위해 실내에서 자주 기르는 편이다. 충분한 습도와 중간 조명이 필요하며, 온도 차이가 많거나 습도가 너무 낮으면 식물이 약해질 수 있다.',
-      plant_level: '초보가 키울만한',
-    },
-  ];
+  //login에서 user_num 받아오기
+  const { state } = useLocation();
+  console.log('usernum', state);
+  console.log('mainbutton', buttonValue);
 
-  // const onUserPlantPrint = (userplantnum) => {    //db에서 식물 정보 가져와 출력
-  //     axios.post("/plantpicture",
-  //     {userplantnum: userplantnum}
-  //     )
-  //     .then((res)=> {
-  //         console.log(res.data);
-  //         setUserPlantInfo(res.data);
+  const userMainPlant = () => {
+    //메인 식물 변경할 수 있게하기(main 0으로 바꾸기)
+    axios.post('http://localhost:8800/plantall', { userplantnum: state }).then((res) => {});
+  };
+
+  // const onUserPlantPrint = () => {
+  //   //user_plant 테이블에서 사용자의 식물 정보 가져와 메인 식물 정보 테이블로 출력
+  //   axios
+  //     .post('http://localhost:8800/plantpicture', { usernum: state })
+  //     .then((response) => {
+  //       const plant_name = response.data[0].plant_name;
+  //       //const plant_picture = response.data[0].plant_picture;
+
+  //       //setUserPlantEnroll0(plant_picture); //메인 식물 이미지
+  //       //console.log('mainplant', response.data[0]);
+  //       setUserPlantInfo(response.data); //메인 식물 이름, 특성, 키우기 난이도
   //     })
-  //     .catch((err) => {
-  //         console.log(err.res);
-  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
   // };
 
-  // useEffect(()=> {
-  //     onUserPlantPrint();
-  // }, [])
-
-  const handleClick = () => {
-    //const encodedString = encodeURIComponent('고사리');
+  const onUserPlantPrint = () => {
+    // user_plant 테이블에서 사용자의 식물 정보 가져와 메인 식물 정보 테이블로 출력
     axios
-      .get(`http://localhost:8800/images/hello`) // 식물 이름을 넣어줍니다.
+      .post('http://localhost:8800/plantpicture', { usernum: state })
       .then((response) => {
-        // console.log(response.data); // 요청 결과를 콘솔에 출력합니다.
-        const image = document.createElement('img');
-        image.src = `data:image/png;base64,${response.data}`;
-        document.body.appendChild(image);
+        const plant_name = response.data[0].plant_name;
+
+        setUserPlantInfo(response.data); // 메인 식물 이름, 특성, 키우기 난이도
+        userPlantEnroll(plant_name); // 해당 식물의 이미지 출력
       })
       .catch((error) => {
-        console.error(error); // 에러가 발생하면 콘솔에 출력합니다.
+        console.log(error);
       });
   };
+
+  const userPlantEnroll = (plant_name) => {
+    axios
+      .get(`http://localhost:8800/images/${plant_name}`)
+      .then((response) => {
+        const imagePath = `${response.data}`;
+        const image = document.createElement('img');
+        image.src = `data:image/png;base64,${response.data}`;
+        document.querySelector('div.printImg').appendChild(image);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const onUserPlantSlot = () => {
+    //user_plant 테이블에서 사용자의 식물 정보 가져와 슬롯별 식물 이미지 출력
+    axios
+      .post('http://localhost:8800/plantslot', { usernum: state, slotnum: buttonValue })
+      .then((res) => {
+        //setUserPlantEnroll0(res.data[0].plant_picture);     //메인 식물 이미지
+        //setUserPlantEnroll1(res.data[0].plant_picture);
+        console.log('slot', res.data[0]);
+        //setUserPlantInfo(res.data);       //메인 식물 이름, 특성, 키우기 난이도
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  // useEffect(() => {
+  async function getTableData() {
+    const data0 = await onUserPlantPrint();
+    // const data1 = await onUserPlantSlot();
+    setUserPlantInfo(data0);
+    //setUserPlantEnroll1(data1);
+  }
+  // getTableData();
+  // }, []);
+
+  // useEffect(() => {
+  //   onUserPlantSlot();
+  // });
+
+  // const handleClick = () => {
+  //   //const encodedString = encodeURIComponent('고사리');
+  //   axios
+  //     .get(`http://localhost:8800/images/hi`) // 식물 이름을 넣어줍니다.
+  //     .then((response) => {
+  //       // console.log(response.data); // 요청 결과를 콘솔에 출력합니다.
+  //       const image = document.createElement('img');
+  //       image.src = `data:image/png;base64,${response.data}`;
+  //       document.body.appendChild(image);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error); // 에러가 발생하면 콘솔에 출력합니다.
+  //     });
+  // };
+
   return isCommunity ? (
     <Community />
   ) : isInfo ? (
     <Info />
   ) : isRecommend ? (
-    <Recommend />
+    <Recommend usernum={state} buttonValue={buttonValue} />
   ) : (
-    <div>
+    <div className='main'>
       <br></br>
       <h2>식물요정</h2>
       <br></br>
       <div>메인페이지</div>
       <br></br>
+
+      <div className='printImg'></div>
       <div>
-        <Button onClick={handleClick}>Get Plant Image</Button>
-      </div>
-      <div>
-        <Table className='tableprint' columns={columns} pagination={false} dataSource={data} size='middle' />
+        <Table className='tableprint' columns={columns} pagination={false} dataSource={userPlantInfo} size='middle' />
       </div>
       <menu className='btnmenu'>
         <button className='menubtn' onClick={onInfo}>
@@ -128,21 +195,21 @@ const Main = () => {
       <br></br>
       <br></br>
       <div style={{ marginLeft: '50%' }}>레벨이 올라가면 슬롯이 확장됩니다!</div>
-      <Button className='slots' onClick={onRecommend}>
+      <Button value='1' className='slots' onClick={onRecommend}>
         {' '}
-        +{' '}
+        {userPlantEnroll1}{' '}
       </Button>
-      <Button className='slots' disabled onClick={onRecommend}>
+      <Button value='2' className='slots' disabled onClick={onRecommend}>
         {' '}
-        +{' '}
+        {userPlantEnroll2}{' '}
       </Button>
-      <Button className='slots' disabled onClick={onRecommend}>
+      <Button value='3' className='slots' disabled onClick={onRecommend}>
         {' '}
-        +{' '}
+        {userPlantEnroll3}{' '}
       </Button>
-      <Button className='slots' disabled onClick={onRecommend}>
+      <Button value='4' className='slots' disabled onClick={onRecommend}>
         {' '}
-        +{' '}
+        {userPlantEnroll4}{' '}
       </Button>
     </div>
   );

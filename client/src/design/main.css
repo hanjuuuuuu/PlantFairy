@@ -3,7 +3,7 @@
   font-family: 'Courier New', Courier, monospace;
   font-weight: bold;
   margin-top: 0px;
-  margin-left: 5px;
+  margin-left: 10px;
 }
 
 .menubtn {
@@ -34,7 +34,8 @@
 }
 .tableprint {
   width: 50%;
+  height: 20%;
   position: absolute;
-  left: 35%;
-  top: 25%;
+  left: 400px;
+  top: 200px;
 }

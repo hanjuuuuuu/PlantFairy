@@ -25,6 +25,7 @@ function Home() {
           <form>
             <img src={image11} alt='My Image' width='100' height='100' />
             <h2> 로그인 하시겠습니까? </h2>
+            <br></br>
             <button type='submit' onClick={navigateToLogin}>
               로그인
             </button>

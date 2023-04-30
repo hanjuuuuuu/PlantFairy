@@ -5,6 +5,10 @@
   margin-top: 30px;
 }
 
+* {
+  font-family: '스스로넷 칠백삼';
+}
+
 body {
   background-color: #f3f9ec;
 }
