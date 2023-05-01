@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 
 export const register = (req, res) => {
   //CHECK EXISTING USER
-  const q = 'SELECT * FROM users WHERE email = ? OR username = ?';
+  const q = 'SELECT * FROM user WHERE user_email = ? OR user_name = ?';
 
   db.query(q, [req.body.email, req.body.username], (err, data) => {
     if (err) return res.status(500).json(err);
@@ -14,7 +14,7 @@ export const register = (req, res) => {
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(req.body.password, salt);
 
-    const q = 'INSERT INTO users(`username`,`email`,`password`) VALUES (?)';
+    const q = 'INSERT INTO user(`user_name`,`user_email`,`user_pw`) VALUES (?)';
     const values = [req.body.username, req.body.email, hash];
 
     db.query(q, [values], (err, data) => {
@@ -25,14 +25,15 @@ export const register = (req, res) => {
 };
 
 export const login = (req, res) => {
-  const q = 'SELECT * FROM users WHERE username = ?';
+  const q = 'SELECT * FROM user WHERE user_name = ?';
 
   db.query(q, [req.body.username], (err, data) => {
     if (err) return res.status(500).json(err);
     if (data.length === 0) return res.status(404).json('User not found!');
 
     //Check password
-    const isPasswordCorrect = bcrypt.compareSync(req.body.password, data[0].password);
+    console.log(req.body.password, data[0].user_pw);
+    const isPasswordCorrect = bcrypt.compareSync(req.body.password, data[0].user_pw);
 
     if (!isPasswordCorrect) return res.status(400).json('Wrong username or password!');
 

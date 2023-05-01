@@ -10,6 +10,8 @@ import Footer from './components/Footer';
 //import './common.scss';
 //import './login.scss';
 import './style.scss';
+import Community from './pages/Community';
+import Todo from './pages/Todo';
 
 const Layout = () => {
   return (
@@ -44,6 +46,14 @@ const router = createBrowserRouter([
   {
     path: '/info',
     element: <Info />,
+  },
+  {
+    path: '/community',
+    element: <Community/>,
+  },
+  {
+    path: '/todo',
+    element: <Todo/>,
   }
 ]);
 

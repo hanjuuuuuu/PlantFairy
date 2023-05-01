@@ -1,4 +1,4 @@
-*{
+.main{
   background-color: #EBF8DC;
   font-family: '스스로넷 칠백삼','Courier New', Courier;
   font-weight: bold;
@@ -42,5 +42,5 @@
   height: 20%;
   position: absolute;
   left: 400px;
-  top: 200px;
+  top: 190px;
 }
