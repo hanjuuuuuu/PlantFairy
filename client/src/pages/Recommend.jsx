@@ -39,47 +39,47 @@ const App = ({usernum, buttonValue}) => {
    */
   const handleExperienceButton = (event) => {
     const name = event.target.value;
-    if (name === 'yes') setExperience('');
-    else setExperience('초보자가');
+    if (name === 'yes') setExperience('experienced person');
+    else setExperience('beginner');
     setOnExperience(true);
   };
 
   const handleTimeButton = (event) => {
     const name = event.target.value;
-    if (name === 'yes') setTime('주기적으로 참여하며');
+    if (name === 'yes') setTime('Can participate periodically');
     else {
-      setTime('체계적인 관리없이');
+      setTime('hope it grows well without systematic management');
     }
     setOnTime(true);
   };
 
   const handleAddressButton = (event) => {
     const name = event.target.value;
-    if (name === 'yes') setAddress('실내에서 키우고');
+    if (name === 'yes') setAddress('Indoor');
     else {
-      setAddress('실외에서 키우고');
+      setAddress('Outdoor');
     }
     setOnAddress(true);
   };
 
   const handleSizeButton = (event) => {
     const name = event.target.value;
-    if (name === '크다') setSize('큰 크기의');
+    if (name === '크다') setSize('big');
     else if (name === '중간') {
-      setSize('중간 크기의');
+      setSize('medium');
     } else {
-      setSize('작은 크기의');
+      setSize('small');
     }
     setOnSize(true);
   };
 
   const handleLightButton = (event) => {
     const name = event.target.value;
-    if (name === '많다') setLight('빛을 많이 받는');
+    if (name === '많다') setLight('receiving a lot of sunlight');
     else if (name === '적당하다') {
-      setLight('빛을 적당히 받는');
+      setLight('get enough sunlight');
     } else {
-      setLight('빛을 적게 받는');
+      setLight('less sunlight');
     }
     setOnLight(true);
   };
@@ -87,11 +87,11 @@ const App = ({usernum, buttonValue}) => {
   const handleFunctionsButton = (event) => {
     const name = event.target.value;
     if (name === '공기정화') {
-      setFunctions('공기정화용');
-    } else if (name === '장식') {
+      setFunctions('for air purification');
+    } else if (name === 'for decoration') {
       setFunctions('장식용');
     } else if (name === '둘다'){
-      setFunctions('공기정화용이면서 장식용인');
+      setFunctions('for air purication and decoration 장식용인');
     } else {
       setFunctions('');
     }
@@ -113,7 +113,7 @@ const App = ({usernum, buttonValue}) => {
   const handleOk = async () => {    //식물 등록 버튼 누르면 userplant 테이블에 저장 후 메인페이지로 이동
     console.log('button',buttonValue)
     axios.post("http://localhost:8800/plantenroll",
-      { usernum: 2,
+      { usernum: usernum,
         plantmain: buttonValue,
         plantname: recommendPlant,
         plantpicture: 'png',
@@ -143,7 +143,7 @@ const App = ({usernum, buttonValue}) => {
     try{
       e.preventDefault();
       setLoading(true);
-      const response = await fetch('http://localhost:8800/', {
+      const response = await fetch('http://localhost:8800/recommend', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

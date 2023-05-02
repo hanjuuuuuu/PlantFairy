@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Table, Modal } from 'antd';
+import { Button, Table, Modal, Radio } from 'antd';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import '../design/main.css';
@@ -20,9 +20,16 @@ const Main = () => {
   const [userPlantEnroll2, setUserPlantEnroll2] = useState('+');
   const [userPlantEnroll3, setUserPlantEnroll3] = useState('+');
   const [userPlantEnroll4, setUserPlantEnroll4] = useState('+');
-  const [buttonValue, setButtonValue] = useState('');
+  const [userPlantEnroll1name, setUserPlantEnroll1name] = useState('');
+  const [userPlantEnroll2name, setUserPlantEnroll2name] = useState('');
+  const [userPlantEnroll3name, setUserPlantEnroll3name] = useState('');
+  const [userPlantEnroll4name, setUserPlantEnroll4name] = useState('');
+  const [buttonValue, setButtonValue] = useState(1);
 
   const [userPlantInfo, setUserPlantInfo] = useState([]);
+  const [plantImage, setPlantImage] = useState([]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   /**
    *
@@ -46,6 +53,20 @@ const Main = () => {
     setIsCommunity(true);
   };
 
+  const showModal = () => {   //메인식물 고르는 모달 창 띄우기
+    setIsModalOpen(true);
+  }
+
+  const handleOK = (e) => {    //메인식물 고르고 확인버튼 눌렀을 때
+    console.log(e.target.value)
+    userMainPlant(e.target.value)
+    setIsModalOpen(false);
+  }
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  }
+
   const columns = [
     {
       title: '식물 이름',
@@ -68,9 +89,12 @@ const Main = () => {
 
   const userMainPlant = () => {     //메인 식물 변경할 수 있게하기(main 0으로 바꾸기)
     axios.post("http://localhost:8800/plantall",
-    {userplantnum: state})
+    {usernum: state})
     .then((res) => {
-
+      setUserPlantEnroll1name(res.data[0]);
+      setUserPlantEnroll2name(res.data[1]);
+      setUserPlantEnroll3name(res.data[2]);
+      setUserPlantEnroll4name(res.data[3]);
     })
 
   }
@@ -80,8 +104,8 @@ const Main = () => {
       {usernum: state}   
       )
       .then((res)=> {  
-          setUserPlantEnroll0(res.data[0].plant_picture);     //메인 식물 이미지 
-          console.log('mainplant',res.data[0]);
+          setUserPlantEnroll0(userPlantEnroll(res.data[(res.data.length-1)]));     //메인 식물 이미지 
+          console.log('mainplant',res.data[(res.data.length-1)]);
           //setUserPlantEnroll1(res.data[0].plant_name);   
           setUserPlantInfo(res.data);       //메인 식물 이름, 특성, 키우기 난이도
       })
@@ -90,6 +114,21 @@ const Main = () => {
       })
   };
 
+  const userPlantEnroll = (plant_name) => {
+    axios
+      .get(`http://localhost:8800/images/${plant_name}`)
+      .then((response) => {
+        const imagePath = `${response.data}`;
+        const image = document.createElement('img');
+        image.src = `data:image/png;base64,${response.data}`;
+        document.querySelector('div.printImg').appendChild(image);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+
   const onUserPlantSlot = () => {    //user_plant 테이블에서 사용자의 식물 정보 가져와 슬롯별 식물 이미지 출력
     axios.post("http://localhost:8800/plantslot",
     {usernum: state,
@@ -97,8 +136,9 @@ const Main = () => {
     )
     .then((res)=> {  
         //setUserPlantEnroll0(res.data[0].plant_picture);     //메인 식물 이미지 
-        setUserPlantEnroll1(res.data[0].plant_picture);   
-        console.log('slot',res.data[0]);
+        setUserPlantEnroll1(res.data[(res.data.length-1)].plant_picture);   
+        setUserPlantEnroll1name(res.data[(res.data.length-1)].plant_name);   
+        console.log('slot',res.data[(res.data.length-1)]);
         //setUserPlantInfo(res.data);       //메인 식물 이름, 특성, 키우기 난이도
     })
     .catch((err) => {
@@ -109,9 +149,7 @@ const Main = () => {
   useEffect(()=> {
       async function getTableData() {
         const data0 = await onUserPlantPrint();
-       // const data1 = await onUserPlantSlot();
         setUserPlantInfo(data0);
-        //setUserPlantEnroll1(data1);
       };
       getTableData(); 
       
@@ -132,7 +170,20 @@ const Main = () => {
             <div>메인페이지</div>
             <br></br>
             <div>
-                <Button className="slot" onClick={userMainPlant}> {userPlantEnroll0} </Button>
+                <Button className="slot" onClick={showModal}> {userPlantEnroll0} </Button>
+                <Modal
+                  title="메인 식물로 등록할 식물을 골라주세요"
+                  open={isModalOpen}
+                  onOk={handleOK}
+                  onCancel={handleCancel}
+                >
+                  <Radio.Group>
+                    <Radio value={userPlantEnroll1name} onClick={onclick}>{userPlantEnroll1name}</Radio>
+                    <Radio value={userPlantEnroll2name} onClick={onclick}>{userPlantEnroll2name}</Radio>
+                    <Radio value={userPlantEnroll3name} onClick={onclick}>{userPlantEnroll3name}</Radio>
+                    <Radio value={userPlantEnroll4name} onClick={onclick}>{userPlantEnroll4name}</Radio>
+                  </Radio.Group>
+                </Modal>
             </div>
             <div>
                 <Table className="tableprint" columns={columns} pagination={false} dataSource={userPlantInfo} size="middle" />

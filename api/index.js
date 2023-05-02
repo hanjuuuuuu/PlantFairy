@@ -30,14 +30,16 @@ const configuration = new Configuration({
   apiKey: process.env.API_KEY,
 });
 const openai = new OpenAIApi(configuration);
-app.post('/', async (req, res) => {
+
+let plantRecommendations;
+app.post('/recommend', async (req, res) => {
   const { message } = req.body;
   console.log(message);
 
   try {
     const response = await openai.createCompletion({
       model: 'text-davinci-003',
-      prompt: `${message} 식물 4가지 특성, 키우기 난이도를 알려줘`,
+      prompt: `The three plants in ${message} are recommended and explained, and the answer format is numbered as 1.2.3 and translated into Korean and Korean plant names and English plant names are separated by -, and English plant names and Korean plant descriptions are separated by :`,
       max_tokens: 1000,
       temperature: 0.8,
     });
@@ -45,19 +47,20 @@ app.post('/', async (req, res) => {
     console.log(response.data);
 
     if (response.data && response.data.choices) {
-      const plantRecommendations = response.data.choices[0].text
+      plantRecommendations = response.data.choices[0].text
         .trim()
         .split(/\d+\./)
-        .filter((recommendation) => recommendation) // remove empty strings
+        .filter((recommendation) => recommendation)
         .map((recommendation) => {
-          const [name, context] = (recommendation || '').trim().split(/:\s+|-/);
-          return { name, context };
+          const [name, context] = (recommendation || '').trim().split(/:\s+/);
+          const [korName, englishName] = name.trim().split(' - ');
+          return { korName: korName, englishName: englishName, context };
         });
 
       // MySQL 데이터베이스에 데이터 삽입
-      const sqlInsert = 'INSERT IGNORE INTO plant(plant_name, plant_charateristic) VALUES (?, ?)';
+      const sqlInsert = 'INSERT IGNORE INTO plant(plant_name, eng_name, plant_charateristic) VALUES (?, ?, ?)';
       plantRecommendations.forEach((recommendation) => {
-        db.query(sqlInsert, [recommendation.name, recommendation.context || ''], (err, result) => {
+        db.query(sqlInsert, [recommendation.korName, recommendation.englishName, recommendation.context || ''], (err, result) => {
           if (err) {
             console.log(err);
           }
@@ -92,10 +95,10 @@ app.post('/plantpicture', async (req, res) => {
 
 // 메인 페이지에서 메인으로 지정할 식물 고를 수 있게 사용자의 등록된 전체 식물 이름 전달 
 app.post('/plantall', async (req, res) => {   
-  let userplantnum = req.body.userplantnum;
+  let usernum = req.body.usernum;
 
-  const sqluserplant = 'SELECT user_plant_num AS "key", plant_name FROM user_plant WHERE user_num = ?'; 
-  db.query(sqluserplant, userplantnum, (err,  data)=> {
+  const sqluserplant = `SELECT user_plant_num AS "key", plant_name FROM user_plant WHERE user_num = ${usernum}`; 
+  db.query(sqluserplant, (err,  data)=> {
     if(!err){
       res.send(data);
     }
@@ -109,11 +112,12 @@ app.post('/plantall', async (req, res) => {
 app.post('/plantslot', async (req, res) => {  
   let slotnum = req.body.slotnum; 
   let usernum = req.body.usernum;
-  //console.log('slotnum',slotnum);
+  console.log('slotnum',slotnum, 'usernum', usernum);
 
-  const sqluserplant = 'SELECT user_plant_num AS "key",plant_name, plant_picture FROM user_plant WHERE user_num = ? AND plant_main = 1'; 
-  db.query(sqluserplant, usernum, (err,  data)=> {
+  const sqluserplant = `SELECT user_plant_num AS "key",plant_name FROM user_plant WHERE user_num = '${usernum}' AND plant_main = '${slotnum}'`; 
+  db.query(sqluserplant, (err,  data)=> {
     if(!err){
+      console.log('plantslot', data)
       res.send(data);
     }
     else {
@@ -201,11 +205,11 @@ app.post('/', async (req, res) => {
 });
 
 // 이미지 받아오는 기능
-/*
+
 app.get('/images/:engName', (req, res) => {
   const engName = req.params.engName.replace(/\n/g, '');
   console.log(`engName = ${engName}`);
-  db.query(`SELECT img FROM plant WHERE engName = '${engName}'`, (err, result) => {
+  db.query(`SELECT plant_picture FROM plant WHERE eng_name = '${engName}'`, (err, result) => {
     if (err) {
       console.error(err);
       return res.status(500).send('Server Error');
@@ -224,7 +228,7 @@ app.get('/images/:engName', (req, res) => {
     res.end(Buffer.from(imgFile).toString('base64'));
   });
 });
-*/
+
 
 app.listen(8800, () => {
   console.log('Connected...');
