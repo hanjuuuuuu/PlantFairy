@@ -198,6 +198,10 @@ const App = ({ usernum, buttonValue }) => {
     }
   };
 
+  useEffect(() => {
+
+  },[])
+
   // useEffect(() => {
   //   async function getTableData() {
   //     const data0 = await onUserPlantPrint();

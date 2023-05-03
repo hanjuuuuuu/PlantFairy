@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/api/auth', authRoutes);
 
 const configuration = new Configuration({
-  apiKey: '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',
+  apiKey: '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',
 });
 const openai = new OpenAIApi(configuration);
 
@@ -53,10 +53,6 @@ app.post('/recommend', async (req, res) => {
           const [korName, englishName] = name.trim().split(' - ');
           return { korName: korName, englishName: englishName, context };
         });
-
-      // for (const recommendation of plantRecommendations) {
-      //   console.log(`${recommendation.korName} - ${recommendation.englishName}: ${recommendation.context}`);
-      // }
 
       // MySQL 데이터베이스에 데이터 삽입
       const sqlInsert = 'INSERT IGNORE INTO plant(plant_name, eng_Name, context) VALUES (?, ?, ?)';
@@ -95,11 +91,12 @@ app.post('/plantpicture', async (req, res) => {
 
 // 메인 페이지에서 메인으로 지정할 식물 고를 수 있게 사용자의 등록된 전체 식물 이름 전달
 app.post('/plantall', async (req, res) => {
-  let userplantnum = req.body.userplantnum;
+  let usernum = req.body.usernum;
 
-  const sqluserplant = 'SELECT user_plant_num AS "key", plant_name FROM user_plant WHERE user_num = ?';
-  db.query(sqluserplant, userplantnum, (err, data) => {
+  const sqluserplant = `SELECT user_plant_num AS "key", plant_name FROM user_plant WHERE user_num = ${usernum}`;
+  db.query(sqluserplant, (err, data) => {
     if (!err) {
+      console.log('data!!!!!!!!!', data);
       res.send(data);
     } else {
       console.log(err);

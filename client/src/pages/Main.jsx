@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Table, Modal } from 'antd';
+import { Button, Table, Modal, Radio } from 'antd';
 import axios from 'axios';
 import '../design/main.css';
 import { useLocation } from 'react-router-dom';
@@ -20,11 +20,17 @@ const Main = () => {
   const [userPlantEnroll2, setUserPlantEnroll2] = useState('+');
   const [userPlantEnroll3, setUserPlantEnroll3] = useState('+');
   const [userPlantEnroll4, setUserPlantEnroll4] = useState('+');
+  const [userPlantEnroll1name, setUserPlantEnroll1name] = useState('');
+  const [userPlantEnroll2name, setUserPlantEnroll2name] = useState('');
+  const [userPlantEnroll3name, setUserPlantEnroll3name] = useState('');
+  const [userPlantEnroll4name, setUserPlantEnroll4name] = useState('');
   const [buttonValue, setButtonValue] = useState('');
 
   const [userPlantInfo, setUserPlantInfo] = useState(null);
   const [plantImage, setPlantImage] = useState([]);
   const [recommendPlant, setrecommendPlant] = useState('');
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   /**
    *  화면에서 사용하는 이벤트를 정의
@@ -33,8 +39,10 @@ const Main = () => {
     console.log('click', e);
   };
 
-  const onRecommend = () => {
-    //슬롯 + 누르면 추천페이지로 이동
+  const onRecommend = (e) => {
+    //슬롯 + 누르면 추천페이지로 이동, 버튼에 따라 식물 출력 자리 지정
+    const name = e.target.value;
+    setButtonValue(name);
     setIsRecommend(true);
   };
   const onInfo = () => {
@@ -44,6 +52,22 @@ const Main = () => {
   const onCommunity = () => {
     //커뮤니티 페이지로 이동
     setIsCommunity(true);
+  };
+
+  const showModal = () => {
+    //메인식물 고르는 모달 창 띄우기
+    setIsModalOpen(true);
+  };
+
+  const handleOK = (e) => {
+    //메인식물 고르고 확인버튼 눌렀을 때
+    console.log(e.target.value);
+    userMainPlant(e.target.value);
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
   };
 
   const columns = [
@@ -68,7 +92,14 @@ const Main = () => {
 
   const userMainPlant = () => {
     //메인 식물 변경할 수 있게하기(main 0으로 바꾸기)
-    axios.post('http://localhost:8800/plantall', { userplantnum: state }).then((res) => {});
+    axios.post('http://localhost:8800/plantall', { usernum: state }).then((res) => {
+      console.log('userPlantALL ------------ ');
+      setUserPlantEnroll1name(res.data[0].plant_name);
+      console.log('DATA ___ ', res.data[0]);
+      setUserPlantEnroll2name(res.data[1]);
+      setUserPlantEnroll3name(res.data[2]);
+      setUserPlantEnroll4name(res.data[3]);
+    });
   };
 
   // const onUserPlantPrint = () => {
@@ -123,8 +154,9 @@ const Main = () => {
       .post('http://localhost:8800/plantslot', { usernum: state, slotnum: buttonValue })
       .then((res) => {
         //setUserPlantEnroll0(res.data[0].plant_picture);     //메인 식물 이미지
-        //setUserPlantEnroll1(res.data[0].plant_picture);
-        console.log('slot', res.data[0]);
+        //setUserPlantEnroll1(res.data[res.data.length - 1].plant_picture);
+        setUserPlantEnroll1name(res.data[res.data.length - 1].plant_name);
+        console.log('slot', res.data[res.data.length - 1]);
         //setUserPlantInfo(res.data);       //메인 식물 이름, 특성, 키우기 난이도
       })
       .catch((err) => {
@@ -132,34 +164,17 @@ const Main = () => {
       });
   };
 
-  // useEffect(() => {
-  async function getTableData() {
-    const data0 = await onUserPlantPrint();
-    // const data1 = await onUserPlantSlot();
-    setUserPlantInfo(data0);
-    //setUserPlantEnroll1(data1);
-  }
-  // getTableData();
-  // }, []);
+  useEffect(() => {
+    async function getTableData() {
+      const data0 = await onUserPlantPrint();
+      setUserPlantInfo(data0);
+    }
+    getTableData();
+  }, []);
 
-  // useEffect(() => {
-  //   onUserPlantSlot();
-  // });
-
-  // const handleClick = () => {
-  //   //const encodedString = encodeURIComponent('고사리');
-  //   axios
-  //     .get(`http://localhost:8800/images/hi`) // 식물 이름을 넣어줍니다.
-  //     .then((response) => {
-  //       // console.log(response.data); // 요청 결과를 콘솔에 출력합니다.
-  //       const image = document.createElement('img');
-  //       image.src = `data:image/png;base64,${response.data}`;
-  //       document.body.appendChild(image);
-  //     })
-  //     .catch((error) => {
-  //       console.error(error); // 에러가 발생하면 콘솔에 출력합니다.
-  //     });
-  // };
+  useEffect(() => {
+    onUserPlantSlot();
+  });
 
   return isCommunity ? (
     <Community />
@@ -176,6 +191,28 @@ const Main = () => {
       <br></br>
 
       <div className='printImg'></div>
+      <div>
+        <Button className='slot' onClick={showModal}>
+          {' '}
+          {userPlantEnroll0}{' '}
+        </Button>
+        <Modal title='메인 식물로 등록할 식물을 골라주세요' open={isModalOpen} onOk={handleOK} onCancel={handleCancel}>
+          <Radio.Group>
+            <Radio value={userPlantEnroll1name} onClick={onclick}>
+              {userPlantEnroll1name}
+            </Radio>
+            <Radio value={userPlantEnroll2name} onClick={onclick}>
+              {userPlantEnroll2name}
+            </Radio>
+            <Radio value={userPlantEnroll3name} onClick={onclick}>
+              {userPlantEnroll3name}
+            </Radio>
+            <Radio value={userPlantEnroll4name} onClick={onclick}>
+              {userPlantEnroll4name}
+            </Radio>
+          </Radio.Group>
+        </Modal>
+      </div>
       <div>
         <Table className='tableprint' columns={columns} pagination={false} dataSource={userPlantInfo} size='middle' />
       </div>
