@@ -4,8 +4,8 @@
   font-weight: bold;
   font-weight: normal;
   margin-top: 0px;
-  margin-left: 5px;
-  color: black;
+  margin-left: 10px;
+
 }
 
 .menubtn {
@@ -42,5 +42,6 @@
   height: 20%;
   position: absolute;
   left: 400px;
-  top: 190px;
+  top: 200px;
+
 }

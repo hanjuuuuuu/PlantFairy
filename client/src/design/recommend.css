@@ -1,13 +1,13 @@
 
 * {
   font-family: '스스로넷 칠백삼','Courier New', Courier;
-  font-weight: bold;
+
 }
 
 header {
   position: fixed;
   top: 0;
-  
+
 }
 
 p {
@@ -28,7 +28,8 @@ p {
   border: outset #00b849;
   border-radius: 5px;
 }
-.resultbtn{
+
+.resultbtn {
   background-color: #00b849;
   text-align: center;
   padding: 5px 20px 5px 20px;
@@ -39,6 +40,7 @@ p {
   border: outset #00b849;
   border-radius: 5px;
 }
+
 .recbtn {
   text-align: center;
   background-color: pink;
@@ -46,6 +48,7 @@ p {
   border: outset;
   border-radius: 10px;
 }
+
 .enroll {
   background-color: white;
 }
