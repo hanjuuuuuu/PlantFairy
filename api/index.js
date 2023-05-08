@@ -1,5 +1,9 @@
 import express from 'express';
 import authRoutes from './routes/auth.js';
+import postsRoutes from './routes/posts.js';
+import usersRoutes from './routes/users.js';
+import commentsRoutes from './routes/comments.js';
+import likesRoutes from './routes/likes.js';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -8,19 +12,50 @@ import * as dotenv from 'dotenv';
 import download from 'image-downloader';
 import path from 'path';
 import fs from 'fs';
+import multer from 'multer';
 import { db } from './db.js';
 import { Configuration, OpenAIApi } from 'openai';
 
 dotenv.config();
 const app = express();
 
-app.use(cors());
-// app.use(express.json());
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Credentials', true);
+  next();
+});
+
+app.use(express.json());
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+  })
+);
 app.use(cookieParser());
+// app.use(bodyParser.json({ limit: '50mb' }));
+// app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.urlencoded({ extended: false }));
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, '../client/public/upload');
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
+
+app.post('/api/upload', upload.single('file'), (req, res) => {
+  const file = req.file;
+  res.status(200).json(file.filename);
+});
+
 app.use('/api/auth', authRoutes);
+app.use('/api/users', usersRoutes);
+app.use('/api/posts', postsRoutes);
+app.use('/api/likes', likesRoutes);
+app.use('/api/comments', commentsRoutes);
 
 const configuration = new Configuration({
   apiKey: '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',

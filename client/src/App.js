@@ -9,40 +9,52 @@ import Footer from './components/Footer';
 //import './common.scss';
 //import './login.scss';
 import './style.scss';
-
-const Layout = () => {
-  return (
-    <div>
-      <Home />
-    </div>
-  );
-};
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Layout />,
-    children: [
-      {
-        path: '/',
-        element: <Home />,
-      },
-    ],
-  },
-  {
-    path: '/register',
-    element: <Register />,
-  },
-  {
-    path: '/login',
-    element: <Login />,
-  },
-  {
-    path: '/main',
-    element: <Main />,
-  },
-]);
+import Community from './pages/Community';
+import Profile from './pages/Profile';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 function App() {
+  const queryClient = new QueryClient();
+
+  const Layout = () => {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <Home />
+      </QueryClientProvider>
+    );
+  };
+  const router = createBrowserRouter([
+    {
+      path: '/',
+      element: <Layout />,
+      children: [
+        {
+          path: '/',
+          element: <Home />,
+        },
+      ],
+    },
+    {
+      path: '/register',
+      element: <Register />,
+    },
+    {
+      path: '/login',
+      element: <Login />,
+    },
+    {
+      path: '/main',
+      element: <Main />,
+    },
+    {
+      path: '/community',
+      element: <Community />,
+    },
+    {
+      path: '/profile/:id',
+      element: <Profile />,
+    },
+  ]);
   return (
     <div className='app'>
       <div className='container'>
