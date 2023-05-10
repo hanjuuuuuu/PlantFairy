@@ -3,11 +3,26 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { ChakraProvider } from '@chakra-ui/react';
+import TopBar from './components/TopBar.tsx';
+import './components/TopBar.tsx'
+import { Provider } from 'react-redux';
+import store from "./app/store";
+import { BrowserRouter } from 'react-router-dom';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(
+  document.getElementById('root')
+  );
 root.render(
   <React.StrictMode>
+      <Provider store={store}>
+    <ChakraProvider>
+      <BrowserRouter>
+    <TopBar />
     <App />
+    </BrowserRouter>
+     </ChakraProvider>
+     </Provider>
   </React.StrictMode>
 );
 
