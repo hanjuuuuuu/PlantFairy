@@ -8,7 +8,7 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import mysql from 'mysql';
-import * as dotenv from 'dotenv';
+import dotenv from 'dotenv';
 import download from 'image-downloader';
 import path from 'path';
 import fs from 'fs';
@@ -58,7 +58,7 @@ app.use('/api/likes', likesRoutes);
 app.use('/api/comments', commentsRoutes);
 
 const configuration = new Configuration({
-  apiKey: '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',
+  apiKey: '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', //process.env.API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 

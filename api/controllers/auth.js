@@ -30,8 +30,6 @@ export const login = (req, res) => {
   const q = 'SELECT * FROM user WHERE user_id = ?';
 
   db.query(q, [req.body.user_id], (err, data) => {
-    console.log(data);
-    console.log(req.body.user_id);
     if (err) return res.status(500).json(err);
     if (data.length === 0) return res.status(404).json('User not found!');
     if (data[0].user_num === undefined) return res.status(500).json('Failed to retrieve user information!');

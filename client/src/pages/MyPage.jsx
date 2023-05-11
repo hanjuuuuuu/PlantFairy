@@ -1,4 +1,4 @@
-import '../design/mypage.css';
+//import '../design/mypage.css';
 import image11 from '../img/image11.png';
 
 const Info = () => {
