@@ -1,7 +1,7 @@
 import express from 'express';
 import authRoutes from './routes/auth.js';
 import postsRoutes from './routes/posts.js';
-import usersRoutes from './routes/users.js';
+//import usersRoutes from './routes/users.js';
 import commentsRoutes from './routes/comments.js';
 import likesRoutes from './routes/likes.js';
 import cookieParser from 'cookie-parser';
@@ -52,7 +52,7 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
-app.use('/api/users', usersRoutes);
+//app.use('/api/users', usersRoutes);
 app.use('/api/posts', postsRoutes);
 app.use('/api/likes', likesRoutes);
 app.use('/api/comments', commentsRoutes);

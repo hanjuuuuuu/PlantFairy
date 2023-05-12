@@ -14,9 +14,12 @@ import { AuthContext } from '../context/authContext.js';
 
 const Post = ({ post }) => {
   const [commentOpen, setCommentOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const { currentUser } = useContext(AuthContext);
 
-  //console.log('id!!!!!!!!!!!', currentUser.user_num);
+  // console.log('id!!!!!!!!!!!', currentUser.user_num);
+  // console.log('id!!!!!!!!!!!', currentUser.user_id);
 
   const { isLoading, error, data } = useQuery(['likes', post.communityid], () =>
     makeRequest.get('/likes?postid=' + post.communityid).then((res) => {
@@ -24,15 +27,17 @@ const Post = ({ post }) => {
     })
   );
 
-  console.log('data2222: ', data);
+  //console.log('data2222: ', data);
   //console.log('data: ', data.length);
+
+  //if (data.includes(currentUser.user_num) === true) console.log('INSIDE!!!!!');
 
   const queryClient = useQueryClient();
 
   const mutation = useMutation(
     (liked) => {
-      if (liked) return makeRequest.delete('/likes?postid=' + post.communityid);
-      return makeRequest.post('/likes', { postid: post.communityid });
+      if (liked) return makeRequest.delete('/likes?postid=' + post.communutyid);
+      return makeRequest.post('/likes', { postid: post.communutyid });
     },
     {
       onSuccess: () => {
@@ -42,10 +47,24 @@ const Post = ({ post }) => {
     }
   );
 
+  const deleteMutation = useMutation(
+    (postid) => {
+      return makeRequest.delete('/posts/' + postid);
+    },
+    {
+      onSuccess: () => {
+        // Invalidate and refetch
+        queryClient.invalidateQueries(['posts']);
+      },
+    }
+  );
+
   const handleLike = () => {
     mutation.mutate(data.includes(currentUser.user_num));
-    //console.log('CID: ', currentUser.user_num);
-    //console.log('CLICK!!!!');
+  };
+
+  const handleDelte = () => {
+    deleteMutation.mutate(post.communityid);
   };
 
   return (
@@ -61,7 +80,8 @@ const Post = ({ post }) => {
               <span className='date'>{moment(post.createdAt).fromNow()}</span>
             </div>
           </div>
-          <MoreHorizIcon />
+          <MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} />
+          {menuOpen && post.userid === currentUser.user_num && <button onClick={handleDelte}>삭제</button>}
         </div>
         <div className='content'>
           <p>{post.desc}</p>
@@ -72,7 +92,10 @@ const Post = ({ post }) => {
             {isLoading ? ( //
               'loading'
             ) : data.includes(currentUser.user_num) ? (
-              <FavoriteOutlinedIcon style={{ color: 'red' }} onclick={handleLike} />
+              <FavoriteOutlinedIcon //
+                style={{ color: 'red' }}
+                onclick={handleLike}
+              />
             ) : (
               <FavoriteBorderOutlinedIcon onClick={handleLike} />
             )}

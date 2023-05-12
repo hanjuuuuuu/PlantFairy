@@ -5,7 +5,7 @@
 /.pnp
 .pnp.js
 
-/api/db.js
+db.js
 /api/sources
 /api/.env
 
