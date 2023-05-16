@@ -3,7 +3,6 @@ import { Button, Table, Modal, Radio } from 'antd';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import '../design/main.css';
-import { useLocation } from 'react-router-dom';
 //import App from './App.js';
 import Recommend from './Recommend.jsx';
 import Community from './Community.jsx';

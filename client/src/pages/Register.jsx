@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../design/register.css';
-import image11 from '../img/image11.png';
+import logo from '../img/logo.png';
 
 const Register = () => {
   const [inputs, setInputs] = useState({
@@ -33,9 +33,8 @@ const Register = () => {
 
   return (
     <div className='App'>
-      <img src={image11} alt='My Image' width='100' height='100' />
-      <h1> 식물요정 </h1>
-
+      <div className='form'>
+      <img src={logo} alt='My Image' width='160' height='60' />
       <div className='joinBox'>
         <form>
           <div className='joinBox2'>
@@ -92,13 +91,15 @@ const Register = () => {
           <label></label>
           <input type='radio' name='userGender' value='남' /> 남<label></label>
           <input type='radio' name='userGender' value='여' /> 여<br></br> */}
-          <br></br>
+
           <button onClick={handleSubmit}>회원가입</button>
           <div className='link'>
             이미 계정이 있으십니까?
+            &nbsp;
             <Link to='/login'>로그인</Link>
           </div>
         </form>
+      </div>
       </div>
     </div>
   );

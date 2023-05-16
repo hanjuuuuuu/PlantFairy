@@ -1,95 +1,261 @@
 @font-face {
-  font-family: '스스로넷 칠백삼';
-  src: url('../font/Room\ No.703.ttf');
+  
 }
 
-.App {
+.nav {
+height: 70px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+max-width: 1000px;
+margin: auto;
+}
+
+.nav .logo img {
+  width: 140px;
+}
+
+.nav .nav_but a {
+  text-decoration: none;
+  padding-left: 20px;
+  padding-right: 20px;
+  color: black;
+}
+
+.nav .nav_but button {
+  background-color: white;
+  color: black;
+  border: 1px solid white;
+  font-size: 15px;
+}
+
+.header {
+  background: url(../img/homeimg4.png);
+  background-position: center;
+  background-size: cover;
+  height: 600px;
+  display: felx;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.header .title {
   text-align: center;
 }
 
-body {
-  background-color: #EBF8DC;
+.header .title img {
+  margin-top: 150px;
+  width: 140px;
 }
 
-footer h10 {
-  font-size: 110px;
+.header .title h1 {
+  margin-top: 20px;
+  font-size: 40px;
+  color: #6C6562;
+  letter-spacing: 0.2em;
+  margin-bottom: 0;
 }
 
-footer {
-  background-color: #684f00;
-  color: #684f00;
+.header .title p {
+  margin-top: 0;
+  margin-bottom: 30px;
+  color: #444;
 }
 
-.top {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100vh;
+.header .title button {
+  margin-top: 10px;
+  background-color: #859C8A;
+  color: white;
+  border: 2px solid white;
+  border-radius: 5px;
+  padding: 10px 30px;
+  font-size: 14px;
+  transition: .5s ease;
 }
 
-.under {
+.header .title button:hover {
+  transform: .5s ease;
+  border: 2px solid #6C6562;
+  background: transparent;
+  color: black;
+}
+
+.intro{
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+  max-width: 1200px;
+  margin: auto;
 }
 
-.top h2 {
+.intro .card {
+  flex: 1;
   text-align: center;
+  margin: 150px 40px;
+}
+
+.intro .card i{
+  font-size: 70px;
+  color: #444;
+  margin-bottom: 30px;
+}
+
+.intro .card h1 {
+  letter-spacing: 0.2em;
+}
+
+.intro .card p{
+  font-size: 10px;
+}
+
+.service {
+  background: #ddd;
+}
+
+.service .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.service .img {
+  height: 300px;
+}
+
+.service .img img {
+  height: 100%;
+  width: 400px;
+}
+
+.service .text {
+text-align: end;
+color: #6C6562;
+padding-left: 100px;
+}
+
+.service .text h1{
+  letter-spacing: 0.2em;
+}
+
+.service .text p{
+word-wrap: break-word;
+word-break: keep-all;
+font-size: 12px;
+}
+
+.service2 {
+  background: #BDCEBB;
+}
+
+.service2 .container2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.service2 .img2 {
+  height: 300px;
+}
+
+.service2 .img2 img {
+  height: 100%;
+  width: 400px;
+}
+
+.service2 .text2 {
+text-align: start;
+color: #6C6562;
+padding-left: 100px;
+}
+
+.service2 .text2 h1{
+  letter-spacing: 0.2em;
+}
+
+.service2 .text2 p{
+word-wrap: break-word;
+word-break: keep-all;
+font-size: 12px;
+}
+
+footer {
+  color: #6C6562;
+  background: white;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+footer .container {
+  max-width: 1000px;
+  margin: auto;
+  padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+footer .container .left {
+  flex: 1;
+}
+
+footer .container .left h1 {
+  margin: 0;
   font-size: 30px;
-  font-style: normal;
-  font-weight: bolder;
-  color: #71a436;
-  font-family: '스스로넷 칠백삼';
 }
 
-.top button {
-  border-radius: 10px;
-  width: 100px;
-  height: 40px;
-  border: 3px solid #847e7e;
-  background-color: #71a436;
-  font-size: 20px;
-  color: #fff;
-  font-family: '스스로넷 칠백삼';
+footer .container .left p {
+  margin: 0;
+  font-size: 10px;
 }
 
-.space {
-  width: 50px;
-  height: auto;
-  display: inline-block;
+footer .container .right {
+  flex: 3;
+  padding-left: 50px;
 }
 
-.space h3 {
-  font-size: 20px;
-  color: #71a436;
-  font-family: '맑은 고딕';
+footer .container .right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+footer .container .right list{
+  flex: 1;
+  margin-left: 20px;
+}
+
+footer .container .right .list h2 {
+  padding-left: 5px;
+  padding-right: 250px;
+  margin: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #6C6562;
+}
+
+footer .container .right .list ul {
+  list-style: none;
+  padding: 0;
+}
+
+footer .container .right .list ul li {
+  padding: 5px 5px;
+}
+
+footer .container .right .list ul li:hover {
+  background: #BDCEBB;
 }
 
 .App-logo {
-  height: 40vmin;
-  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
 }
 
 @keyframes App-logo-spin {

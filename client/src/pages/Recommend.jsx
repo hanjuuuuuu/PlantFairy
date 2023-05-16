@@ -22,9 +22,6 @@ const App = ({ usernum, buttonValue }) => {
   const [size, setSize] = useState('');
   const [light, setLight] = useState('');
   const [functions, setFunctions] = useState('');
-  const [open, setOpen] = useState(false);
-  const [isMain, setIsMain] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const [open, setOpen] = useState(false);
   const [isMain, setIsMain] = useState(false);
@@ -117,25 +114,25 @@ const App = ({ usernum, buttonValue }) => {
     setOpen(true);
   };
 
-  const handleOk = async () => {    //식물 등록 버튼 누르면 userplant 테이블에 저장 후 메인페이지로 이동
-    console.log('button',buttonValue)
-    axios.post("http://localhost:8800/plantenroll",
-      { usernum: usernum,
-        plantmain: buttonValue,
-        plantname: recommendPlant,
-        plantpicture: 'png',
-        plantcharacteristic: plantContext,
-        plantlevel: 1,        //난이도로 변경하기
-        }
-    )
-    .then((response)=> {
-        alert("등록되었습니다");
-        console.log(response.data);
-        setIsMain(true);
-    })
-    .catch((error) => {
-      console.log(error);
-    })
+  // const handleOk = async () => {    //식물 등록 버튼 누르면 userplant 테이블에 저장 후 메인페이지로 이동
+  //   console.log('button',buttonValue)
+  //   axios.post("http://localhost:8800/plantenroll",
+  //     { usernum: usernum,
+  //       plantmain: buttonValue,
+  //       plantname: recommendPlant,
+  //       plantpicture: 'png',
+  //       plantcharacteristic: plantContext,
+  //       plantlevel: 1,        //난이도로 변경하기
+  //       }
+  //   )
+  //   .then((response)=> {
+  //       alert("등록되었습니다");
+  //       console.log(response.data);
+  //       setIsMain(true);
+  //   })
+  //   .catch((error) => {
+  //     console.log(error);
+  //   })
 
 
   const handleOk = async () => {
@@ -454,8 +451,7 @@ const App = ({ usernum, buttonValue }) => {
         </button>
       </div>
     </div>
-  </div>)
-  
+) 
 };
 
 export default App;
