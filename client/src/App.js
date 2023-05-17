@@ -12,6 +12,7 @@ import Footer from './components/Footer';
 import './style.scss';
 import Community from './pages/Community';
 import Todo from './pages/Todo';
+import Random from './pages/Random';
 
 const Layout = () => {
   return (
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
   {
     path: '/todo',
     element: <Todo/>,
+  },
+  {
+    path: '/random',
+    element: <Random/>,
   }
 ]);
 

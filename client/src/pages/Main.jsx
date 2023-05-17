@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Table, Modal, Radio } from 'antd';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import '../design/main.css';
 //import App from './App.js';
 import Recommend from './Recommend.jsx';
 import Community from './Community.jsx';
 import Info from './MyPage.jsx';
+import Todo from './Todo';
 
 const Main = () => {
   /**
    *  페이지에서 사용하는 상태변수
    */
   const [isRecommend, setIsRecommend] = useState(false);
-  const [isInfo, setIsInfo] = useState(false);
-  const [isCommunity, setIsCommunity] = useState(false);
   const [userPlantEnroll0, setUserPlantEnroll0] = useState('+');
   const [userPlantEnroll1, setUserPlantEnroll1] = useState('+');
   const [userPlantEnroll2, setUserPlantEnroll2] = useState('+');
@@ -35,6 +34,8 @@ const Main = () => {
    *
    *  화면에서 사용하는 이벤트를 정의
    */
+  const navigate = useNavigate();
+
   const onClick = (e) => {
     console.log('click', e);
   };
@@ -46,12 +47,21 @@ const Main = () => {
   };
   const onInfo = () => {
     //마이 페이지로 이동
-    setIsInfo(true);
+    navigate('/info', { state: state });
   };
   const onCommunity = () => {
     //커뮤니티 페이지로 이동
-    setIsCommunity(true);
+    navigate('/community', { state: state });
   };
+  const onTodo = () => {
+    //투두리스트 페이지로 이동
+    navigate('/todo', { state: state });
+  }
+
+  const onRandom = () => {
+    // 페이지로 이동
+    navigate('/random', {state: state});
+  }
 
   const showModal = () => {   //메인식물 고르는 모달 창 띄우기
     setIsModalOpen(true);
@@ -152,16 +162,13 @@ const Main = () => {
         setUserPlantInfo(data0);
       };
       getTableData(); 
-      
   }, [])
 
   useEffect(() => {
     onUserPlantSlot();
   })
 
-  return (isCommunity ? <Community /> :
-        isInfo ? <Info /> :
-        isRecommend ? 
+  return (isRecommend ? 
         <Recommend usernum={state} buttonValue={buttonValue}/> :
         <div className='main'>
             <br></br>
@@ -193,7 +200,9 @@ const Main = () => {
                 <br></br>
                 <button className="menubtn" onClick={onCommunity}>커뮤니티</button>
                 <br></br>
-                <button className="menubtn" >To-do list</button>
+                <button className="menubtn" onClick={onTodo}>To-do list</button>
+                <br></br>
+                <button className="menubtn" onClick={onRandom}>다양한 식물 추천</button>
                 <br></br>
                 <button className="menubtn">로그아웃</button>
             </menu>
