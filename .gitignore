@@ -7,7 +7,7 @@
 
 db.js
 /api/sources
-/api/.env
+.env
 
 /client/node_modules
 

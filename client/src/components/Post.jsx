@@ -18,19 +18,11 @@ const Post = ({ post }) => {
 
   const { currentUser } = useContext(AuthContext);
 
-  // console.log('id!!!!!!!!!!!', currentUser.user_num);
-  // console.log('id!!!!!!!!!!!', currentUser.user_id);
-
   const { isLoading, error, data } = useQuery(['likes', post.communityid], () =>
     makeRequest.get('/likes?postid=' + post.communityid).then((res) => {
       return res.data;
     })
   );
-
-  //console.log('data2222: ', data);
-  //console.log('data: ', data.length);
-
-  //if (data.includes(currentUser.user_num) === true) console.log('INSIDE!!!!!');
 
   const queryClient = useQueryClient();
 
@@ -41,7 +33,6 @@ const Post = ({ post }) => {
     },
     {
       onSuccess: () => {
-        // Invalidate and refetch
         queryClient.invalidateQueries(['likes']);
       },
     }
@@ -53,7 +44,6 @@ const Post = ({ post }) => {
     },
     {
       onSuccess: () => {
-        // Invalidate and refetch
         queryClient.invalidateQueries(['posts']);
       },
     }
@@ -74,9 +64,9 @@ const Post = ({ post }) => {
           <div className='userInfo'>
             <img src={post.profilePic} alt='' />
             <div className='details'>
-              <Link to={`/profile/${post.userId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+              {/* <Link to={`/profile/${post.userId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                 <span className='name'>{post.name}</span>
-              </Link>
+              </Link> */}
               <span className='date'>{moment(post.createdAt).fromNow()}</span>
             </div>
           </div>
@@ -103,12 +93,12 @@ const Post = ({ post }) => {
           </div>
           <div className='item' onClick={() => setCommentOpen(!commentOpen)}>
             <TextsmsOutlinedIcon />
-            12 Comments
+            Comments
           </div>
-          <div className='item'>
+          {/* <div className='item'>
             <ShareOutlinedIcon />
             Share
-          </div>
+          </div> */}
         </div>
         {commentOpen && <Comments postid={post.communityid} />}
       </div>

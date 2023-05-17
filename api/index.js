@@ -58,7 +58,7 @@ app.use('/api/likes', likesRoutes);
 app.use('/api/comments', commentsRoutes);
 
 const configuration = new Configuration({
-  apiKey: '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', //process.env.API_KEY,
+  apiKey: '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', //process.env.API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
@@ -112,9 +112,9 @@ app.post('/recommend', async (req, res) => {
 // 메인 페이지에 출력할 메인 식물 정보 전달
 app.post('/plantpicture', async (req, res) => {
   let plantpicture = req.body.usernum;
-  console.log('picture------', plantpicture);
+  console.log('usernum------', plantpicture);
 
-  const sqluserplant = `SELECT user_plant_num AS "key", plant_name, plant_characteristic, plant_level, plant_picture FROM user_plant WHERE plant_main = 0 AND user_num = '${plantpicture}'`;
+  const sqluserplant = `SELECT user_plant_num AS "key", plant_name, plant_characteristic, plant_level, plant_picture FROM user_plant WHERE user_num = '${plantpicture}'`;
   db.query(sqluserplant, plantpicture, (err, data) => {
     if (!err) {
       res.send(data);
@@ -159,10 +159,11 @@ app.post('/plantenroll', async (req, res) => {
   let usernum = req.body.usernum;
   let plantname = req.body.plantname;
   let plantmain = req.body.plantmain;
-  let plantpicture = req.body.plantpicture;
+  //let plantpicture = req.body.plantpicture;
   let plantcharacteristic = req.body.plantcharacteristic;
   let plantlevel = req.body.plantlevel;
   console.log('enroll', plantname);
+  //console.log('pp : ', plantpicture);
 
   const sqlplantenroll = 'INSERT INTO user_plant (user_num, plant_name, plant_main, plant_characteristic, plant_level) values(?, ?, ?, ?, ?)';
   db.query(sqlplantenroll, [usernum, plantname, plantmain, plantcharacteristic, plantlevel], (err, data) => {

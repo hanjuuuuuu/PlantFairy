@@ -10,7 +10,6 @@ import Footer from './components/Footer';
 //import './login.scss';
 import './style.scss';
 import Community from './pages/Community';
-import Profile from './pages/Profile';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 function App() {
@@ -49,10 +48,6 @@ function App() {
     {
       path: '/community',
       element: <Community />,
-    },
-    {
-      path: '/profile/:id',
-      element: <Profile />,
     },
   ]);
   return (

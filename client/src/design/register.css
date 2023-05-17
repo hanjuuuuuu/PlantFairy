@@ -5,104 +5,63 @@
   margin-top: 30px;
 }
 
-* {
-  font-family: '스스로넷 칠백삼';
+.App .form {
+  display: block;
+  margin: auto;
+  text-align: center;
+  margin-bottom: 60px;
+  border: 2px solid #859c8a;
+  height: 790px;
+  border-radius: 7px;
 }
 
 body {
-  background-color: #f3f9ec;
+  background-color: white;
 }
 
-.joinBox address {
+.App .form .joinBox address {
   text-align: left;
-  font-family: '스스로넷 칠백삼';
   font-weight: nomal;
-  color: #847e7e;
-}
-.App h1 {
-  text-align: center;
-  font-size: 30px;
-  font-style: normal;
-  font-weight: bolder;
-  font-family: '스스로넷 칠백삼';
-  color: #71a436;
+  color: black;
 }
 
-.joinBox {
+.App .form .joinBox {
   padding: 20px;
 }
 
-.joinBox label {
+.App .form .joinBox label {
   display: none;
 }
 
-.joinBox2 input {
+.App .form .joinBox .joinBox2 input {
   width: calc(100% - 34px);
   padding: 15px;
-  border: 1px solid #847e7e;
+  border: 1px solid #6c6562;
   margin-bottom: 15px;
-  font-family: '스스로넷 칠백삼';
+  border-radius: 7px;
 }
 
-.joinBox2 h2 {
-  text-align: left;
-  font-family: '스스로넷 칠백삼';
-  font-size: 16px;
-  color: #847e7e;
-  font-weight: normal;
-}
-
-.joinBox2 h3 {
-  text-align: left;
-  font-family: '스스로넷 칠백삼';
-  font-size: 16px;
-  color: #847e7e;
-  font-weight: normal;
-}
-
-.joinBox2 h4 {
-  text-align: left;
-  font-family: '스스로넷 칠백삼';
-  font-size: 16px;
-  color: #847e7e;
-  font-weight: normal;
-}
-
-.joinBox2 h5 {
-  text-align: left;
-  font-family: '스스로넷 칠백삼';
-  font-size: 16px;
-  color: #847e7e;
-  font-weight: normal;
-}
-
-.joinBox2 h6 {
-  text-align: left;
-  font-family: '스스로넷 칠백삼';
-  font-size: 16px;
-  color: #847e7e;
-  font-weight: normal;
-}
-
-.joinBox button {
+.App .form .joinBox button {
   width: 100%;
   padding: 15px;
-  border: 1px solid #847e7e;
-  background-color: #71a436;
+  border: 1px solid #6c6562;
+  background-color: #859c8a;
   font-size: 20px;
   color: #fff;
-  font-family: '스스로넷 칠백삼';
+  border-radius: 7px;
 }
 
-.link {
+.App .form .joinBox button:hover {
+  background: #bdcebb;
+}
+
+.App .form .joinBox .link {
   text-align: center;
   font-size: 12px;
   margin-top: 25px;
 }
 
 .App-logo {
-  height: 40vmin;
-  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -111,19 +70,7 @@ body {
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
 .App-link {
-  color: #61dafb;
 }
 
 @keyframes App-logo-spin {

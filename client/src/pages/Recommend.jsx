@@ -135,32 +135,32 @@ const App = ({ usernum, buttonValue }) => {
 
   const handleOk = async () => {
     console.log('button', buttonValue);
-    axios
-      .get(`http://localhost:8800/imagespath/${recommendPlant}`)
-      .then((response) => {
-        const imagePath = `${response.data}`;
+    // axios
+    //   .get(`http://localhost:8800/imagespath/${recommendPlant}`)
+    //   .then((response) => {
+    //     const imagePath = `${response.data}`;
 
-        axios
-          .post('http://localhost:8800/plantenroll', {
-            usernum: usernum,
-            plantmain: buttonValue,
-            plantname: recommendPlant,
-            plantpicture: imagePath,
-            plantcharacteristic: plantContext,
-            plantlevel: 1, //난이도로 변경하기
-          })
-          .then((response) => {
-            alert('등록되었습니다');
-            console.log(response.data);
-            setIsMain(true);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+    axios
+      .post('http://localhost:8800/plantenroll', {
+        usernum: usernum,
+        plantmain: buttonValue,
+        plantname: recommendPlant,
+        //plantpicture: imagePath,
+        plantcharacteristic: plantContext,
+        plantlevel: 1, //난이도로 변경하기
+      })
+      .then((response) => {
+        alert('등록되었습니다');
+        console.log('response.data in RECCOMEND: ', response.data);
+        setIsMain(true);
       })
       .catch((error) => {
-        console.error(error);
+        console.log(error);
       });
+    // })
+    // .catch((error) => {
+    //   console.error(error);
+    // });
 
     setOpen(false);
   };
@@ -198,9 +198,7 @@ const App = ({ usernum, buttonValue }) => {
     }
   };
 
-  useEffect(() => {
-
-  },[])
+  useEffect(() => {}, []);
 
   // useEffect(() => {
   //   async function getTableData() {

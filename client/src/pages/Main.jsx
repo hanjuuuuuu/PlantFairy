@@ -41,10 +41,21 @@ const Main = () => {
 
   const onRecommend = (e) => {
     //슬롯 + 누르면 추천페이지로 이동, 버튼에 따라 식물 출력 자리 지정
+    // name: button 번호
     const name = e.target.value;
-    setButtonValue(name);
-    setIsRecommend(true);
+
+    if (name > buttonValue) {
+      setButtonValue(name);
+      setIsRecommend(true);
+      // 서버로 요청 보내기
+      recommendOtherPlant();
+    }
   };
+
+  const recommendOtherPlant = () => {
+    //axios.post('')
+  };
+
   const onInfo = () => {
     //마이 페이지로 이동
     setIsInfo(true);
@@ -125,6 +136,7 @@ const Main = () => {
       .post('http://localhost:8800/plantpicture', { usernum: state })
       .then((response) => {
         const plant_name = response.data[0].plant_name;
+        console.log('Onuser222');
 
         setUserPlantInfo(response.data); // 메인 식물 이름, 특성, 키우기 난이도
         userPlantEnroll(plant_name); // 해당 식물의 이미지 출력
@@ -165,6 +177,7 @@ const Main = () => {
   };
 
   useEffect(() => {
+    //console.log('Onuser333');
     async function getTableData() {
       const data0 = await onUserPlantPrint();
       setUserPlantInfo(data0);
