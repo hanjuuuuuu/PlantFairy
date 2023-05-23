@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../design/todo.css';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Typography} from 'antd';
+import { Typography, Checkbox} from 'antd';
 import Calendar from 'react-calendar';
 //import 'react-calendar/dist/Calendar.css'; 
 import moment from 'moment';
@@ -10,6 +10,7 @@ import moment from 'moment';
 const Todo = () => {
     //const { token } = theme.useToken();
     const [value, onChange] = useState(new Date());
+    const [text, setText] = useState('');
 
     //**
     /*
@@ -32,127 +33,104 @@ const Todo = () => {
 
     //usernum 받아오기
     const { state } = useLocation();
-    console.log('usernum',state);
     let plantname;
     let userplantnum;
+    let daynum;
+    let dayname;
 
     //식물이름 가져오기
-    const userMainPlant = async() => {     
+    const userMainPlant = (value) => {     
+    daynum = moment(value).format("E");
+
       axios.post("http://localhost:8800/plantall",
       {usernum: state})
       .then((res) => {
         userplantnum = res.data[(res.data.length-1)].key;
         plantname = res.data[(res.data.length-1)].plant_name;
         console.log(userplantnum, plantname);
-        //등록된 식물 투두리스트 가져오기
-        axios.post("http://localhost:8800/planttodo",
-        { plantname: plantname,
-        userplantnum: userplantnum
-        })
-        .then((res) => {
-          console.log('todotodotodo',res.data)
-        })
+        console.log('daynum!!!!!!!!',daynum)
+        if(daynum == 1){
+          console.log('월요일');
+          dayname = '월요일';
+        }
+        else if(daynum == 2){
+          console.log('화요일');
+          dayname = '화요일';
+        }
+        else if(daynum == 3){
+          dayname ='수요일';
+        }
+        else if(daynum == 4){
+          dayname ='목요일';
+        }
+        else if(daynum == 5){
+          dayname ='금요일';
+        }
+        else if(daynum == 6){
+          dayname ='토요일';
+        }
+        else if(daynum == 7){
+          dayname ='일요일';
+        }
+        userTodo();
       })
     }
 
-    //등록된 식물 투두리스트 가져오기
-    // const plantTodo = async() => {
-    //   axios.post("http://localhost:8800/planttodo",
-    //   { plantname: plantname,
-    //     userplantnum: userplantnum
-    //   })
-    //   .then((res) => {
-    //     console.log('todotodotodo',res.data)
-    //   })
-    // }
+    const userTodo = () =>{
+      //등록된 식물 투두리스트 가져오기
+      axios.post("http://localhost:8800/planttodo",
+      { plantname: plantname,
+      userplantnum: userplantnum,
+      day: dayname
+      })
+      .then((res) => {
+        console.log('dayname',dayname);
+        console.log('daynum', daynum);
+        console.log('todotodotodo',res.data[0].task);
+        setText(res.data[0].task);
+      })
+    }
 
-    const getListData = (value) => {
-      let listData;
-      switch (value.date()) {
-        case '월요일':
-          listData = [
-            {
-              type: 'warning',
-              content: 'This is warning event.',
-            },
-          ];
-          break;
-        case '화요일':
-          listData = [
-            {
-              type: 'warning',
-              content: 'This is warning event.',
-            },
-          ];
-          break;
-        case '수요일':
-          listData = [
-            {
-              type: 'warning',
-              content: 'This is warning event',
-            },
-          ];
-        case '목요일':
-          listData = [
-            {
-              type: 'warning',
-              content: 'This is warning event',
-            },
-          ];
-        case '금요일':
-          listData = [
-            {
-              type: 'warning',
-              content: 'This is warning event',
-            },
-          ];
-        case '토요일':
-          listData = [
-            {
-              type: 'warning',
-              content: 'This is warning event',
-            },
-          ];
-        case '일요일':
-          listData = [
-            {
-              type: 'warning',
-              content: 'This is warning event',
-            },
-          ];
-          break;
-        default:
-      }
-      return listData || [];
-    };
+    const onSelect = (value) => {
+      console.log(value);
+    }
 
     useEffect(() => {
       userMainPlant();
     }, [])
 
-    return (
-      <div>
-        <Typography.Title className='title' level={4}>투두 리스트</Typography.Title>
-          <menu className="btnmenu"> 
-            <button className="menubtn" onClick={onInfo}>마이페이지</button>
-              <br></br>
-                <button className="menubtn" onClick={onCommunity}>커뮤니티</button>
-                  <br></br>
-                <button className="menubtn" onClick={onTodo}>To-do list</button>
-                  <br></br>
-                <button className="menubtn">로그아웃</button>
-          </menu>         
+    //dayname 변경되면 userTodo실행
+    useEffect(() => {
+      userTodo();
+    }, [dayname])
 
-        <div>
-        <Calendar onChange={onChange} value={value} />
-          <div className="text-gray-500 mt-4">
-              {moment(value).format("YYYY년 MM월 DD일")} 
-              <br></br>
-              <div className='todo'> todo 리스트 출력 </div>
-          </div>
+    return (<div>
+      <Typography.Title className='title' level={4}>투두 리스트</Typography.Title>
+        <menu className="btnmenu"> 
+          <button className="menubtn" onClick={onInfo}>마이페이지</button>
+            <br></br>
+              <button className="menubtn" onClick={onCommunity}>커뮤니티</button>
+                <br></br>
+              <button className="menubtn" onClick={onTodo}>To-do list</button>
+                <br></br>
+              <button className="menubtn">로그아웃</button>
+        </menu>         
+
+      <div>
+      <Calendar 
+        onChange={onChange} 
+        value={value} 
+        onSelect={onSelect}
+        onClickDay={userMainPlant(value)}
+      />
+        <div className="text-gray-500 mt-4">
+            {moment(value).format("YYYY년 MM월 DD일")} 
+            <br></br>
+            <Checkbox className='todo'>{(text)}+1point</Checkbox>
         </div>
       </div>
-    );
+    </div>
+  );
 
 
 };

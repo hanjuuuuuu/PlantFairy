@@ -86,10 +86,6 @@ const Main = () => {
       title: '식물 특성',
       dataIndex: 'plant_characteristic',
     },
-    {
-      title: '키우기 난이도',
-      dataIndex: 'plant_level',
-    },
   ];
 
   //login에서 user_num 받아오기
@@ -114,7 +110,7 @@ const Main = () => {
       {usernum: state}   
       )
       .then((res)=> {  
-          setUserPlantEnroll0(userPlantEnroll(res.data[(res.data.length-1)]));     //메인 식물 이미지 
+          //setUserPlantEnroll0(userPlantEnroll(res.data[(res.data.length-1)]));     //메인 식물 이미지 
           console.log('mainplant',res.data[(res.data.length-1)]);
           //setUserPlantEnroll1(res.data[0].plant_name);   
           setUserPlantInfo(res.data);       //메인 식물 이름, 특성, 키우기 난이도
@@ -124,19 +120,19 @@ const Main = () => {
       })
   };
 
-  const userPlantEnroll = (plant_name) => {
-    axios
-      .get(`http://localhost:8800/images/${plant_name}`)
-      .then((response) => {
-        const imagePath = `${response.data}`;
-        const image = document.createElement('img');
-        image.src = `data:image/png;base64,${response.data}`;
-        document.querySelector('div.printImg').appendChild(image);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  // const userPlantEnroll = (plant_name) => {
+  //   axios
+  //     .get(`http://localhost:8800/images/${plant_name}`)
+  //     .then((response) => {
+  //       const imagePath = `${response.data}`;
+  //       const image = document.createElement('img');
+  //       image.src = `data:image/png;base64,${response.data}`;
+  //       document.querySelector('div.printImg').appendChild(image);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
 
 
   const onUserPlantSlot = () => {    //user_plant 테이블에서 사용자의 식물 정보 가져와 슬롯별 식물 이미지 출력

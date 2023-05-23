@@ -13,6 +13,7 @@ import './style.scss';
 import Community from './pages/Community';
 import Todo from './pages/Todo';
 import Random from './pages/Random';
+import FunGame from './pages/FunGame';
 
 const Layout = () => {
   return (
@@ -59,6 +60,10 @@ const router = createBrowserRouter([
   {
     path: '/random',
     element: <Random/>,
+  },
+  {
+    path: '/fungame',
+    element: <FunGame/>,
   }
 ]);
 

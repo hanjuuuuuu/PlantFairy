@@ -1,21 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../design/random.css';
 import axios from 'axios';
 import { Typography, Button, Radio } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
+import FunGame from './FunGame';
+import ScaryGame from './ScaryGame';
 
 const Random = () => {
     /**
    * 페이지에서 사용하는 상태변수
    */
-    const [firstAnswer, setFirstAnswer] = useState('');
-    const [secondAnswer, setSecondAnswer] = useState('');
-    const [thirdAnswer, setThirdAnswer] = useState('');
-    const [fourthAnswer, setFourthAnswer] = useState('');
-    const [firstQuestion, setFirstQuestion] = useState('');
-    const [secondQuestion, setSecondQuestion] = useState('');
-    const [thirdQuestion, setThirdQuestion] = useState('');
-    const [fourthQuestion, setFourthQuestion] = useState('');
+    const [fun, setFun] = useState(false);
+    const [scary, setScary] = useState(false);
 
 
      //**
@@ -41,26 +37,36 @@ const Random = () => {
     const { state } = useLocation();
     console.log('usernum',state);
 
-    //식물 추천 질문받기
-    const userGame = () => {
-        axios.post("http://localhost:8800/plantgame",
-            {usernum: state}
-        )
-        .then((res) => {
-            setFirstQuestion(res.data[0])
-            // setFirstAnswer(res.data[0].first)
-            setSecondQuestion(res.data[1])
-            // setSecondAnswer(res.data[1].first)
-            // setThirdQuestion(res.data[2].question)
-            setThirdAnswer(res.data[2])
-            // setFourthQuestion(res.data[3].question)
-            setFourthAnswer(res.data[3])
+    // //식물 추천 질문받기
+    // const userGame = () => {
+    //     axios.post("http://localhost:8800/plantgame",
+    //         {usernum: state}
+    //     )
+    //     .then((res) => {
+    //         setFirstQuestion(res.data[0])
+    //         // setFirstAnswer(res.data[0].first)
+    //         setSecondQuestion(res.data[1])
+    //         // setSecondAnswer(res.data[1].first)
+    //         // setThirdQuestion(res.data[2].question)
+    //         setThirdAnswer(res.data[2])
+    //         // setFourthQuestion(res.data[3].question)
+    //         setFourthAnswer(res.data[3])
             
-            console.log('plant game',res.data);
-        })
+    //         console.log('plant game',res.data.message);
+    //     })
+    // }
+
+    const userFunGame= () => {
+        setFun(true);
     }
 
-    return (
+    const userScaryGame= () => {
+        setScary(true);
+    }
+
+
+    return (scary? <ScaryGame /> :
+    fun ? <FunGame /> :
         <div>
         <Typography.Title className='title' level={4}>식물 추천</Typography.Title>
             <menu className="btnmenu"> 
@@ -72,13 +78,12 @@ const Random = () => {
                     <br></br>
                 <button className="menubtn">로그아웃</button>
             </menu>  
-        <Button onClick={userGame}> 재미난 질문을 통한 식물 추천을 받으시겠습니까? </Button>
-        <Radio.Group>
-                    <Radio value={firstAnswer} onClick={onclick}>{firstQuestion}</Radio>
-                    <Radio value={secondAnswer} onClick={onclick}>{secondQuestion}</Radio>
-                    <Radio value={firstAnswer} onClick={onclick}>{thirdQuestion}</Radio>
-                    <Radio value={secondAnswer} onClick={onclick}>{fourthQuestion}</Radio>
-        </Radio.Group> 
+        <p className='theme'>질문 테마 선택</p>
+        <div>
+            <Button className='choose' onClick={userScaryGame}> 공포 </Button>
+            <br></br>
+            <Button className='choose' onClick={userFunGame}> 재미 </Button>
+        </div>
         </div>
     );
 

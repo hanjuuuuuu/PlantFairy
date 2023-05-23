@@ -163,7 +163,7 @@ const App = ({usernum, buttonValue}) => {
 
         axios.post("http://localhost:8800/rectodo",
       { plantname: recommendPlant,
-        userplantnum: userplantnum
+        userplantnum: recommendPlant
       })
       .then((res) => {
         console.log('todotodotodo',res.data)
