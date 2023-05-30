@@ -111,7 +111,7 @@ const App = ({usernum, buttonValue}) => {
     } else if (name === 'for decoration') {
       setFunctions('장식용');
     } else if (name === '둘다'){
-      setFunctions('for air purication and decoration 장식용인');
+      setFunctions('for air purication and decoration');
     } else {
       setFunctions('');
     }
@@ -160,10 +160,12 @@ const App = ({usernum, buttonValue}) => {
         alert("등록되었습니다");
         console.log(response.data);
         setIsMain(true);
+        userMainPlant();
 
-        axios.post("http://localhost:8800/rectodo",
+      axios.post("http://localhost:8800/rectodo",
       { plantname: recommendPlant,
-        userplantnum: recommendPlant
+        userplantnum: userplantnum,
+        usernum: usernum
       })
       .then((res) => {
         console.log('todotodotodo',res.data)

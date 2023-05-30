@@ -89,16 +89,6 @@ const ScaryGame = () => {
                 },
                 body: JSON.stringify({ message }),
             })
-        
-            // plant recommendations API call
-            //const res1 = await axios.post('http://localhost:8800/recommend', { message });
-            //setPlantRecommendations(res1.data.message);
-        
-            //plant image creation API call
-            // const res2 = await axios.post('http://localhost:8800/', { message });
-            // setPlantImages(res2.data.images);
-        
-            //.then((res) => res.json())
             const result = await response.json()
             .then((data) => setResponse(data.message), setLoading(false));
         } catch(error){
@@ -117,11 +107,6 @@ const ScaryGame = () => {
             <br></br>
             <button className="menubtn">로그아웃</button>
     </menu>
-    <form onSubmit={handleSubmit}>
-        <button className='resultbtn' type='submit' value={`${text}`} onClick={() => {setMessage(`${text}`)}}>
-        결과를 보시겠습니까?
-        </button>
-    </form>
     <br></br>
     <br></br>
     <div className='spin'>

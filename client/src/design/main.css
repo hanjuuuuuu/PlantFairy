@@ -36,6 +36,25 @@
     margin: 80px 50px 0px 0px;
 
 }
+.slots{
+  border: outset #8ED03B;
+  background-color: white;
+  border-radius: 40px;
+  width: 200px;
+  padding: 80px 10px 80px 10px;
+  margin: 80px 50px 0px 0px;
+
+}
+.slots{
+  border: outset #8ED03B;
+  background-color: white;
+  border-radius: 40px;
+  width: 200px;
+  padding: 80px 10px 80px 10px;
+  margin: 80px 50px 0px 0px;
+
+}
+
 .tableprint{
   width: 50%;
   height: 20%;

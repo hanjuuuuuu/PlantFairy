@@ -9,8 +9,8 @@ import moment from 'moment';
 
 const Todo = () => {
     //const { token } = theme.useToken();
-    const [value, onChange] = useState(new Date());
-    const [text, setText] = useState('');
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [task, setTask] = useState('');
 
     //**
     /*
@@ -35,12 +35,14 @@ const Todo = () => {
     const { state } = useLocation();
     let plantname;
     let userplantnum;
+    let usernum;
     let daynum;
     let dayname;
 
-    //식물이름 가져오기
-    const userMainPlant = (value) => {     
-    daynum = moment(value).format("E");
+    //식물이름 가져오기, 날짜 변경
+    const handleDateClick = (date) => { 
+      setSelectedDate(date);    
+      daynum = moment(date).format("DD");
 
       axios.post("http://localhost:8800/plantall",
       {usernum: state})
@@ -49,54 +51,58 @@ const Todo = () => {
         plantname = res.data[(res.data.length-1)].plant_name;
         console.log(userplantnum, plantname);
         console.log('daynum!!!!!!!!',daynum)
-        if(daynum == 1){
-          console.log('월요일');
-          dayname = '월요일';
-        }
-        else if(daynum == 2){
-          console.log('화요일');
-          dayname = '화요일';
-        }
-        else if(daynum == 3){
-          dayname ='수요일';
-        }
-        else if(daynum == 4){
-          dayname ='목요일';
-        }
-        else if(daynum == 5){
-          dayname ='금요일';
-        }
-        else if(daynum == 6){
-          dayname ='토요일';
-        }
-        else if(daynum == 7){
-          dayname ='일요일';
-        }
+        // if(daynum == 1){
+        //   console.log('월요일');
+        //   dayname = '월요일';
+        // }
+        // else if(daynum == 2){
+        //   console.log('화요일');
+        //   dayname = '화요일';
+        // }
+        // else if(daynum == 3){
+        //   dayname ='수요일';
+        // }
+        // else if(daynum == 4){
+        //   dayname ='목요일';
+        // }
+        // else if(daynum == 5){
+        //   dayname ='금요일';
+        // }
+        // else if(daynum == 6){
+        //   dayname ='토요일';
+        // }
+        // else if(daynum == 7){
+        //   dayname ='일요일';
+        // }
         userTodo();
       })
     }
 
     const userTodo = () =>{
-      //등록된 식물 투두리스트 가져오기
+      //등록된 식물 투두리스트 날짜에 맞게 가져오기
       axios.post("http://localhost:8800/planttodo",
       { plantname: plantname,
-      userplantnum: userplantnum,
-      day: dayname
+      usernum: state,
+      day: daynum
       })
       .then((res) => {
-        console.log('dayname',dayname);
         console.log('daynum', daynum);
         console.log('todotodotodo',res.data[0].task);
-        setText(res.data[0].task);
+        setTask(res.data[0].task, "+1point");
       })
     }
 
-    const onSelect = (value) => {
-      console.log(value);
-    }
+    // const handleCheckboxChange = (taskId) => {
+    //   const updatedTasks = tasks.map((task) =>
+    //     task.id === taskId && task.date === today
+    //       ? { ...task, checked: !task.checked }
+    //       : task
+    //   );
+    //   setTask(updatedTasks);
+    // };
 
     useEffect(() => {
-      userMainPlant();
+      handleDateClick();
     }, [])
 
     //dayname 변경되면 userTodo실행
@@ -117,17 +123,25 @@ const Todo = () => {
         </menu>         
 
       <div>
-      <Calendar 
-        onChange={onChange} 
-        value={value} 
-        onSelect={onSelect}
-        onClickDay={userMainPlant(value)}
-      />
+      <Calendar onClickDay={handleDateClick(selectedDate)} />
         <div className="text-gray-500 mt-4">
-            {moment(value).format("YYYY년 MM월 DD일")} 
+            {moment(selectedDate).format("YYYY년 MM월 DD일")} 
             <br></br>
-            <Checkbox className='todo'>{(text)}+1point</Checkbox>
         </div>
+        {/* <div>
+          {tasks.map((task) => (
+            <div key={task.id}>
+              <input
+                type='checkbox'
+                checked={task.checked}
+                onChange={() => handleCheckboxChange(task.id)}
+                disabled={task.date !== today}
+              />
+              <label>{task}</label>
+            </div>
+          ))}
+        </div> */}
+        <div>{task}</div>
       </div>
     </div>
   );

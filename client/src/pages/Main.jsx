@@ -145,7 +145,7 @@ const Main = () => {
         setUserPlantEnroll1(res.data[(res.data.length-1)].plant_picture);   
         setUserPlantEnroll1name(res.data[(res.data.length-1)].plant_name);   
         console.log('slot',res.data[(res.data.length-1)]);
-        //setUserPlantInfo(res.data);       //메인 식물 이름, 특성, 키우기 난이도
+        //setUserPlantInfo(res.data);       //메인 식물 이름, 특성
     })
     .catch((err) => {
         console.log(err);
