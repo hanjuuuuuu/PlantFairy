@@ -11,6 +11,8 @@ import Footer from './components/Footer';
 import './style.scss';
 import Community from './pages/Community';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import SatisfiedRec from './pages/SatisfiedRec';
+import UnsatisfiedRec from './pages/UnsatisfiedRec';
 
 function App() {
   const queryClient = new QueryClient();
@@ -48,6 +50,14 @@ function App() {
     {
       path: '/community',
       element: <Community />,
+    },
+    {
+      path: '/satisfied',
+      element: <SatisfiedRec />,
+    },
+    {
+      path: '/unsatisfied',
+      element: <UnsatisfiedRec />,
     },
   ]);
   return (

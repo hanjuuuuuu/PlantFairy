@@ -7,12 +7,14 @@ import { useLocation } from 'react-router-dom';
 import Recommend from './Recommend.jsx';
 import Community from './Community.jsx';
 import Info from './MyPage.jsx';
+import NewRecommend from './NewReccomend.jsx';
 
 const Main = () => {
   /**
    *  페이지에서 사용하는 상태변수
    */
   const [isRecommend, setIsRecommend] = useState(false);
+  const [isNewRecommend, setIsNewRecommend] = useState(false);
   const [isInfo, setIsInfo] = useState(false);
   const [isCommunity, setIsCommunity] = useState(false);
   const [userPlantEnroll0, setUserPlantEnroll0] = useState('+');
@@ -43,17 +45,19 @@ const Main = () => {
     //슬롯 + 누르면 추천페이지로 이동, 버튼에 따라 식물 출력 자리 지정
     // name: button 번호
     const name = e.target.value;
+    setButtonValue(name);
+    setIsRecommend(true);
+  };
+
+  const onNewRecommend = (e) => {
+    //슬롯 + 누르면 추천페이지로 이동, 버튼에 따라 식물 출력 자리 지정
+    // name: button 번호
+    const name = e.target.value;
 
     if (name > buttonValue) {
       setButtonValue(name);
-      setIsRecommend(true);
-      // 서버로 요청 보내기
-      recommendOtherPlant();
+      setIsNewRecommend(true);
     }
-  };
-
-  const recommendOtherPlant = () => {
-    //axios.post('')
   };
 
   const onInfo = () => {
@@ -195,6 +199,8 @@ const Main = () => {
     <Info />
   ) : isRecommend ? (
     <Recommend usernum={state} buttonValue={buttonValue} />
+  ) : isNewRecommend ? (
+    <NewRecommend />
   ) : (
     <div className='main'>
       <br></br>
@@ -249,15 +255,15 @@ const Main = () => {
         {' '}
         {userPlantEnroll1}{' '}
       </Button>
-      <Button value='2' className='slots' disabled onClick={onRecommend}>
+      <Button value='2' className='slots' onClick={onNewRecommend}>
         {' '}
         {userPlantEnroll2}{' '}
       </Button>
-      <Button value='3' className='slots' disabled onClick={onRecommend}>
+      <Button value='3' className='slots' disabled onClick={onNewRecommend}>
         {' '}
         {userPlantEnroll3}{' '}
       </Button>
-      <Button value='4' className='slots' disabled onClick={onRecommend}>
+      <Button value='4' className='slots' disabled onClick={onNewRecommend}>
         {' '}
         {userPlantEnroll4}{' '}
       </Button>
