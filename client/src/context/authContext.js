@@ -11,7 +11,9 @@ export const AuthContexProvider = ({ children }) => {
       withCredentials: true,
     });
     setCurrentUser(res.data);
+
     return res.data.user_num;
+
   };
 
   const logout = async (inputs) => {

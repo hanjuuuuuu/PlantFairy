@@ -7,6 +7,7 @@ import { AuthContext } from '../context/authContext.js';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const App = ({ usernum, buttonValue }) => {
+
   /**
    * 페이지에서 사용하는 상태변수
    */
@@ -61,6 +62,7 @@ const App = ({ usernum, buttonValue }) => {
   };
 
   /**
+
    *  화면에서 사용하는 이벤트를 정의
    */
   const handleExperienceButton = (event) => {
@@ -146,9 +148,11 @@ const App = ({ usernum, buttonValue }) => {
     setOnFunctions(true);
   };
 
+  //main에서 버튼 값 받아오기
   console.log('recommend usernum', usernum);
   console.log('recommend button', buttonValue);
   console.log('usernum', state);
+
 
   const showModal = (event) => {
     const value = event.target.value;
@@ -232,6 +236,7 @@ const App = ({ usernum, buttonValue }) => {
       //plant image creation API call
       const res2 = await axios.post('http://localhost:8800/', { message });
       setPlantImages(res2.data.images);
+
 
       const result = await response.json().then((data) => setResponse(data.message), setLoading(false));
 
@@ -557,7 +562,7 @@ const App = ({ usernum, buttonValue }) => {
         </button>
       </div>
     </div>
-  );
+) 
 };
 
 export default App;
