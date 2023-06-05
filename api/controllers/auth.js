@@ -14,9 +14,9 @@ export const register = (req, res) => {
 
     //Hash the password and create a user
     const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync(req.body.password, salt);
+    const hash = bcrypt.hashSync(req.body.user_pw, salt);
 
-    const q = 'INSERT INTO user(`user_id`, `user_name`, `user_nickname`, `password`, `user_email`) VALUES (?)';
+    const q = 'INSERT INTO user(`user_id`, `user_name`, `user_nickname`, `user_pw`, `user_email`) VALUES (?)';
     const values = [req.body.user_id, req.body.user_name, req.body.user_nickname, hash, req.body.user_email];
 
     db.query(q, [values], (err, data) => {
@@ -35,12 +35,12 @@ export const login = (req, res) => {
     if (data[0].user_num === undefined) return res.status(500).json('Failed to retrieve user information!');
 
     //Check password
-    const isPasswordCorrect = bcrypt.compareSync(req.body.password, data[0].password);
+    const isPasswordCorrect = bcrypt.compareSync(req.body.user_pw, data[0].user_pw);
 
     if (!isPasswordCorrect) return res.status(400).json('Wrong username or password!');
 
     const token = jwt.sign({ id: data[0].user_num }, 'jwtkey');
-    const { password, ...other } = data[0];
+    const { user_pw, ...other } = data[0];
 
     res
       .cookie('accessToken', token, {

@@ -58,62 +58,64 @@ app.use('/api/likes', likesRoutes);
 app.use('/api/comments', commentsRoutes);
 
 const configuration = new Configuration({
-  apiKey: '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', //process.env.API_KEY,
+  apiKey: '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', //process.env.API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
 let plantRecommendations;
 
-app.post('/recommend', async (req, res) => {
-  const { message } = req.body;
-  console.log(message);
+// app.post('/recommend', async (req, res) => {
+//   const { message } = req.body;
+//   console.log(message);
 
-  try {
-    const response = await openai.createCompletion({
-      model: 'text-davinci-003',
-      prompt: `The three plants in ${message} are recommended and explained, and the answer format is numbered as 1.2.3 and translated into Korean and Korean plant names and English plant names are separated by -, and English plant names and Korean plant descriptions are separated by :`,
-      max_tokens: 1000,
-      temperature: 0.8,
-    });
+//   try {
+//     const response = await openai.createCompletion({
+//       model: 'text-davinci-003',
+//       prompt: `The three plants in ${message} are recommended and explained, and the answer format is numbered as 1.2.3 and translated into Korean and Korean plant names and English plant names are separated by -, and English plant names and Korean plant descriptions are separated by :`,
+//       max_tokens: 1000,
+//       temperature: 0.8,
+//     });
 
-    console.log(response.data);
+//     console.log(response.data);
 
-    if (response.data && response.data.choices) {
-      plantRecommendations = response.data.choices[0].text
-        .trim()
-        .split(/\d+\./)
-        .filter((recommendation) => recommendation)
-        .map((recommendation) => {
-          const [name, context] = (recommendation || '').trim().split(/:\s+/);
-          const [korName, englishName] = name.trim().split(' - ');
-          return { korName: korName, englishName: englishName, context };
-        });
+//     if (response.data && response.data.choices) {
+//       plantRecommendations = response.data.choices[0].text
+//         .trim()
+//         .split(/\d+\./)
+//         .filter((recommendation) => recommendation)
+//         .map((recommendation) => {
+//           const [name, context] = (recommendation || '').trim().split(/:\s+/);
+//           const [korName, englishName] = name.trim().split(' - ');
+//           return { korName: korName, englishName: englishName, context };
+//         });
 
-      // MySQL 데이터베이스에 데이터 삽입
-      const sqlInsert = 'INSERT IGNORE INTO plant(plant_name, eng_Name, context) VALUES (?, ?, ?)';
-      plantRecommendations.forEach((recommendation) => {
-        db.query(sqlInsert, [recommendation.korName, recommendation.englishName, recommendation.context || ''], (err, result) => {
-          if (err) {
-            console.log(err);
-          }
-        });
-      });
+//       // MySQL 데이터베이스에 데이터 삽입
+//       const sqlInsert = 'INSERT IGNORE INTO plant(plant_name, eng_name, context) VALUES (?, ?, ?)';
+//       plantRecommendations.forEach((recommendation) => {
+//         db.query(sqlInsert, [recommendation.korName, recommendation.englishName, recommendation.context || ''], (err, result) => {
+//           if (err) {
+//             console.log(err);
+//           }
+//         });
+//       });
 
-      res.json({ message: plantRecommendations });
-    } else {
-      res.json({ message: 'Error fetching plant recommendations' });
-    }
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-});
+//       res.json({ message: plantRecommendations });
+//     } else {
+//       res.json({ message: 'Error fetching plant recommendations' });
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ message: 'Internal server error' });
+//   }
+// });
 
 app.post('/inserttext', async (req, res) => {
   const { message } = req.body;
   const userNum = req.body.usernum;
 
-  db.query(`UPDATE user SET user_pick = '${message}' WHERE user_num = ${userNum}`, (err, data) => {
+  // insert 문으로 변경
+  const sqlInsert = 'INSERT INTO user_review(user_num, user_pick) VALUES (?, ?)';
+  db.query(sqlInsert, [userNum, message], (err, data) => {
     if (!err) {
       res.send(data);
     } else {
@@ -237,7 +239,7 @@ app.post('/', async (req, res) => {
 
           const imagePath = path.join('sources/', path.basename(filename)).replace(/\\/g, '/');
           // Save the path to the database
-          db.query(`UPDATE plant SET img ='${imagePath}' WHERE eng_Name='${plantRecommendations[i].englishName}'`, (error, results) => {
+          db.query(`UPDATE plant SET img ='${imagePath}' WHERE eng_name='${plantRecommendations[i].englishName}'`, (error, results) => {
             if (error) {
               console.log(error);
               res.status(500).send('Error saving image path to the database');
@@ -340,6 +342,7 @@ app.post('/unsatisfied', async (req, res) => {
     });
 
     console.log(response.data);
+    console.log('Unstaisfied');
 
     if (response.data && response.data.choices) {
       plantRecommendations = response.data.choices[0].text
@@ -353,7 +356,7 @@ app.post('/unsatisfied', async (req, res) => {
         });
 
       // MySQL 데이터베이스에 데이터 삽입
-      const sqlInsert = 'INSERT IGNORE INTO plant(plant_name, eng_Name, context) VALUES (?, ?, ?)';
+      const sqlInsert = 'INSERT IGNORE INTO plant(plant_name, eng_name, context) VALUES (?, ?, ?)';
       plantRecommendations.forEach((recommendation) => {
         db.query(sqlInsert, [recommendation.korName, recommendation.englishName, recommendation.context || ''], (err, result) => {
           if (err) {
@@ -370,6 +373,66 @@ app.post('/unsatisfied', async (req, res) => {
     console.log(error);
     res.status(500).json({ message: 'Internal server error' });
   }
+});
+
+app.post('/similar', async (req, res) => {
+  const plantName = req.body.plantName;
+
+  // 함수 재사용 할 수 있을듯 => 나중에 하기
+  try {
+    const response = await openai.createCompletion({
+      model: 'text-davinci-003',
+      // prompt 메세지 변경 =>
+      prompt: `Please recommend three similar plants to the one I previously received recommendations for and successfully grew, named ${plantName}, and the answer format is numbered as 1.2.3 and translated into Korean and Korean plant names and English plant names are separated by -, and English plant names and Korean plant descriptions are separated by :`,
+      max_tokens: 1000,
+      temperature: 0.8,
+    });
+
+    console.log(response.data);
+    console.log('Unstaisfied');
+
+    if (response.data && response.data.choices) {
+      plantRecommendations = response.data.choices[0].text
+        .trim()
+        .split(/\d+\./)
+        .filter((recommendation) => recommendation)
+        .map((recommendation) => {
+          const [name, context] = (recommendation || '').trim().split(/:\s+/);
+          const [korName, englishName] = name.trim().split(' - ');
+          return { korName: korName, englishName: englishName, context };
+        });
+
+      // MySQL 데이터베이스에 데이터 삽입
+      const sqlInsert = 'INSERT IGNORE INTO plant(plant_name, eng_name, context) VALUES (?, ?, ?)';
+      plantRecommendations.forEach((recommendation) => {
+        db.query(sqlInsert, [recommendation.korName, recommendation.englishName, recommendation.context || ''], (err, result) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+      });
+
+      res.json({ message: plantRecommendations });
+    } else {
+      res.json({ message: 'Error fetching plant recommendations' });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+app.post('/getbeforepick', async (req, res) => {
+  let plantpicture = req.body.usernum;
+
+  const sqluserplant = `SELECT user_pick FROM user_review WHERE user_num = '${plantpicture}' ORDER BY user_review_num DESC LIMIT 1`;
+  db.query(sqluserplant, plantpicture, (err, data) => {
+    if (!err) {
+      res.send(data);
+    } else {
+      console.log(err);
+    }
+  });
 });
 
 app.listen(8800, () => {
