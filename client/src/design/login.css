@@ -7,13 +7,12 @@ body {
 }
 
 .App {
-    width: 460px;
-    margin: 0 auto;
-    margin-top: 50px;
-    text-align: center;
-    font-size: 13px;
+  width: 460px;
+  margin: 0 auto;
+  margin-top: 50px;
+  text-align: center;
+  font-size: 13px;
 }
-
 
 .App .loginBox address {
   color: black;
@@ -25,34 +24,33 @@ body {
   margin: auto;
   text-align: center;
   margin-top: 130px;
-   padding: 50px;
-   background: white;
-   border: 2px solid #859C8A;
-   border-radius: 7px;
+  padding: 50px;
+  background: white;
+  border: 2px solid #859c8a;
+  border-radius: 7px;
 }
 
-.App .loginBox .loginBox2 input{
-   width: calc(100% - 34px);
-   padding: 15px;
-   border: 1px solid #6C6562;
-   margin-bottom: 15px;
-   border-radius: 7px;
+.App .loginBox .loginBox2 input {
+  width: calc(100% - 34px);
+  padding: 15px;
+  border: 1px solid #6c6562;
+  margin-bottom: 15px;
+  border-radius: 7px;
 }
 
 .App .loginBox .loginBox3 button {
-   width: 100%;
-   padding: 15px;
-   border: 1px solid #6C6562;
-   background-color: #859C8A;
-   font-size: 20px;
-   color: #fff;
-   border-radius: 7px;
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #6c6562;
+  background-color: #859c8a;
+  font-size: 20px;
+  color: #fff;
+  border-radius: 7px;
 }
 
-.App .loginBox .loginBox3 button:hover{
-  background: #BDCEBB;
+.App .loginBox .loginBox3 button:hover {
+  background: #bdcebb;
 }
-
 
 .App-logo {
   height: 40vmin;
@@ -67,4 +65,3 @@ body {
 
 .App-link {
 }
-

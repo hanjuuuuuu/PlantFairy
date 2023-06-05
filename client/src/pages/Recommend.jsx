@@ -1,14 +1,20 @@
 import { Button, Modal, Space, Spin } from 'antd';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import '../design/recommend.css';
 import Main from './Main.jsx';
+import { AuthContext } from '../context/authContext.js';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const App = ({ usernum, buttonValue }) => {
 
   /**
    * 페이지에서 사용하는 상태변수
    */
+  const { currentUser } = useContext(AuthContext);
+
+  const [isInfo, setIsInfo] = useState(false);
+  const [isCommunity, setIsCommunity] = useState(false);
 
   const [onExperience, setOnExperience] = useState(false);
   const [onTime, setOnTime] = useState(false);
@@ -23,6 +29,13 @@ const App = ({ usernum, buttonValue }) => {
   const [light, setLight] = useState('');
   const [functions, setFunctions] = useState('');
 
+  const [buttonexperience, buttonSetExperience] = useState('');
+  const [buttontime, buttonSetTime] = useState('');
+  const [buttonaddress, buttonSetAddress] = useState('');
+  const [buttonsize, buttonSetSize] = useState('');
+  const [buttonlight, buttonSetLight] = useState('');
+  const [buttonfunctions, buttonSetFunctions] = useState('');
+
   const [open, setOpen] = useState(false);
   const [isMain, setIsMain] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -34,6 +47,19 @@ const App = ({ usernum, buttonValue }) => {
   const [plantRecommendations, setPlantRecommendations] = useState([]);
   const [image, setImage] = useState('');
   const [plantImages, setPlantImages] = useState([]);
+  const [plantname, setPlantName] = useState('');
+  const [userplantnum, setUserPlantNum] = useState('');
+
+  const { state } = useLocation();
+
+  const onInfo = () => {
+    //마이 페이지로 이동
+    setIsInfo(true);
+  };
+  const onCommunity = () => {
+    //커뮤니티 페이지로 이동
+    setIsCommunity(true);
+  };
 
   /**
 
@@ -41,47 +67,66 @@ const App = ({ usernum, buttonValue }) => {
    */
   const handleExperienceButton = (event) => {
     const name = event.target.value;
-    if (name === 'yes') setExperience('experienced person');
-    else setExperience('beginner');
+    if (name === '식물을 키워본 경험 있음') {
+      setExperience('experienced person');
+      buttonSetExperience(name);
+    } else {
+      setExperience('초보자');
+      buttonSetExperience(name);
+    }
     setOnExperience(true);
   };
 
   const handleTimeButton = (event) => {
     const name = event.target.value;
-    if (name === 'yes') setTime('Can participate periodically');
-    else {
+    if (name === '주기적으로 참여 가능') {
+      setTime('Can participate periodically');
+      buttonSetTime(name);
+    } else {
       setTime('hope it grows well without systematic management');
+      buttonSetTime(name);
     }
     setOnTime(true);
   };
 
   const handleAddressButton = (event) => {
     const name = event.target.value;
-    if (name === 'yes') setAddress('Indoor');
-    else {
+    if (name === '실내') {
+      setAddress('Indoor');
+      buttonSetAddress(name);
+    } else {
       setAddress('Outdoor');
+      buttonSetAddress(name);
     }
     setOnAddress(true);
   };
 
   const handleSizeButton = (event) => {
     const name = event.target.value;
-    if (name === '크다') setSize('big');
-    else if (name === '중간') {
-      setSize('medium');
+    if (name === '크다') {
+      setSize('over 1m');
+      buttonSetSize(name);
+    } else if (name === '중간') {
+      setSize('30cm~1m size');
+      buttonSetSize(name);
     } else {
-      setSize('small');
+      setSize('under 30cm');
+      buttonSetSize(name);
     }
     setOnSize(true);
   };
 
   const handleLightButton = (event) => {
     const name = event.target.value;
-    if (name === '많다') setLight('receiving a lot of sunlight');
-    else if (name === '적당하다') {
+    if (name === '많다') {
+      setLight('receiving a lot of sunlight');
+      buttonSetLight(name);
+    } else if (name === '적당하다') {
       setLight('get enough sunlight');
+      buttonSetLight(name);
     } else {
       setLight('less sunlight');
+      buttonSetLight(name);
     }
     setOnLight(true);
   };
@@ -90,10 +135,13 @@ const App = ({ usernum, buttonValue }) => {
     const name = event.target.value;
     if (name === '공기정화') {
       setFunctions('for air purification');
+      buttonSetFunctions(name);
     } else if (name === '장식') {
       setFunctions('for decoration');
+      buttonSetFunctions(name);
     } else if (name === '둘 다 원해요') {
       setFunctions('for air purication and decoration');
+      buttonSetFunctions(name);
     } else {
       setFunctions('');
     }
@@ -102,7 +150,8 @@ const App = ({ usernum, buttonValue }) => {
 
   //main에서 버튼 값 받아오기
   console.log('recommend usernum', usernum);
-  console.log('recommend button',buttonValue);
+  console.log('recommend button', buttonValue);
+  console.log('usernum', state);
 
 
   const showModal = (event) => {
@@ -114,64 +163,58 @@ const App = ({ usernum, buttonValue }) => {
     setOpen(true);
   };
 
-  // const handleOk = async () => {    //식물 등록 버튼 누르면 userplant 테이블에 저장 후 메인페이지로 이동
-  //   console.log('button',buttonValue)
-  //   axios.post("http://localhost:8800/plantenroll",
-  //     { usernum: usernum,
-  //       plantmain: buttonValue,
-  //       plantname: recommendPlant,
-  //       plantpicture: 'png',
-  //       plantcharacteristic: plantContext,
-  //       plantlevel: 1,        //난이도로 변경하기
-  //       }
-  //   )
-  //   .then((response)=> {
-  //       alert("등록되었습니다");
-  //       console.log(response.data);
-  //       setIsMain(true);
-  //   })
-  //   .catch((error) => {
-  //     console.log(error);
-  //   })
-
+  //식물이름 가져오기
+  const userMainPlant = async () => {
+    axios.post('http://localhost:8800/plantall', { usernum: usernum }).then((res) => {
+      setUserPlantNum(res.data[res.data.length - 1].key);
+      setPlantName(res.data[res.data.length - 1].plant_name);
+      console.log('recommend page', userplantnum, plantname);
+    });
+  };
 
   const handleOk = async () => {
     console.log('button', buttonValue);
     axios
-      .get(`http://localhost:8800/imagespath/${recommendPlant}`)
+      .post('http://localhost:8800/plantenroll', {
+        usernum: usernum,
+        plantmain: buttonValue,
+        plantname: recommendPlant,
+        //plantpicture: 'png',    //경로로 바꾸기
+        plantcharacteristic: plantContext,
+      })
       .then((response) => {
-        const imagePath = `${response.data}`;
-
-        axios
-          .post('http://localhost:8800/plantenroll', {
-            usernum: usernum,
-            plantmain: buttonValue,
-            plantname: recommendPlant,
-            plantpicture: imagePath,
-            plantcharacteristic: plantContext,
-            plantlevel: 1, //난이도로 변경하기
-          })
-          .then((response) => {
-            alert('등록되었습니다');
-            console.log(response.data);
-            setIsMain(true);
+        alert('등록되었습니다');
+        console.log(response.data);
+        setIsMain(true);
+        userMainPlant()
+          .then(() => {
+            handleTodo();
           })
           .catch((error) => {
             console.log(error);
           });
       })
       .catch((error) => {
-        console.error(error);
+        console.log(error);
       });
-
     setOpen(false);
   };
+
+  //식물 투두리스트 todo 테이블에 저장
+  const handleTodo = () => {
+    axios.post('http://localhost:8800/rectodo', { plantname: plantname, userplantnum: userplantnum, usernum: usernum }).then((res) => {
+      console.log('todotodotodo', res.data);
+    });
+  };
+
   const handleCancel = () => {
     setOpen(false);
   };
 
   const text = `${experience} ${time} ${address} ${size} ${light} ${functions}`;
+  const text2 = `${buttonexperience} ${buttontime} ${buttonaddress} ${buttonsize} ${buttonlight} ${buttonfunctions}`;
   console.log('text: ', text);
+  console.log('text2: ', text2);
 
   const handleSubmit = async (e) => {
     console.log(loading);
@@ -196,61 +239,26 @@ const App = ({ usernum, buttonValue }) => {
 
 
       const result = await response.json().then((data) => setResponse(data.message), setLoading(false));
+
+      // handleSubmit이 완료된 후에 추가 요청 보내기
+      await handleInsertText();
+    } catch (error) {
+      window.alert(error);
+    }
+  };
+
+  const handleInsertText = async () => {
+    try {
+      const res3 = await axios.post('http://localhost:8800/inserttext', { message: text2, usernum: state });
+      // 추가 요청에 대한 처리 코드
     } catch (error) {
       window.alert(error);
     }
   };
 
   useEffect(() => {
-
-  },[])
-
-  // useEffect(() => {
-  //   async function getTableData() {
-  //     const data0 = await onUserPlantPrint();
-  //     // const data1 = await onUserPlantSlot();
-  //     setUserPlantInfo(data0);
-  //     //setUserPlantEnroll1(data1);
-  //   }
-  //   getTableData();
-  // }, []);
-
-  // useEffect(() => {
-  //   onUserPlantSlot();
-  // });
-
-  // return onFunctions ? (
-  //   <div>
-  //     <form onSubmit={handleSubmit}>
-  //       <button className='btn' type='submit' value={`${text}`} onClick={() => setMessage(`${text}`)}>
-  //         결과를 보시겠습니까?
-  //       </button>
-  //     </form>
-
-  //     <div>
-  //       <h3>Plant Recommendations:</h3>
-  //       <ul>
-  //         {plantRecommendations.map((recommendation, idx) => (
-  //           <li key={idx}>
-  //             <h4>{recommendation.korName}</h4>
-  //             <p>{recommendation.context}</p>
-  //           </li>
-  //         ))}
-  //       </ul>
-  //     </div>
-
-  //     <div style={{ justifyContent: 'space-between' }}>
-  //       <h3>Plant Images:</h3>
-  //       {plantImages.length > 0 && (
-  //         <div className='plantimg'>
-  //           {plantImages.map((imageUrl, idx) => (
-  //             <img key={idx} src={imageUrl} alt={`generated image ${idx}`} />
-  //           ))}
-  //         </div>
-  //       )}
-  //     </div>
-  //   </div>
-  // )
+    userMainPlant();
+  }, []);
 
   return isMain ? (
     <Main />
@@ -262,6 +270,19 @@ const App = ({ usernum, buttonValue }) => {
             onFunctions ? (
               loading ? (
                 <div>
+                  <menu className='btnmenu'>
+                    <button className='menubtn' onClick={onInfo}>
+                      마이페이지
+                    </button>
+                    <br></br>
+                    <button className='menubtn' onClick={onCommunity}>
+                      커뮤니티
+                    </button>
+                    <br></br>
+                    <button className='menubtn'>To-do list</button>
+                    <br></br>
+                    <button className='menubtn'>로그아웃</button>
+                  </menu>
                   <form onSubmit={handleSubmit}>
                     <button
                       className='resultbtn'
@@ -286,6 +307,19 @@ const App = ({ usernum, buttonValue }) => {
                 </div>
               ) : (
                 <div>
+                  <menu className='btnmenu'>
+                    <button className='menubtn' onClick={onInfo}>
+                      마이페이지
+                    </button>
+                    <br></br>
+                    <button className='menubtn' onClick={onCommunity}>
+                      커뮤니티
+                    </button>
+                    <br></br>
+                    <button className='menubtn'>To-do list</button>
+                    <br></br>
+                    <button className='menubtn'>로그아웃</button>
+                  </menu>
                   <form onSubmit={handleSubmit}>
                     <button
                       className='resultbtn'
@@ -303,8 +337,8 @@ const App = ({ usernum, buttonValue }) => {
                   <div>
                     {Array.isArray(response) &&
                       response.map((plant) => (
-                        <div className='recommend' key={plant.korName}>
-                          <button value={[[plant.korName], [plant.context]]} className='recbtn' onClick={showModal}>
+                        <div className='recommend' key={plant.name}>
+                          <button value={[[plant.korName], [plant.plant_characteristic]]} className='recbtn' onClick={showModal}>
                             {plant.korName}
                           </button>
                           <div style={{ justifyContent: 'space-between' }}>
@@ -317,7 +351,6 @@ const App = ({ usernum, buttonValue }) => {
                               </div>
                             )}
                           </div>
-
                           <Modal
                             title='식물요정'
                             open={open}
@@ -335,7 +368,7 @@ const App = ({ usernum, buttonValue }) => {
                             <h2 className='enroll'>{recommendPlant} 키우시겠습니까?</h2>
                           </Modal>
                           <br></br>
-                          <div>{plant.context}</div>
+                          <div>{plant.plant_characteristic}</div>
                           <br></br>
                         </div>
                       ))}
@@ -344,6 +377,19 @@ const App = ({ usernum, buttonValue }) => {
               )
             ) : (
               <div className='Functions'>
+                <menu className='btnmenu'>
+                  <button className='menubtn' onClick={onInfo}>
+                    마이페이지
+                  </button>
+                  <br></br>
+                  <button className='menubtn' onClick={onCommunity}>
+                    커뮤니티
+                  </button>
+                  <br></br>
+                  <button className='menubtn'>To-do list</button>
+                  <br></br>
+                  <button className='menubtn'>로그아웃</button>
+                </menu>
                 <p>원하는 식물의 기능이 있나요?</p>
                 <div>
                   <button className='btn' value='공기정화' onClick={handleFunctionsButton}>
@@ -369,6 +415,19 @@ const App = ({ usernum, buttonValue }) => {
             )
           ) : (
             <div className='Light'>
+              <menu className='btnmenu'>
+                <button className='menubtn' onClick={onInfo}>
+                  마이페이지
+                </button>
+                <br></br>
+                <button className='menubtn' onClick={onCommunity}>
+                  커뮤니티
+                </button>
+                <br></br>
+                <button className='menubtn'>To-do list</button>
+                <br></br>
+                <button className='menubtn'>로그아웃</button>
+              </menu>
               <p>광량 조건은 어떻게 되나요?</p>
               <div>
                 <button className='btn' value='많다' onClick={handleLightButton}>
@@ -389,26 +448,52 @@ const App = ({ usernum, buttonValue }) => {
           )
         ) : (
           <div className='Size'>
+            <menu className='btnmenu'>
+              <button className='menubtn' onClick={onInfo}>
+                마이페이지
+              </button>
+              <br></br>
+              <button className='menubtn' onClick={onCommunity}>
+                커뮤니티
+              </button>
+              <br></br>
+              <button className='menubtn'>To-do list</button>
+              <br></br>
+              <button className='menubtn'>로그아웃</button>
+            </menu>
             <p>원하는 식물의 크기가 있나요?</p>
             <div>
               <button className='btn' value='크다' onClick={handleSizeButton}>
-                크다
+                크다(1m이상)
               </button>
               <br></br>
               <br></br>
               <button className='btn' value='중간' onClick={handleSizeButton}>
-                중간
+                중간(30cm~1m정도)
               </button>
               <br></br>
               <br></br>
               <button className='btn' value='작다' onClick={handleSizeButton}>
-                작다
+                작다(30cm이하)
               </button>
             </div>
           </div>
         )
       ) : (
         <div className='Address'>
+          <menu className='btnmenu'>
+            <button className='menubtn' onClick={onInfo}>
+              마이페이지
+            </button>
+            <br></br>
+            <button className='menubtn' onClick={onCommunity}>
+              커뮤니티
+            </button>
+            <br></br>
+            <button className='menubtn'>To-do list</button>
+            <br></br>
+            <button className='menubtn'>로그아웃</button>
+          </menu>
           <p>식물을 키우는 장소는 어디인가요?</p>
           <div>
             <button className='btn' value='yes' onClick={handleAddressButton}>
@@ -424,6 +509,19 @@ const App = ({ usernum, buttonValue }) => {
       )
     ) : (
       <div className='Time'>
+        <menu className='btnmenu'>
+          <button className='menubtn' onClick={onInfo}>
+            마이페이지
+          </button>
+          <br></br>
+          <button className='menubtn' onClick={onCommunity}>
+            커뮤니티
+          </button>
+          <br></br>
+          <button className='menubtn'>To-do list</button>
+          <br></br>
+          <button className='menubtn'>로그아웃</button>
+        </menu>
         <p>식물 관리에 참여할 수 있는 시간이 얼마나 되나요?</p>
         <div>
           <button className='btn' value='yes' onClick={handleTimeButton}>
@@ -439,6 +537,19 @@ const App = ({ usernum, buttonValue }) => {
     )
   ) : (
     <div className='Experience'>
+      <menu className='btnmenu'>
+        <button className='menubtn' onClick={onInfo}>
+          마이페이지
+        </button>
+        <br></br>
+        <button className='menubtn' onClick={onCommunity}>
+          커뮤니티
+        </button>
+        <br></br>
+        <button className='menubtn'>To-do list</button>
+        <br></br>
+        <button className='menubtn'>로그아웃</button>
+      </menu>
       <p>식물을 키워본 적이 있으신가요?</p>
       <div>
         <button className='btn' value='yes' onClick={handleExperienceButton}>

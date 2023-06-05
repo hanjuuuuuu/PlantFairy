@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Table, Modal, Radio } from 'antd';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
 import '../design/main.css';
+import { useLocation, useNavigate } from 'react-router-dom';
 //import App from './App.js';
 import Recommend from './Recommend.jsx';
 import Community from './Community.jsx';
 import Info from './MyPage.jsx';
+import NewRecommend from './NewReccomend.jsx';
+import Todo from './Todo';
 
 const Main = () => {
   /**
    *  페이지에서 사용하는 상태변수
    */
   const [isRecommend, setIsRecommend] = useState(false);
+  const [isNewRecommend, setIsNewRecommend] = useState(false);
   const [isInfo, setIsInfo] = useState(false);
   const [isCommunity, setIsCommunity] = useState(false);
   const [userPlantEnroll0, setUserPlantEnroll0] = useState('+');
@@ -32,26 +35,51 @@ const Main = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-
   /**
    *  화면에서 사용하는 이벤트를 정의
    */
+
+  const navigate = useNavigate();
+
   const onClick = (e) => {
     console.log('click', e);
   };
 
-  const onRecommend = (e) => {     //슬롯 + 누르면 추천페이지로 이동, 버튼에 따라 식물 출력 자리 지정
+  const onRecommend = (e) => {
+    //슬롯 + 누르면 추천페이지로 이동, 버튼에 따라 식물 출력 자리 지정
+    // name: button 번호
     const name = e.target.value;
     setButtonValue(name);
     setIsRecommend(true);
   };
+
+  const onNewRecommend = (e) => {
+    //슬롯 + 누르면 추천페이지로 이동, 버튼에 따라 식물 출력 자리 지정
+    // name: button 번호
+    const name = e.target.value;
+
+    if (name > buttonValue) {
+      setButtonValue(name);
+      setIsNewRecommend(true);
+    }
+  };
+
   const onInfo = () => {
-    //마이 페이지로 이동
-    setIsInfo(true);
+    navigate('/info');
   };
   const onCommunity = () => {
     //커뮤니티 페이지로 이동
-    setIsCommunity(true);
+    navigate('/community');
+  };
+
+  const onTodo = () => {
+    //투두리스트 페이지로 이동
+    navigate('/todo', { state: state });
+  };
+
+  const onRandom = () => {
+    // 페이지로 이동
+    navigate('/random', { state: state });
   };
 
   const showModal = () => {
@@ -79,15 +107,10 @@ const Main = () => {
       title: '식물 특성',
       dataIndex: 'plant_characteristic',
     },
-    {
-      title: '키우기 난이도',
-      dataIndex: 'plant_level',
-    },
   ];
 
   //login에서 user_num 받아오기
   const { state } = useLocation();
-
   console.log('usernum', state);
   console.log('mainbutton', buttonValue);
 
@@ -103,29 +126,13 @@ const Main = () => {
     });
   };
 
-  // const onUserPlantPrint = () => {
-  //   //user_plant 테이블에서 사용자의 식물 정보 가져와 메인 식물 정보 테이블로 출력
-  //   axios
-  //     .post('http://localhost:8800/plantpicture', { usernum: state })
-  //     .then((response) => {
-  //       const plant_name = response.data[0].plant_name;
-  //       //const plant_picture = response.data[0].plant_picture;
-
-  //       //setUserPlantEnroll0(plant_picture); //메인 식물 이미지
-  //       //console.log('mainplant', response.data[0]);
-  //       setUserPlantInfo(response.data); //메인 식물 이름, 특성, 키우기 난이도
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // };
-
   const onUserPlantPrint = () => {
     // user_plant 테이블에서 사용자의 식물 정보 가져와 메인 식물 정보 테이블로 출력
     axios
       .post('http://localhost:8800/plantpicture', { usernum: state })
       .then((response) => {
         const plant_name = response.data[0].plant_name;
+        console.log('Onuser222');
 
         setUserPlantInfo(response.data); // 메인 식물 이름, 특성, 키우기 난이도
         userPlantEnroll(plant_name); // 해당 식물의 이미지 출력
@@ -166,6 +173,7 @@ const Main = () => {
   };
 
   useEffect(() => {
+    //console.log('Onuser333');
     async function getTableData() {
       const data0 = await onUserPlantPrint();
       setUserPlantInfo(data0);
@@ -177,11 +185,7 @@ const Main = () => {
     onUserPlantSlot();
   });
 
-  return isCommunity ? (
-    <Community />
-  ) : isInfo ? (
-    <Info />
-  ) : isRecommend ? (
+  return isRecommend ? (
     <Recommend usernum={state} buttonValue={buttonValue} />
   ) : (
     <div className='main'>
@@ -192,6 +196,7 @@ const Main = () => {
       <br></br>
 
       <div className='printImg'></div>
+
       <div>
         <Button className='slot' onClick={showModal}>
           {' '}
@@ -226,7 +231,13 @@ const Main = () => {
           커뮤니티
         </button>
         <br></br>
-        <button className='menubtn'>To-do list</button>
+        <button className='menubtn' onClick={onTodo}>
+          To-do list
+        </button>
+        <br></br>
+        <button className='menubtn' onClick={onRandom}>
+          다양한 식물 추천
+        </button>
         <br></br>
         <button className='menubtn'>로그아웃</button>
       </menu>

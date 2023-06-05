@@ -1,4 +1,3 @@
-
 .App {
   text-align: center;
   width: 460px;
@@ -11,7 +10,7 @@
   margin: auto;
   text-align: center;
   margin-bottom: 60px;
-  border: 2px solid #859C8A;
+  border: 2px solid #859c8a;
   height: 790px;
   border-radius: 7px;
 }
@@ -24,10 +23,9 @@ body {
   text-align: left;
   font-weight: nomal;
   color: black;
-
 }
 
-.App .form  .joinBox {
+.App .form .joinBox {
   padding: 20px;
 }
 
@@ -38,7 +36,7 @@ body {
 .App .form .joinBox .joinBox2 input {
   width: calc(100% - 34px);
   padding: 15px;
-  border: 1px solid #6C6562;
+  border: 1px solid #6c6562;
   margin-bottom: 15px;
   border-radius: 7px;
 }
@@ -46,15 +44,15 @@ body {
 .App .form .joinBox button {
   width: 100%;
   padding: 15px;
-  border: 1px solid #6C6562;
-  background-color: #859C8A;
+  border: 1px solid #6c6562;
+  background-color: #859c8a;
   font-size: 20px;
   color: #fff;
   border-radius: 7px;
 }
 
-.App .form .joinBox button:hover{
-  background: #BDCEBB;
+.App .form .joinBox button:hover {
+  background: #bdcebb;
 }
 
 .App .form .joinBox .link {

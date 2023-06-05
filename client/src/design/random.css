@@ -1,0 +1,15 @@
+* {
+  font-family: '스스로넷 칠백삼', 'Courier New', Courier;
+}
+
+.theme {
+  margin: auto;
+  margin-top: 100px;
+}
+
+.choose {
+  width: 100px;
+  margin: auto;
+  margin-top: 10px;
+  display: block;
+}

@@ -1,39 +1,64 @@
 import express from 'express';
 import authRoutes from './routes/auth.js';
+import postsRoutes from './routes/posts.js';
+//import usersRoutes from './routes/users.js';
+import commentsRoutes from './routes/comments.js';
+import likesRoutes from './routes/likes.js';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import * as dotenv from 'dotenv';
+import mysql from 'mysql';
+import dotenv from 'dotenv';
 import download from 'image-downloader';
 import path from 'path';
 import fs from 'fs';
+import multer from 'multer';
 import { db } from './db.js';
-import download from 'image-downloader';
-import path from 'path';
-import fs from 'fs';
 import { Configuration, OpenAIApi } from 'openai';
-
-import bodyParser from 'body-parser';
-
 
 dotenv.config();
 const app = express();
 
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Credentials', true);
+  next();
+});
 
-
-app.use(cors());
-// app.use(express.json());
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.json());
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+  })
+);
 app.use(cookieParser());
+// app.use(bodyParser.json({ limit: '50mb' }));
+// app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.urlencoded({ extended: false }));
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, '../client/public/upload');
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
+
+app.post('/api/upload', upload.single('file'), (req, res) => {
+  const file = req.file;
+  res.status(200).json(file.filename);
+});
+
 app.use('/api/auth', authRoutes);
-
-app.use(bodyParser.json());
-
+//app.use('/api/users', usersRoutes);
+app.use('/api/posts', postsRoutes);
+app.use('/api/likes', likesRoutes);
+app.use('/api/comments', commentsRoutes);
 
 const configuration = new Configuration({
-  apiKey: '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',
+  apiKey: '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', //process.env.API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
@@ -46,7 +71,6 @@ app.post('/recommend', async (req, res) => {
   try {
     const response = await openai.createCompletion({
       model: 'text-davinci-003',
-
       prompt: `The three plants in ${message} are recommended and explained, and the answer format is numbered as 1.2.3 and translated into Korean and Korean plant names and English plant names are separated by -, and English plant names and Korean plant descriptions are separated by :`,
       max_tokens: 1000,
       temperature: 0.8,
@@ -60,17 +84,15 @@ app.post('/recommend', async (req, res) => {
         .split(/\d+\./)
         .filter((recommendation) => recommendation)
         .map((recommendation) => {
-          const [name, context] = (recommendation || '').trim().split(/:\s+/);
+          const [name, plant_characteristic] = (recommendation || '').trim().split(/:\s+/);
           const [korName, englishName] = name.trim().split(' - ');
-          return { korName: korName, englishName: englishName, context };
+          return { korName: korName, englishName: englishName, plant_characteristic };
         });
 
       // MySQL 데이터베이스에 데이터 삽입
-
-      const sqlInsert = 'INSERT IGNORE INTO plant(plant_name, eng_Name, context) VALUES (?, ?, ?)';
-
+      const sqlInsert = 'INSERT IGNORE INTO plant(plant_name, eng_name, plant_characteristic) VALUES (?, ?, ?)';
       plantRecommendations.forEach((recommendation) => {
-        db.query(sqlInsert, [recommendation.korName, recommendation.englishName, recommendation.context || ''], (err, result) => {
+        db.query(sqlInsert, [recommendation.korName, recommendation.englishName, recommendation.plant_characteristic || ''], (err, result) => {
           if (err) {
             console.log(err);
           }
@@ -87,46 +109,105 @@ app.post('/recommend', async (req, res) => {
   }
 });
 
+let todoRecommendations;
+app.post('/rectodo', async (req, res) => {
+  const plant = req.body;
+  console.log('recplantname', plant.plantname);
+  console.log('recuserplantnum', plant.userplantnum);
+  console.log('recusernum', plant.usernum);
+  try {
+    const response = await openai.createCompletion({
+      model: 'text-davinci-003',
+      prompt: `Please make a to-do list in Korean for 31 days with one thing to do to grow ${plant.plantname}, and the answer format is numbered as 1.2.3 `,
+      max_tokens: 4000,
+      temperature: 0.2,
+    });
 
-// 메인 페이지에서 메인으로 지정할 식물 고를 수 있게 사용자의 등록된 전체 식물 이름 전달 
-app.post('/plantall', async (req, res) => {   
-  let userplantnum = req.body.userplantnum;
+    console.log('_____________________________', response.data);
 
-  const sqluserplant = 'SELECT user_plant_num AS "key", plant_name FROM user_plant WHERE user_num = ?'; 
-  db.query(sqluserplant, userplantnum, (err,  data)=> {
-    if(!err){
-      res.send(data);
+    if (response.data && response.data.choices) {
+      todoRecommendations = response.data.choices[0].text
+        .trim()
+        .split('\n')
+        .filter((recommendation) => recommendation)
+        .map((recommendation) => {
+          const [day, context] = (recommendation || '').trim().split('.');
+          console.log('day', day, 'context', context);
+          return { day: day, context: context };
+        });
+
+      // MySQL 데이터베이스에 식물 투두리스트 데이터 삽입
+      const sqlInsert = 'INSERT INTO todo(user_plant_num, day, task, complete) VALUES (?, ?, ?, ?)';
+      todoRecommendations.forEach((recommendation) => {
+        db.query(sqlInsert, [plant.userplantnum, recommendation.day, recommendation.context, 'false'], (err, result) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+      });
+      res.json({ message: todoRecommendations });
+    } else {
+      res.json({ message: 'Error todo recommendations' });
     }
-    else {
-      console.log(err);
-    }
-  })
-})
+  } catch (error) {
+    console.log(error.response);
+  }
+});
 
-//메인 페이지에 출력할 슬롯 별 식물 정보 전달
-app.post('/plantslot', async (req, res) => {  
-  let slotnum = req.body.slotnum; 
+//todo 페이지에 출력할 식물 투두리스트 전달
+app.post('/planttodo', async (req, res) => {
+  let plantname = req.body.plantname;
+  let userplantnum = 93;
   let usernum = req.body.usernum;
-  //console.log('slotnum',slotnum);
+  let tododay = req.body.day;
+  console.log('todo plantname', plantname, 'todo userplantnum', userplantnum, 'todo day', tododay);
 
-  const sqluserplant = 'SELECT user_plant_num AS "key",plant_name, plant_picture FROM user_plant WHERE user_num = ? AND plant_main = 1'; 
-  db.query(sqluserplant, usernum, (err,  data)=> {
-    if(!err){
+  const sqlplanttodo = `SELECT todo_num AS "key", task, complete, day FROM todo WHERE user_plant_num = '${userplantnum}'`;
+  db.query(sqlplanttodo, (err, data) => {
+    if (!err) {
+      console.log('planttodo', data);
       res.send(data);
-    }
-    else {
+    } else {
       console.log(err);
     }
-  })
-})
+  });
+});
 
-app.post('/plantenroll', async(req, res) => {
-=======
+app.post('/inserttext', async (req, res) => {
+  const { message } = req.body;
+  const userNum = req.body.usernum;
+
+  // insert 문으로 변경
+  const sqlInsert = 'INSERT INTO user_review(user_num, user_pick) VALUES (?, ?)';
+  db.query(sqlInsert, [userNum, message], (err, data) => {
+    if (!err) {
+      res.send(data);
+    } else {
+      console.log(err);
+    }
+  });
+});
+
+// 메인 페이지에 출력할 메인 식물 정보 전달
 app.post('/plantpicture', async (req, res) => {
   let plantpicture = req.body.usernum;
-  console.log('picture------', plantpicture);
+  console.log('usernum------', plantpicture);
 
-  const sqluserplant = `SELECT user_plant_num AS "key", plant_name, plant_characteristic, plant_level, plant_picture FROM user_plant WHERE plant_main = 0 AND user_num = '${plantpicture}'`;
+  const sqluserplant = `SELECT user_plant_num AS "key", plant_name, plant_characteristic, plant_level, plant_picture FROM user_plant WHERE user_num = '${plantpicture}'`;
+  db.query(sqluserplant, plantpicture, (err, data) => {
+    if (!err) {
+      res.send(data);
+    } else {
+      console.log(err);
+    }
+  });
+});
+
+app.post('/getbeforplant', async (req, res) => {
+  let plantpicture = req.body.usernum;
+  //console.log('usernum------', plantpicture);
+
+  const sqluserplant = `SELECT plant_name FROM user_plant WHERE user_num = '${plantpicture}' ORDER BY user_plant_num DESC LIMIT 1`;
   db.query(sqluserplant, plantpicture, (err, data) => {
     if (!err) {
       res.send(data);
@@ -157,7 +238,7 @@ app.post('/plantslot', async (req, res) => {
   let usernum = req.body.usernum;
   //console.log('slotnum',slotnum);
 
-  const sqluserplant = 'SELECT user_plant_num AS "key",plant_name, plant_picture FROM user_plant WHERE user_num = ? AND plant_main = 1';
+  const sqluserplant = `SELECT user_plant_num AS "key",plant_name, plant_picture FROM user_plant WHERE user_num = ${usernum}`;
   db.query(sqluserplant, usernum, (err, data) => {
     if (!err) {
       res.send(data);
@@ -171,11 +252,11 @@ app.post('/plantenroll', async (req, res) => {
   let usernum = req.body.usernum;
   let plantname = req.body.plantname;
   let plantmain = req.body.plantmain;
-  let plantpicture = req.body.plantpicture;
+  //let plantpicture = req.body.plantpicture;
   let plantcharacteristic = req.body.plantcharacteristic;
   let plantlevel = req.body.plantlevel;
-
   console.log('enroll', plantname);
+  //console.log('pp : ', plantpicture);
 
   const sqlplantenroll = 'INSERT INTO user_plant (user_num, plant_name, plant_main, plant_characteristic, plant_level) values(?, ?, ?, ?, ?)';
   db.query(sqlplantenroll, [usernum, plantname, plantmain, plantcharacteristic, plantlevel], (err, data) => {
@@ -185,6 +266,38 @@ app.post('/plantenroll', async (req, res) => {
       console.log(err);
     }
   });
+});
+
+let plantGames;
+app.post('/plantgame', async (req, res) => {
+  const { message } = req.body;
+  console.log(message);
+  try {
+    const response = await openai.createCompletion({
+      model: 'text-davinci-003',
+      prompt: `${message} Please express your disposition in 3 lines in Korean and recommend a suitable plant along with the reason. (without the word ${message})`,
+      max_tokens: 1000,
+      temperature: 0.8,
+    });
+
+    console.log(response.data);
+
+    if (response.data && response.data.choices) {
+      plantGames = response.data.choices[0].text
+        .trim()
+        .split(/\d+\./)
+        .filter((recommendation) => recommendation)
+        .map((recommendation) => {
+          console.log('context', recommendation);
+          return { context: recommendation };
+        });
+      res.json({ message: plantGames });
+    } else {
+      res.json({ message: 'Error plantgame' });
+    }
+  } catch (error) {
+    console.log(error.response);
+  }
 });
 
 // 여기는 돈나감!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -200,7 +313,6 @@ app.post('/', async (req, res) => {
 
   for (let i = 0; i < plantRecommendations.length; i++) {
     const response = await openai.createImage({
-
       prompt: `${plantRecommendations[i].englishName}`,
       n: 1,
       size: '256x256',
@@ -223,8 +335,7 @@ app.post('/', async (req, res) => {
 
           const imagePath = path.join('sources/', path.basename(filename)).replace(/\\/g, '/');
           // Save the path to the database
-
-          db.query(`UPDATE plant SET img ='${imagePath}' WHERE eng_Name='${plantRecommendations[i].englishName}'`, (error, results) => {
+          db.query(`UPDATE plant SET img ='${imagePath}' WHERE eng_name='${plantRecommendations[i].englishName}'`, (error, results) => {
             if (error) {
               console.log(error);
               res.status(500).send('Error saving image path to the database');
@@ -247,7 +358,6 @@ app.post('/', async (req, res) => {
 });
 
 // 이미지 받아오는 기능
-
 app.get('/imagespath/:plantName', (req, res) => {
   const plant_name = req.params.plantName.replace(/\n/g, '');
 
@@ -282,18 +392,144 @@ app.get('/images/:plantName', (req, res) => {
     }
 
     const imgPath = result[0].img;
-
     const imgExists = fs.existsSync(imgPath);
     if (!imgExists) {
       return res.status(404).send('Image not found');
     }
     const imgFile = fs.readFileSync(imgPath);
-
     res.writeHead(200, { 'Content-Type': 'image/png' });
     res.end(Buffer.from(imgFile).toString('base64'));
   });
 });
 
+app.post('/saveRating', (req, res) => {
+  const starValue = req.body.ratingValue; // starValue 값만 가져오도록 수정
+  const userNum = req.body.user_num;
+  console.log('starValue from api', starValue);
+  console.log('starValue from api', userNum);
+
+  db.query(
+    `INSERT INTO user_review (user_num, review)
+     SELECT ${userNum} AS user_num, '${starValue}' AS review`,
+    (err, data) => {
+      if (!err) {
+        res.send(data);
+      } else {
+        console.log(err);
+      }
+    }
+  );
+});
+
+app.post('/unsatisfied', async (req, res) => {
+  const reasons = req.body.reasons;
+  const plantName = req.body.plantName;
+  console.log(reasons);
+  console.log(plantName);
+
+  // 함수 재사용 할 수 있을듯 => 나중에 하기
+  try {
+    const response = await openai.createCompletion({
+      model: 'text-davinci-003',
+      // prompt 메세지 변경 => O
+      prompt: `Recommend three different plants and provide descriptions, the name of the plant I previously received recommendations for is ${plantName}, and ${reasons} was not satisfactory, and the answer format is numbered as 1.2.3 and translated into Korean and Korean plant names and English plant names are separated by -, and English plant names and Korean plant descriptions are separated by :`,
+      max_tokens: 1000,
+      temperature: 0.8,
+    });
+
+    console.log(response.data);
+    console.log('Unstaisfied');
+
+    if (response.data && response.data.choices) {
+      plantRecommendations = response.data.choices[0].text
+        .trim()
+        .split(/\d+\./)
+        .filter((recommendation) => recommendation)
+        .map((recommendation) => {
+          const [name, plant_characteristic] = (recommendation || '').trim().split(/:\s+/);
+          const [korName, englishName] = name.trim().split(' - ');
+          return { korName: korName, englishName: englishName, plant_characteristic };
+        });
+
+      // MySQL 데이터베이스에 데이터 삽입
+      const sqlInsert = 'INSERT IGNORE INTO plant(plant_name, eng_name, plant_characteristic) VALUES (?, ?, ?)';
+      plantRecommendations.forEach((recommendation) => {
+        db.query(sqlInsert, [recommendation.korName, recommendation.englishName, recommendation.plant_characteristic || ''], (err, result) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+      });
+
+      res.json({ message: plantRecommendations });
+    } else {
+      res.json({ message: 'Error fetching plant recommendations' });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+app.post('/similar', async (req, res) => {
+  const plantName = req.body.plantName;
+
+  // 함수 재사용 할 수 있을듯 => 나중에 하기
+  try {
+    const response = await openai.createCompletion({
+      model: 'text-davinci-003',
+      // prompt 메세지 변경 =>
+      prompt: `Please recommend three similar plants to the one I previously received recommendations for and successfully grew, named ${plantName}, and the answer format is numbered as 1.2.3 and translated into Korean and Korean plant names and English plant names are separated by -, and English plant names and Korean plant descriptions are separated by :`,
+      max_tokens: 1000,
+      temperature: 0.8,
+    });
+
+    console.log(response.data);
+    console.log('Unstaisfied');
+
+    if (response.data && response.data.choices) {
+      plantRecommendations = response.data.choices[0].text
+        .trim()
+        .split(/\d+\./)
+        .filter((recommendation) => recommendation)
+        .map((recommendation) => {
+          const [name, plant_characteristic] = (recommendation || '').trim().split(/:\s+/);
+          const [korName, englishName] = name.trim().split(' - ');
+          return { korName: korName, englishName: englishName, plant_characteristic };
+        });
+
+      // MySQL 데이터베이스에 데이터 삽입
+      const sqlInsert = 'INSERT IGNORE INTO plant(plant_name, eng_name, plant_characteristic) VALUES (?, ?, ?)';
+      plantRecommendations.forEach((recommendation) => {
+        db.query(sqlInsert, [recommendation.korName, recommendation.englishName, recommendation.plant_characteristic || ''], (err, result) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+      });
+
+      res.json({ message: plantRecommendations });
+    } else {
+      res.json({ message: 'Error fetching plant recommendations' });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+app.post('/getbeforepick', async (req, res) => {
+  let plantpicture = req.body.usernum;
+
+  const sqluserplant = `SELECT user_pick FROM user_review WHERE user_num = '${plantpicture}' ORDER BY user_review_num DESC LIMIT 1`;
+  db.query(sqluserplant, plantpicture, (err, data) => {
+    if (!err) {
+      res.send(data);
+    } else {
+      console.log(err);
+    }
+  });
+});
 
 app.listen(8800, () => {
   console.log('Connected...');

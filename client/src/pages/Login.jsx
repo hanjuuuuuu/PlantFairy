@@ -8,7 +8,7 @@ import logo from '../img/logo.png';
 const Login = () => {
   const [inputs, setInputs] = useState({
     username: '',
-    password: '',
+    user_pw: '',
   });
   const [err, setError] = useState(null);
 
@@ -27,14 +27,13 @@ const Login = () => {
       console.log('user_num: ', getUserNum);
       navigate('/main', { state: getUserNum });
     } catch (err) {
-      setError(JSON.stringify (err));
+      setError(JSON.stringify(err));
     }
   };
 
   return (
     <div className='App'>
       <div className='loginBox'>
-
         <img src={logo} alt='My Image' width='160' height='60' />
         <address>식물요정 웹 사이트에 오신 걸 환영합니다.</address>
         <br></br>
@@ -45,7 +44,7 @@ const Login = () => {
             <label htmlFor='user_id'></label>
             <input required type='text' id='user_id' placeholder='아이디' name='user_id' onChange={handleChange} />
             <label htmlFor='password'></label>
-            <input required type='password' id='password' placeholder='패스워드' name='password' onChange={handleChange} />
+            <input required type='password' id='user_pw' placeholder='패스워드' name='user_pw' onChange={handleChange} />
           </div>
 
           <div className='loginBox3'>
@@ -55,8 +54,7 @@ const Login = () => {
 
           <br></br>
           <div className='link'>
-            회원가입하시겠습니까? 
-            &nbsp;
+            회원가입하시겠습니까? &nbsp;
             <Link to='/register'>회원가입</Link>
           </div>
         </form>

@@ -1,8 +1,9 @@
-/*
-* {
-  font-family: '스스로넷 칠백삼','Courier New', Courier;
 
-}
+/* * {
+  background-color: #ebf8dc;
+  font-family: '스스로넷 칠백삼', 'Courier New', Courier;
+  font-weight: bold;
+
 
 header {
   position: fixed;
@@ -54,8 +55,7 @@ p {
 }
 
 .spin {
-    padding:50px 50px 10px 450px;
-    width: '100px',
-  }
+  padding: 50px 50px 10px 450px;
+  width: '100px';
+} */
 
-*/
