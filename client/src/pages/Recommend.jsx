@@ -202,7 +202,12 @@ const App = ({ usernum, buttonValue }) => {
 
   //식물 투두리스트 todo 테이블에 저장
   const handleTodo = () => {
-    axios.post('http://localhost:8800/rectodo', { plantname: plantname, userplantnum: userplantnum, usernum: usernum }).then((res) => {
+    axios.post('http://localhost:8800/rectodo', { 
+      plantname: plantname, 
+      userplantnum: userplantnum, 
+      usernum: usernum 
+    })
+    .then((res) => {
       console.log('todotodotodo', res.data);
     });
   };
@@ -257,7 +262,7 @@ const App = ({ usernum, buttonValue }) => {
   };
 
   useEffect(() => {
-    userMainPlant();
+    //userMainPlant();
   }, []);
 
   return isMain ? (
