@@ -36,6 +36,8 @@ const App = ({usernum, buttonValue}) => {
   const [plantRecommendations, setPlantRecommendations] = useState([]);
   const [image, setImage] = useState('');
   const [plantImages, setPlantImages] = useState([]);
+  const [plantname, setPlantName] = useState('');
+  const [userplantnum, setUserPlantNum] = useState('');
 
   /**
    *
@@ -131,16 +133,13 @@ const App = ({usernum, buttonValue}) => {
     setOpen(true);
   };
 
-    let plantname;
-    let userplantnum;
-
     //식물이름 가져오기
     const userMainPlant = async() => {     
       axios.post("http://localhost:8800/plantall",
       {usernum: usernum})
       .then((res) => {
-        userplantnum = res.data[(res.data.length-1)].key;
-        plantname = res.data[(res.data.length-1)].plant_name;
+        setUserPlantNum(res.data[(res.data.length-1)].key);
+        setPlantName(res.data[(res.data.length-1)].plant_name);
         console.log('recommend page',userplantnum, plantname);
       })
     }
@@ -152,7 +151,7 @@ const App = ({usernum, buttonValue}) => {
       { usernum: usernum,
         plantmain: buttonValue,
         plantname: recommendPlant,
-        plantpicture: 'png',
+        plantpicture: 'png',    //경로로 바꾸기
         plantcharacteristic: plantContext,
       }
     )
@@ -160,23 +159,33 @@ const App = ({usernum, buttonValue}) => {
         alert("등록되었습니다");
         console.log(response.data);
         setIsMain(true);
-        userMainPlant();
-
-      axios.post("http://localhost:8800/rectodo",
-      { plantname: recommendPlant,
-        userplantnum: userplantnum,
-        usernum: usernum
-      })
-      .then((res) => {
-        console.log('todotodotodo',res.data)
-      })
+        userMainPlant()
+        .then(()=>{
+          handleTodo();
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        
     })
     .catch((error) => {
       console.log(error);
     })
     setOpen(false);
   };
-  
+
+  //식물 투두리스트 todo 테이블에 저장
+  const handleTodo = () => {
+    axios.post("http://localhost:8800/rectodo",
+        { plantname: plantname,
+          userplantnum: userplantnum,
+          usernum: usernum
+        })
+        .then((res) => {
+          console.log('todotodotodo',res.data)
+        })
+  }
+    
   const handleCancel = () => {
     setOpen(false);
   };

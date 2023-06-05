@@ -10,7 +10,8 @@ import moment from 'moment';
 const Todo = () => {
     //const { token } = theme.useToken();
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const [task, setTask] = useState('');
+    const [tasks, setTasks] = useState([]);
+    const [daynum, setDaynum] = useState('');
 
     //**
     /*
@@ -35,14 +36,12 @@ const Todo = () => {
     const { state } = useLocation();
     let plantname;
     let userplantnum;
-    let usernum;
-    let daynum;
-    let dayname;
+    //let daynum;
 
     //식물이름 가져오기, 날짜 변경
     const handleDateClick = (date) => { 
       setSelectedDate(date);    
-      daynum = moment(date).format("DD");
+      setDaynum(moment(date).format("DD"));
 
       axios.post("http://localhost:8800/plantall",
       {usernum: state})
@@ -50,65 +49,53 @@ const Todo = () => {
         userplantnum = res.data[(res.data.length-1)].key;
         plantname = res.data[(res.data.length-1)].plant_name;
         console.log(userplantnum, plantname);
-        console.log('daynum!!!!!!!!',daynum)
-        // if(daynum == 1){
-        //   console.log('월요일');
-        //   dayname = '월요일';
-        // }
-        // else if(daynum == 2){
-        //   console.log('화요일');
-        //   dayname = '화요일';
-        // }
-        // else if(daynum == 3){
-        //   dayname ='수요일';
-        // }
-        // else if(daynum == 4){
-        //   dayname ='목요일';
-        // }
-        // else if(daynum == 5){
-        //   dayname ='금요일';
-        // }
-        // else if(daynum == 6){
-        //   dayname ='토요일';
-        // }
-        // else if(daynum == 7){
-        //   dayname ='일요일';
-        // }
+        console.log('daynum!!!!!!!!',daynum);
         userTodo();
       })
     }
 
+    // const handleDateClick = (date) => {
+    //   setSelectedDate(date);
+    //   setDaynum(moment(date).format("DD"));
+    // }
+
     const userTodo = () =>{
-      //등록된 식물 투두리스트 날짜에 맞게 가져오기
+      //등록된 식물 투두리스트 (날짜에 맞게) 가져오기
+      //값이 와야지만 넘어가게
       axios.post("http://localhost:8800/planttodo",
       { plantname: plantname,
-      usernum: state,
-      day: daynum
+        userplantnum: userplantnum,
+        usernum: state,
+        day: daynum
       })
       .then((res) => {
         console.log('daynum', daynum);
-        console.log('todotodotodo',res.data[0].task);
-        setTask(res.data[0].task, "+1point");
+        console.log('todotodotodo',res.data);
+        setTasks(res.data);
       })
     }
 
-    // const handleCheckboxChange = (taskId) => {
-    //   const updatedTasks = tasks.map((task) =>
-    //     task.id === taskId && task.date === today
-    //       ? { ...task, checked: !task.checked }
-    //       : task
-    //   );
-    //   setTask(updatedTasks);
-    // };
+    const handleCheckboxChange = (taskKey) => {
+      const updatedTasks = tasks.map((task) =>
+        task.key === taskKey && task.day === daynum
+          ? { ...task, complete: !task.complete }
+          : task
+      );
+      setTasks(updatedTasks);
+    };
 
     useEffect(() => {
+      async function handleDateClick(date) {
+        const data = await userTodo();
+        //setTasks(data);
+      };
       handleDateClick();
     }, [])
 
-    //dayname 변경되면 userTodo실행
-    useEffect(() => {
-      userTodo();
-    }, [dayname])
+    //daynum 변경되면 userTodo실행
+    // useEffect(() => {
+    //   userTodo();
+    // }, [daynum])
 
     return (<div>
       <Typography.Title className='title' level={4}>투두 리스트</Typography.Title>
@@ -123,25 +110,24 @@ const Todo = () => {
         </menu>         
 
       <div>
-      <Calendar onClickDay={handleDateClick(selectedDate)} />
+      {/* <Calendar onClickDay={handleDateClick()} /> */}
         <div className="text-gray-500 mt-4">
             {moment(selectedDate).format("YYYY년 MM월 DD일")} 
             <br></br>
         </div>
-        {/* <div>
-          {tasks.map((task) => (
-            <div key={task.id}>
+        <div>
+          {tasks && tasks.map((task) => (
+            <div key={task.key}>
               <input
                 type='checkbox'
-                checked={task.checked}
-                onChange={() => handleCheckboxChange(task.id)}
-                disabled={task.date !== today}
+                checked={task.complete}
+                onChange={() => handleCheckboxChange(task.key)}
+                disabled={task.day !== daynum}
               />
-              <label>{task}</label>
+              <label>{task.task}</label>
             </div>
           ))}
-        </div> */}
-        <div>{task}</div>
+        </div>
       </div>
     </div>
   );

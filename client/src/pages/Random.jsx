@@ -37,25 +37,6 @@ const Random = () => {
     const { state } = useLocation();
     console.log('usernum',state);
 
-    // //식물 추천 질문받기
-    // const userGame = () => {
-    //     axios.post("http://localhost:8800/plantgame",
-    //         {usernum: state}
-    //     )
-    //     .then((res) => {
-    //         setFirstQuestion(res.data[0])
-    //         // setFirstAnswer(res.data[0].first)
-    //         setSecondQuestion(res.data[1])
-    //         // setSecondAnswer(res.data[1].first)
-    //         // setThirdQuestion(res.data[2].question)
-    //         setThirdAnswer(res.data[2])
-    //         // setFourthQuestion(res.data[3].question)
-    //         setFourthAnswer(res.data[3])
-            
-    //         console.log('plant game',res.data.message);
-    //     })
-    // }
-
     const userFunGame= () => {
         setFun(true);
     }
