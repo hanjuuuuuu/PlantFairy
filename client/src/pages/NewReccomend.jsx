@@ -220,7 +220,7 @@ const NewReccomend = ({ usernum, buttonValue }) => {
               {Array.isArray(response) &&
                 response.map((plant) => (
                   <div className='recommend' key={plant.korName}>
-                    <button value={[[plant.korName], [plant.context]]} className='recbtn' onClick={showModal}>
+                    <button value={[[plant.korName], [plant.plant_characteristic]]} className='recbtn' onClick={showModal}>
                       {plant.korName}
                     </button>
                     <div style={{ justifyContent: 'space-between' }}>
@@ -251,7 +251,7 @@ const NewReccomend = ({ usernum, buttonValue }) => {
                       <h2 className='enroll'>{recommendPlant} 키우시겠습니까?</h2>
                     </Modal>
                     <br></br>
-                    <div>{plant.context}</div>
+                    <div>{plant.plant_characteristic}</div>
                     <br></br>
                   </div>
                 ))}
@@ -310,7 +310,7 @@ const NewReccomend = ({ usernum, buttonValue }) => {
             <div>
               {response.map((plant) => (
                 <div className='recommend' key={plant.korName}>
-                  <button value={[[plant.korName], [plant.context]]} className='recbtn' onClick={showModal}>
+                  <button value={[[plant.korName], [plant.plant_characteristic]]} className='recbtn' onClick={showModal}>
                     {plant.korName}
                   </button>
                   <div style={{ justifyContent: 'space-between' }}>
@@ -341,7 +341,7 @@ const NewReccomend = ({ usernum, buttonValue }) => {
                     <h2 className='enroll'>{recommendPlant} 키우시겠습니까?</h2>
                   </Modal>
                   <br />
-                  <div>{plant.context}</div>
+                  <div>{plant.plant_characteristic}</div>
                   <br />
                 </div>
               ))}

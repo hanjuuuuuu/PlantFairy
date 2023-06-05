@@ -12,6 +12,10 @@ import './style.scss';
 import Community from './pages/Community';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Recommend2 from './pages/Recommend2.jsx';
+import Todo from './pages/Todo';
+import Random from './pages/Random';
+import FunGame from './pages/FunGame';
+import Info from './pages/MyPage';
 
 function App() {
   const queryClient = new QueryClient();
@@ -53,6 +57,22 @@ function App() {
     {
       path: '/newRecommend',
       element: <Recommend2 />,
+    },
+    {
+      path: '/todo',
+      element: <Todo />,
+    },
+    {
+      path: '/random',
+      element: <Random />,
+    },
+    {
+      path: '/fungame',
+      element: <FunGame />,
+    },
+    {
+      path: '/info',
+      element: <Info />,
     },
   ]);
   return (

@@ -58,56 +58,120 @@ app.use('/api/likes', likesRoutes);
 app.use('/api/comments', commentsRoutes);
 
 const configuration = new Configuration({
-  apiKey: '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', //process.env.API_KEY,
+  apiKey: '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', //process.env.API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
 let plantRecommendations;
 
-// app.post('/recommend', async (req, res) => {
-//   const { message } = req.body;
-//   console.log(message);
+app.post('/recommend', async (req, res) => {
+  const { message } = req.body;
+  console.log(message);
 
-//   try {
-//     const response = await openai.createCompletion({
-//       model: 'text-davinci-003',
-//       prompt: `The three plants in ${message} are recommended and explained, and the answer format is numbered as 1.2.3 and translated into Korean and Korean plant names and English plant names are separated by -, and English plant names and Korean plant descriptions are separated by :`,
-//       max_tokens: 1000,
-//       temperature: 0.8,
-//     });
+  try {
+    const response = await openai.createCompletion({
+      model: 'text-davinci-003',
+      prompt: `The three plants in ${message} are recommended and explained, and the answer format is numbered as 1.2.3 and translated into Korean and Korean plant names and English plant names are separated by -, and English plant names and Korean plant descriptions are separated by :`,
+      max_tokens: 1000,
+      temperature: 0.8,
+    });
 
-//     console.log(response.data);
+    console.log(response.data);
 
-//     if (response.data && response.data.choices) {
-//       plantRecommendations = response.data.choices[0].text
-//         .trim()
-//         .split(/\d+\./)
-//         .filter((recommendation) => recommendation)
-//         .map((recommendation) => {
-//           const [name, context] = (recommendation || '').trim().split(/:\s+/);
-//           const [korName, englishName] = name.trim().split(' - ');
-//           return { korName: korName, englishName: englishName, context };
-//         });
+    if (response.data && response.data.choices) {
+      plantRecommendations = response.data.choices[0].text
+        .trim()
+        .split(/\d+\./)
+        .filter((recommendation) => recommendation)
+        .map((recommendation) => {
+          const [name, plant_characteristic] = (recommendation || '').trim().split(/:\s+/);
+          const [korName, englishName] = name.trim().split(' - ');
+          return { korName: korName, englishName: englishName, plant_characteristic };
+        });
 
-//       // MySQL 데이터베이스에 데이터 삽입
-//       const sqlInsert = 'INSERT IGNORE INTO plant(plant_name, eng_name, context) VALUES (?, ?, ?)';
-//       plantRecommendations.forEach((recommendation) => {
-//         db.query(sqlInsert, [recommendation.korName, recommendation.englishName, recommendation.context || ''], (err, result) => {
-//           if (err) {
-//             console.log(err);
-//           }
-//         });
-//       });
+      // MySQL 데이터베이스에 데이터 삽입
+      const sqlInsert = 'INSERT IGNORE INTO plant(plant_name, eng_name, plant_characteristic) VALUES (?, ?, ?)';
+      plantRecommendations.forEach((recommendation) => {
+        db.query(sqlInsert, [recommendation.korName, recommendation.englishName, recommendation.plant_characteristic || ''], (err, result) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+      });
 
-//       res.json({ message: plantRecommendations });
-//     } else {
-//       res.json({ message: 'Error fetching plant recommendations' });
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ message: 'Internal server error' });
-//   }
-// });
+      res.json({ message: plantRecommendations });
+    } else {
+      res.json({ message: 'Error fetching plant recommendations' });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+let todoRecommendations;
+app.post('/rectodo', async (req, res) => {
+  const plant = req.body;
+  console.log('recplantname', plant.plantname);
+  console.log('recuserplantnum', plant.userplantnum);
+  console.log('recusernum', plant.usernum);
+  try {
+    const response = await openai.createCompletion({
+      model: 'text-davinci-003',
+      prompt: `Please make a to-do list in Korean for 31 days with one thing to do to grow ${plant.plantname}, and the answer format is numbered as 1.2.3 `,
+      max_tokens: 4000,
+      temperature: 0.2,
+    });
+
+    console.log('_____________________________', response.data);
+
+    if (response.data && response.data.choices) {
+      todoRecommendations = response.data.choices[0].text
+        .trim()
+        .split('\n')
+        .filter((recommendation) => recommendation)
+        .map((recommendation) => {
+          const [day, context] = (recommendation || '').trim().split('.');
+          console.log('day', day, 'context', context);
+          return { day: day, context: context };
+        });
+
+      // MySQL 데이터베이스에 식물 투두리스트 데이터 삽입
+      const sqlInsert = 'INSERT INTO todo(user_plant_num, day, task, complete) VALUES (?, ?, ?, ?)';
+      todoRecommendations.forEach((recommendation) => {
+        db.query(sqlInsert, [plant.userplantnum, recommendation.day, recommendation.context, 'false'], (err, result) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+      });
+      res.json({ message: todoRecommendations });
+    } else {
+      res.json({ message: 'Error todo recommendations' });
+    }
+  } catch (error) {
+    console.log(error.response);
+  }
+});
+
+//todo 페이지에 출력할 식물 투두리스트 전달
+app.post('/planttodo', async (req, res) => {
+  let plantname = req.body.plantname;
+  let userplantnum = 93;
+  let usernum = req.body.usernum;
+  let tododay = req.body.day;
+  console.log('todo plantname', plantname, 'todo userplantnum', userplantnum, 'todo day', tododay);
+
+  const sqlplanttodo = `SELECT todo_num AS "key", task, complete, day FROM todo WHERE user_plant_num = '${userplantnum}'`;
+  db.query(sqlplanttodo, (err, data) => {
+    if (!err) {
+      console.log('planttodo', data);
+      res.send(data);
+    } else {
+      console.log(err);
+    }
+  });
+});
 
 app.post('/inserttext', async (req, res) => {
   const { message } = req.body;
@@ -202,6 +266,38 @@ app.post('/plantenroll', async (req, res) => {
       console.log(err);
     }
   });
+});
+
+let plantGames;
+app.post('/plantgame', async (req, res) => {
+  const { message } = req.body;
+  console.log(message);
+  try {
+    const response = await openai.createCompletion({
+      model: 'text-davinci-003',
+      prompt: `${message} Please express your disposition in 3 lines in Korean and recommend a suitable plant along with the reason. (without the word ${message})`,
+      max_tokens: 1000,
+      temperature: 0.8,
+    });
+
+    console.log(response.data);
+
+    if (response.data && response.data.choices) {
+      plantGames = response.data.choices[0].text
+        .trim()
+        .split(/\d+\./)
+        .filter((recommendation) => recommendation)
+        .map((recommendation) => {
+          console.log('context', recommendation);
+          return { context: recommendation };
+        });
+      res.json({ message: plantGames });
+    } else {
+      res.json({ message: 'Error plantgame' });
+    }
+  } catch (error) {
+    console.log(error.response);
+  }
 });
 
 // 여기는 돈나감!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -350,15 +446,15 @@ app.post('/unsatisfied', async (req, res) => {
         .split(/\d+\./)
         .filter((recommendation) => recommendation)
         .map((recommendation) => {
-          const [name, context] = (recommendation || '').trim().split(/:\s+/);
+          const [name, plant_characteristic] = (recommendation || '').trim().split(/:\s+/);
           const [korName, englishName] = name.trim().split(' - ');
-          return { korName: korName, englishName: englishName, context };
+          return { korName: korName, englishName: englishName, plant_characteristic };
         });
 
       // MySQL 데이터베이스에 데이터 삽입
-      const sqlInsert = 'INSERT IGNORE INTO plant(plant_name, eng_name, context) VALUES (?, ?, ?)';
+      const sqlInsert = 'INSERT IGNORE INTO plant(plant_name, eng_name, plant_characteristic) VALUES (?, ?, ?)';
       plantRecommendations.forEach((recommendation) => {
-        db.query(sqlInsert, [recommendation.korName, recommendation.englishName, recommendation.context || ''], (err, result) => {
+        db.query(sqlInsert, [recommendation.korName, recommendation.englishName, recommendation.plant_characteristic || ''], (err, result) => {
           if (err) {
             console.log(err);
           }
@@ -397,15 +493,15 @@ app.post('/similar', async (req, res) => {
         .split(/\d+\./)
         .filter((recommendation) => recommendation)
         .map((recommendation) => {
-          const [name, context] = (recommendation || '').trim().split(/:\s+/);
+          const [name, plant_characteristic] = (recommendation || '').trim().split(/:\s+/);
           const [korName, englishName] = name.trim().split(' - ');
-          return { korName: korName, englishName: englishName, context };
+          return { korName: korName, englishName: englishName, plant_characteristic };
         });
 
       // MySQL 데이터베이스에 데이터 삽입
-      const sqlInsert = 'INSERT IGNORE INTO plant(plant_name, eng_name, context) VALUES (?, ?, ?)';
+      const sqlInsert = 'INSERT IGNORE INTO plant(plant_name, eng_name, plant_characteristic) VALUES (?, ?, ?)';
       plantRecommendations.forEach((recommendation) => {
-        db.query(sqlInsert, [recommendation.korName, recommendation.englishName, recommendation.context || ''], (err, result) => {
+        db.query(sqlInsert, [recommendation.korName, recommendation.englishName, recommendation.plant_characteristic || ''], (err, result) => {
           if (err) {
             console.log(err);
           }

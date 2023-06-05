@@ -4,13 +4,17 @@ import axios from 'axios';
 import '../design/recommend.css';
 import Main from './Main.jsx';
 import { AuthContext } from '../context/authContext.js';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const App = ({ usernum, buttonValue }) => {
   /**
    * 페이지에서 사용하는 상태변수
    */
   const { currentUser } = useContext(AuthContext);
+
+  const [isInfo, setIsInfo] = useState(false);
+  const [isCommunity, setIsCommunity] = useState(false);
+
   const [onExperience, setOnExperience] = useState(false);
   const [onTime, setOnTime] = useState(false);
   const [onAddress, setOnAddress] = useState(false);
@@ -42,8 +46,19 @@ const App = ({ usernum, buttonValue }) => {
   const [plantRecommendations, setPlantRecommendations] = useState([]);
   const [image, setImage] = useState('');
   const [plantImages, setPlantImages] = useState([]);
+  const [plantname, setPlantName] = useState('');
+  const [userplantnum, setUserPlantNum] = useState('');
 
   const { state } = useLocation();
+
+  const onInfo = () => {
+    //마이 페이지로 이동
+    setIsInfo(true);
+  };
+  const onCommunity = () => {
+    //커뮤니티 페이지로 이동
+    setIsCommunity(true);
+  };
 
   /**
    *  화면에서 사용하는 이벤트를 정의
@@ -87,13 +102,13 @@ const App = ({ usernum, buttonValue }) => {
   const handleSizeButton = (event) => {
     const name = event.target.value;
     if (name === '크다') {
-      setSize('big');
+      setSize('over 1m');
       buttonSetSize(name);
     } else if (name === '중간') {
-      setSize('medium');
+      setSize('30cm~1m size');
       buttonSetSize(name);
     } else {
-      setSize('small');
+      setSize('under 30cm');
       buttonSetSize(name);
     }
     setOnSize(true);
@@ -144,37 +159,50 @@ const App = ({ usernum, buttonValue }) => {
     setOpen(true);
   };
 
+  //식물이름 가져오기
+  const userMainPlant = async () => {
+    axios.post('http://localhost:8800/plantall', { usernum: usernum }).then((res) => {
+      setUserPlantNum(res.data[res.data.length - 1].key);
+      setPlantName(res.data[res.data.length - 1].plant_name);
+      console.log('recommend page', userplantnum, plantname);
+    });
+  };
+
   const handleOk = async () => {
     console.log('button', buttonValue);
-    // axios
-    //   .get(`http://localhost:8800/imagespath/${recommendPlant}`)
-    //   .then((response) => {
-    //     const imagePath = `${response.data}`;
-
     axios
       .post('http://localhost:8800/plantenroll', {
         usernum: usernum,
         plantmain: buttonValue,
         plantname: recommendPlant,
-        //plantpicture: imagePath,
+        //plantpicture: 'png',    //경로로 바꾸기
         plantcharacteristic: plantContext,
-        plantlevel: 1, //난이도로 변경하기
       })
       .then((response) => {
         alert('등록되었습니다');
-        console.log('response.data in RECCOMEND: ', response.data);
+        console.log(response.data);
         setIsMain(true);
+        userMainPlant()
+          .then(() => {
+            handleTodo();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       })
       .catch((error) => {
         console.log(error);
       });
-    // })
-    // .catch((error) => {
-    //   console.error(error);
-    // });
-
     setOpen(false);
   };
+
+  //식물 투두리스트 todo 테이블에 저장
+  const handleTodo = () => {
+    axios.post('http://localhost:8800/rectodo', { plantname: plantname, userplantnum: userplantnum, usernum: usernum }).then((res) => {
+      console.log('todotodotodo', res.data);
+    });
+  };
+
   const handleCancel = () => {
     setOpen(false);
   };
@@ -223,7 +251,9 @@ const App = ({ usernum, buttonValue }) => {
     }
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    userMainPlant();
+  }, []);
 
   return isMain ? (
     <Main />
@@ -235,6 +265,19 @@ const App = ({ usernum, buttonValue }) => {
             onFunctions ? (
               loading ? (
                 <div>
+                  <menu className='btnmenu'>
+                    <button className='menubtn' onClick={onInfo}>
+                      마이페이지
+                    </button>
+                    <br></br>
+                    <button className='menubtn' onClick={onCommunity}>
+                      커뮤니티
+                    </button>
+                    <br></br>
+                    <button className='menubtn'>To-do list</button>
+                    <br></br>
+                    <button className='menubtn'>로그아웃</button>
+                  </menu>
                   <form onSubmit={handleSubmit}>
                     <button
                       className='resultbtn'
@@ -259,6 +302,19 @@ const App = ({ usernum, buttonValue }) => {
                 </div>
               ) : (
                 <div>
+                  <menu className='btnmenu'>
+                    <button className='menubtn' onClick={onInfo}>
+                      마이페이지
+                    </button>
+                    <br></br>
+                    <button className='menubtn' onClick={onCommunity}>
+                      커뮤니티
+                    </button>
+                    <br></br>
+                    <button className='menubtn'>To-do list</button>
+                    <br></br>
+                    <button className='menubtn'>로그아웃</button>
+                  </menu>
                   <form onSubmit={handleSubmit}>
                     <button
                       className='resultbtn'
@@ -276,8 +332,8 @@ const App = ({ usernum, buttonValue }) => {
                   <div>
                     {Array.isArray(response) &&
                       response.map((plant) => (
-                        <div className='recommend' key={plant.korName}>
-                          <button value={[[plant.korName], [plant.context]]} className='recbtn' onClick={showModal}>
+                        <div className='recommend' key={plant.name}>
+                          <button value={[[plant.korName], [plant.plant_characteristic]]} className='recbtn' onClick={showModal}>
                             {plant.korName}
                           </button>
                           <div style={{ justifyContent: 'space-between' }}>
@@ -290,7 +346,6 @@ const App = ({ usernum, buttonValue }) => {
                               </div>
                             )}
                           </div>
-
                           <Modal
                             title='식물요정'
                             open={open}
@@ -308,7 +363,7 @@ const App = ({ usernum, buttonValue }) => {
                             <h2 className='enroll'>{recommendPlant} 키우시겠습니까?</h2>
                           </Modal>
                           <br></br>
-                          <div>{plant.context}</div>
+                          <div>{plant.plant_characteristic}</div>
                           <br></br>
                         </div>
                       ))}
@@ -317,6 +372,19 @@ const App = ({ usernum, buttonValue }) => {
               )
             ) : (
               <div className='Functions'>
+                <menu className='btnmenu'>
+                  <button className='menubtn' onClick={onInfo}>
+                    마이페이지
+                  </button>
+                  <br></br>
+                  <button className='menubtn' onClick={onCommunity}>
+                    커뮤니티
+                  </button>
+                  <br></br>
+                  <button className='menubtn'>To-do list</button>
+                  <br></br>
+                  <button className='menubtn'>로그아웃</button>
+                </menu>
                 <p>원하는 식물의 기능이 있나요?</p>
                 <div>
                   <button className='btn' value='공기정화' onClick={handleFunctionsButton}>
@@ -329,7 +397,7 @@ const App = ({ usernum, buttonValue }) => {
                   </button>
                   <br></br>
                   <br></br>
-                  <button className='btn' value='공기 정화와 장식' onClick={handleFunctionsButton}>
+                  <button className='btn' value='둘다' onClick={handleFunctionsButton}>
                     둘 다 원해요
                   </button>
                   <br></br>
@@ -342,6 +410,19 @@ const App = ({ usernum, buttonValue }) => {
             )
           ) : (
             <div className='Light'>
+              <menu className='btnmenu'>
+                <button className='menubtn' onClick={onInfo}>
+                  마이페이지
+                </button>
+                <br></br>
+                <button className='menubtn' onClick={onCommunity}>
+                  커뮤니티
+                </button>
+                <br></br>
+                <button className='menubtn'>To-do list</button>
+                <br></br>
+                <button className='menubtn'>로그아웃</button>
+              </menu>
               <p>광량 조건은 어떻게 되나요?</p>
               <div>
                 <button className='btn' value='많다' onClick={handleLightButton}>
@@ -362,34 +443,60 @@ const App = ({ usernum, buttonValue }) => {
           )
         ) : (
           <div className='Size'>
+            <menu className='btnmenu'>
+              <button className='menubtn' onClick={onInfo}>
+                마이페이지
+              </button>
+              <br></br>
+              <button className='menubtn' onClick={onCommunity}>
+                커뮤니티
+              </button>
+              <br></br>
+              <button className='menubtn'>To-do list</button>
+              <br></br>
+              <button className='menubtn'>로그아웃</button>
+            </menu>
             <p>원하는 식물의 크기가 있나요?</p>
             <div>
               <button className='btn' value='크다' onClick={handleSizeButton}>
-                크다
+                크다(1m이상)
               </button>
               <br></br>
               <br></br>
               <button className='btn' value='중간' onClick={handleSizeButton}>
-                중간
+                중간(30cm~1m정도)
               </button>
               <br></br>
               <br></br>
               <button className='btn' value='작다' onClick={handleSizeButton}>
-                작다
+                작다(30cm이하)
               </button>
             </div>
           </div>
         )
       ) : (
         <div className='Address'>
+          <menu className='btnmenu'>
+            <button className='menubtn' onClick={onInfo}>
+              마이페이지
+            </button>
+            <br></br>
+            <button className='menubtn' onClick={onCommunity}>
+              커뮤니티
+            </button>
+            <br></br>
+            <button className='menubtn'>To-do list</button>
+            <br></br>
+            <button className='menubtn'>로그아웃</button>
+          </menu>
           <p>식물을 키우는 장소는 어디인가요?</p>
           <div>
-            <button className='btn' value='실내' onClick={handleAddressButton}>
+            <button className='btn' value='yes' onClick={handleAddressButton}>
               실내
             </button>
             <br></br>
             <br></br>
-            <button className='btn' value='실외' onClick={handleAddressButton}>
+            <button className='btn' value='no' onClick={handleAddressButton}>
               실외
             </button>
           </div>
@@ -397,14 +504,27 @@ const App = ({ usernum, buttonValue }) => {
       )
     ) : (
       <div className='Time'>
+        <menu className='btnmenu'>
+          <button className='menubtn' onClick={onInfo}>
+            마이페이지
+          </button>
+          <br></br>
+          <button className='menubtn' onClick={onCommunity}>
+            커뮤니티
+          </button>
+          <br></br>
+          <button className='menubtn'>To-do list</button>
+          <br></br>
+          <button className='menubtn'>로그아웃</button>
+        </menu>
         <p>식물 관리에 참여할 수 있는 시간이 얼마나 되나요?</p>
         <div>
-          <button className='btn' value='주기적으로 참여 가능' onClick={handleTimeButton}>
+          <button className='btn' value='yes' onClick={handleTimeButton}>
             주기적으로 참여 가능
           </button>
           <br></br>
           <br></br>
-          <button className='btn' value='체계적인 관리 없이도 잘 자랐으면 좋겠음' onClick={handleTimeButton}>
+          <button className='btn' value='no' onClick={handleTimeButton}>
             체계적인 관리 없이도 잘 자랐으면 좋겠음
           </button>
         </div>
@@ -412,14 +532,27 @@ const App = ({ usernum, buttonValue }) => {
     )
   ) : (
     <div className='Experience'>
+      <menu className='btnmenu'>
+        <button className='menubtn' onClick={onInfo}>
+          마이페이지
+        </button>
+        <br></br>
+        <button className='menubtn' onClick={onCommunity}>
+          커뮤니티
+        </button>
+        <br></br>
+        <button className='menubtn'>To-do list</button>
+        <br></br>
+        <button className='menubtn'>로그아웃</button>
+      </menu>
       <p>식물을 키워본 적이 있으신가요?</p>
       <div>
-        <button className='btn' value='초보자' onClick={handleExperienceButton}>
+        <button className='btn' value='yes' onClick={handleExperienceButton}>
           yes
         </button>
         <br></br>
         <br></br>
-        <button className='btn' value='식물을 키워본 경험 있음' onClick={handleExperienceButton}>
+        <button className='btn' value='no' onClick={handleExperienceButton}>
           no
         </button>
       </div>

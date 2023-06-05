@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Button, Table, Modal, Radio } from 'antd';
 import axios from 'axios';
 import '../design/main.css';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 //import App from './App.js';
 import Recommend from './Recommend.jsx';
 import Community from './Community.jsx';
 import Info from './MyPage.jsx';
 import NewRecommend from './NewReccomend.jsx';
+import Todo from './Todo';
 
 const Main = () => {
   /**
@@ -37,6 +38,9 @@ const Main = () => {
   /**
    *  화면에서 사용하는 이벤트를 정의
    */
+
+  const navigate = useNavigate();
+
   const onClick = (e) => {
     console.log('click', e);
   };
@@ -61,12 +65,21 @@ const Main = () => {
   };
 
   const onInfo = () => {
-    //마이 페이지로 이동
-    setIsInfo(true);
+    navigate('/info');
   };
   const onCommunity = () => {
     //커뮤니티 페이지로 이동
-    setIsCommunity(true);
+    navigate('/community');
+  };
+
+  const onTodo = () => {
+    //투두리스트 페이지로 이동
+    navigate('/todo', { state: state });
+  };
+
+  const onRandom = () => {
+    // 페이지로 이동
+    navigate('/random', { state: state });
   };
 
   const showModal = () => {
@@ -94,10 +107,6 @@ const Main = () => {
       title: '식물 특성',
       dataIndex: 'plant_characteristic',
     },
-    {
-      title: '키우기 난이도',
-      dataIndex: 'plant_level',
-    },
   ];
 
   //login에서 user_num 받아오기
@@ -116,23 +125,6 @@ const Main = () => {
       setUserPlantEnroll4name(res.data[3]);
     });
   };
-
-  // const onUserPlantPrint = () => {
-  //   //user_plant 테이블에서 사용자의 식물 정보 가져와 메인 식물 정보 테이블로 출력
-  //   axios
-  //     .post('http://localhost:8800/plantpicture', { usernum: state })
-  //     .then((response) => {
-  //       const plant_name = response.data[0].plant_name;
-  //       //const plant_picture = response.data[0].plant_picture;
-
-  //       //setUserPlantEnroll0(plant_picture); //메인 식물 이미지
-  //       //console.log('mainplant', response.data[0]);
-  //       setUserPlantInfo(response.data); //메인 식물 이름, 특성, 키우기 난이도
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // };
 
   const onUserPlantPrint = () => {
     // user_plant 테이블에서 사용자의 식물 정보 가져와 메인 식물 정보 테이블로 출력
@@ -193,14 +185,8 @@ const Main = () => {
     onUserPlantSlot();
   });
 
-  return isCommunity ? (
-    <Community />
-  ) : isInfo ? (
-    <Info />
-  ) : isRecommend ? (
+  return isRecommend ? (
     <Recommend usernum={state} buttonValue={buttonValue} />
-  ) : isNewRecommend ? (
-    <NewRecommend />
   ) : (
     <div className='main'>
       <br></br>
@@ -210,6 +196,7 @@ const Main = () => {
       <br></br>
 
       <div className='printImg'></div>
+
       <div>
         <Button className='slot' onClick={showModal}>
           {' '}
@@ -244,7 +231,13 @@ const Main = () => {
           커뮤니티
         </button>
         <br></br>
-        <button className='menubtn'>To-do list</button>
+        <button className='menubtn' onClick={onTodo}>
+          To-do list
+        </button>
+        <br></br>
+        <button className='menubtn' onClick={onRandom}>
+          다양한 식물 추천
+        </button>
         <br></br>
         <button className='menubtn'>로그아웃</button>
       </menu>
@@ -255,15 +248,15 @@ const Main = () => {
         {' '}
         {userPlantEnroll1}{' '}
       </Button>
-      <Button value='2' className='slots' onClick={onNewRecommend}>
+      <Button value='2' className='slots' disabled onClick={onRecommend}>
         {' '}
         {userPlantEnroll2}{' '}
       </Button>
-      <Button value='3' className='slots' disabled onClick={onNewRecommend}>
+      <Button value='3' className='slots' disabled onClick={onRecommend}>
         {' '}
         {userPlantEnroll3}{' '}
       </Button>
-      <Button value='4' className='slots' disabled onClick={onNewRecommend}>
+      <Button value='4' className='slots' disabled onClick={onRecommend}>
         {' '}
         {userPlantEnroll4}{' '}
       </Button>
