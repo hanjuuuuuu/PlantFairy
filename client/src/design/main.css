@@ -1,0 +1,43 @@
+
+/* * {
+  background-color: #ebf8dc;
+  font-family: 'Courier New', Courier, monospace;
+
+
+.menubtn {
+    background-color: #EBF8DC;
+    border: outset #8ED03B;
+    border-radius: 5px;
+    background-color: white;
+    padding: 10px 10px 5px 10px;
+    width: 30%;
+    margin: 0px 0px 1px 800px;
+  
+  }
+
+.slot {
+    border: outset #8ED03B;
+    background-color: white;
+    border-radius: 40px;
+    width: 300px;
+    padding: 100px 10px 100px 10px;
+    margin: 100px 0px 0px 5px;
+  
+}
+.slots{
+    border: outset #8ED03B;
+    background-color: white;
+    border-radius: 40px;
+    width: 200px;
+    padding: 80px 10px 80px 10px;
+    margin: 80px 50px 0px 0px;
+
+}
+.tableprint{
+  width: 50%;
+  height: 20%;
+  position: absolute;
+  left: 400px;
+  top: 200px;
+} */
+

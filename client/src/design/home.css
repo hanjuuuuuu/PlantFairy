@@ -1,0 +1,266 @@
+@font-face {
+}
+
+.nav {
+  height: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.nav .logo img {
+  width: 140px;
+}
+
+.nav .nav_but a {
+  text-decoration: none;
+  padding-left: 20px;
+  padding-right: 20px;
+  color: black;
+}
+
+.nav .nav_but button {
+  background-color: white;
+  color: black;
+  border: 1px solid white;
+  font-size: 15px;
+}
+
+.header {
+  background: url(../img/homeimg4.png);
+  background-position: center;
+  background-size: cover;
+  height: 600px;
+  display: felx;
+  align-items: center;
+  justify-content: center;
+}
+
+.header .title {
+  text-align: center;
+}
+
+.header .title img {
+  margin-top: 150px;
+  width: 140px;
+}
+
+.header .title h1 {
+  margin-top: 20px;
+  font-size: 40px;
+  color: #6c6562;
+  letter-spacing: 0.2em;
+  margin-bottom: 0;
+}
+
+.header .title p {
+  margin-top: 0;
+  margin-bottom: 30px;
+  color: #444;
+}
+
+.header .title button {
+  margin-top: 10px;
+  background-color: #859c8a;
+  color: white;
+  border: 2px solid white;
+  border-radius: 5px;
+  padding: 10px 30px;
+  font-size: 14px;
+  transition: 0.5s ease;
+}
+
+.header .title button:hover {
+  transform: 0.5s ease;
+  border: 2px solid #6c6562;
+  background: transparent;
+  color: black;
+}
+
+.intro {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.intro .card {
+  flex: 1;
+  text-align: center;
+  margin: 150px 40px;
+}
+
+.intro .card i {
+  font-size: 70px;
+  color: #444;
+  margin-bottom: 30px;
+}
+
+.intro .card h1 {
+  letter-spacing: 0.2em;
+}
+
+.intro .card p {
+  font-size: 10px;
+}
+
+.service {
+  background: #ddd;
+}
+
+.service .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.service .img {
+  height: 300px;
+}
+
+.service .img img {
+  height: 100%;
+  width: 400px;
+}
+
+.service .text {
+  text-align: end;
+  color: #6c6562;
+  padding-left: 100px;
+}
+
+.service .text h1 {
+  letter-spacing: 0.2em;
+}
+
+.service .text p {
+  word-wrap: break-word;
+  word-break: keep-all;
+  font-size: 12px;
+}
+
+.service2 {
+  background: #bdcebb;
+}
+
+.service2 .container2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.service2 .img2 {
+  height: 300px;
+}
+
+.service2 .img2 img {
+  height: 100%;
+  width: 400px;
+}
+
+.service2 .text2 {
+  text-align: start;
+  color: #6c6562;
+  padding-left: 100px;
+}
+
+.service2 .text2 h1 {
+  letter-spacing: 0.2em;
+}
+
+.service2 .text2 p {
+  word-wrap: break-word;
+  word-break: keep-all;
+  font-size: 12px;
+}
+
+footer {
+  color: #6c6562;
+  background: white;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+footer .container {
+  max-width: 1000px;
+  margin: auto;
+  padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+footer .container .left {
+  flex: 1;
+}
+
+footer .container .left h1 {
+  margin: 0;
+  font-size: 30px;
+}
+
+footer .container .left p {
+  margin: 0;
+  font-size: 10px;
+}
+
+footer .container .right {
+  flex: 3;
+  padding-left: 50px;
+}
+
+footer .container .right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+footer .container .right list {
+  flex: 1;
+  margin-left: 20px;
+}
+
+footer .container .right .list h2 {
+  padding-left: 5px;
+  padding-right: 250px;
+  margin: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #6c6562;
+}
+
+footer .container .right .list ul {
+  list-style: none;
+  padding: 0;
+}
+
+footer .container .right .list ul li {
+  padding: 5px 5px;
+}
+
+footer .container .right .list ul li:hover {
+  background: #bdcebb;
+}
+
+.App-logo {
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
