@@ -58,7 +58,7 @@ app.use('/api/likes', likesRoutes);
 app.use('/api/comments', commentsRoutes);
 
 const configuration = new Configuration({
-  apiKey: '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', //process.env.API_KEY,
+  apiKey: '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', //process.env.API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
@@ -157,7 +157,7 @@ app.post('/rectodo', async (req, res) => {
 //todo 페이지에 출력할 식물 투두리스트 전달
 app.post('/planttodo', async (req, res) => {
   let plantname = req.body.plantname;
-  let userplantnum = 93;
+  let userplantnum = 93;  //req.body.userplantnum
   let usernum = req.body.usernum;
   let tododay = req.body.day;
   console.log('todo plantname', plantname, 'todo userplantnum', userplantnum, 'todo day', tododay);
@@ -193,7 +193,7 @@ app.post('/plantpicture', async (req, res) => {
   let plantpicture = req.body.usernum;
   console.log('usernum------', plantpicture);
 
-  const sqluserplant = `SELECT user_plant_num AS "key", plant_name, plant_characteristic, plant_level, plant_picture FROM user_plant WHERE user_num = '${plantpicture}'`;
+  const sqluserplant = `SELECT user_plant_num AS "key", plant_name, plant_characteristic, plant_picture FROM user_plant WHERE user_num = '${plantpicture}'`;
   db.query(sqluserplant, plantpicture, (err, data) => {
     if (!err) {
       res.send(data);
@@ -254,12 +254,11 @@ app.post('/plantenroll', async (req, res) => {
   let plantmain = req.body.plantmain;
   //let plantpicture = req.body.plantpicture;
   let plantcharacteristic = req.body.plantcharacteristic;
-  let plantlevel = req.body.plantlevel;
   console.log('enroll', plantname);
   //console.log('pp : ', plantpicture);
 
-  const sqlplantenroll = 'INSERT INTO user_plant (user_num, plant_name, plant_main, plant_characteristic, plant_level) values(?, ?, ?, ?, ?)';
-  db.query(sqlplantenroll, [usernum, plantname, plantmain, plantcharacteristic, plantlevel], (err, data) => {
+  const sqlplantenroll = 'INSERT INTO user_plant (user_num, plant_name, plant_main, plant_characteristic) values(?, ?, ?, ?)';
+  db.query(sqlplantenroll, [usernum, plantname, plantmain, plantcharacteristic], (err, data) => {
     if (!err) {
       res.send(data);
     } else {

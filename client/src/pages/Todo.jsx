@@ -8,10 +8,16 @@ import Calendar from 'react-calendar';
 import moment from 'moment';
 
 const Todo = () => {
-  //const { token } = theme.useToken();
+  /**
+   *  페이지에서 사용하는 상태변수
+   */
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [tasks, setTasks] = useState([]);
-  const [daynum, setDaynum] = useState('');
+  const [daynum, setDaynum] = useState(moment(selectedDate).format('DD'));
+  const [userPoints, setUserPoints] = useState(0);
+  const [userLevel, setUserLevel] = useState(1);
+  const [isChecked, setIsChecked] = useState(false);
+  const today = ('0' + new Date().getDate()).slice(-2);
 
   //**
   /*
@@ -32,18 +38,21 @@ const Todo = () => {
     navigate('/todo', { state: state });
   };
 
-  //usernum 받아오기
+  //main에서 usernum, userplantnum 받아오기
   const { state } = useLocation();
+  //console.log('todo state', state, 'userplantnum');
   let plantname;
   let userplantnum;
   //let daynum;
+  
 
-  //식물이름 가져오기, 날짜 변경
+  //캘린더에서 날짜를 클릭하면 식물이름 가져오기, 날짜 변경
   const handleDateClick = (date) => {
     setSelectedDate(date);
     setDaynum(moment(date).format('DD'));
 
-    axios.post('http://localhost:8800/plantall', { usernum: state }).then((res) => {
+    axios.post('http://localhost:8800/plantall', { usernum: state })
+    .then((res) => {
       userplantnum = res.data[res.data.length - 1].key;
       plantname = res.data[res.data.length - 1].plant_name;
       console.log(userplantnum, plantname);
@@ -52,38 +61,93 @@ const Todo = () => {
     });
   };
 
-  // const handleDateClick = (date) => {
-  //   setSelectedDate(date);
-  //   setDaynum(moment(date).format("DD"));
-  // }
 
   const userTodo = () => {
     //등록된 식물 투두리스트 (날짜에 맞게) 가져오기
     //값이 와야지만 넘어가게
-    axios.post('http://localhost:8800/planttodo', { plantname: plantname, userplantnum: userplantnum, usernum: state, day: daynum }).then((res) => {
-      console.log('daynum', daynum);
-      console.log('todotodotodo', res.data);
-      setTasks(res.data);
-    });
+    axios.post('http://localhost:8800/planttodo', { 
+      plantname: plantname, 
+      userplantnum: userplantnum, 
+      day: daynum })
+      .then((res) => {
+        console.log('daynum', daynum);
+        console.log('todotodotodo', res.data);
+        setTasks(res.data);
+      })
+      .catch((error) => console.log(error));
   };
 
-  const handleCheckboxChange = (taskKey) => {
-    const updatedTasks = tasks.map((task) => (task.key === taskKey && task.day === daynum ? { ...task, complete: !task.complete } : task));
-    setTasks(updatedTasks);
+  //투두리스트 체크박스 클릭하면
+  const handleCheckboxChange = (taskKey,taskDay,taskComplete) => {
+    console.log('handlecheckboxchange', taskKey,taskDay,taskComplete);
+    // const updatedTasks = tasks.map((task) => 
+    //   task.key === taskKey
+    //   ? { ...task, checked: !task.complete } 
+    //   : task
+    // );
+    // setTasks(updatedTasks);
+    setIsChecked(!isChecked);
+    if(taskDay === today) {
+      //유저 포인트 업데이트 요청
+      setUserPoints(userPoints+1);
+      console.log('points', userPoints);
+      updateUserPoints();
+      //DB에 체크 상태 업데이트 요청
+    }
   };
+
+  //유저 포인트 올리기
+  const updateUserPoints = () => {
+    axios.post('http://localhost:8800/updateuserpoints', {
+      userplantnum: userplantnum,
+      usernum: state,
+      userpoints: userPoints
+    })
+    .then((res) => {
+      console.log('point up');
+      console.log(res.data);
+    })
+    .catch((error) => {
+      console.log('error update points', error);
+    })
+  }
+
+  //유저 포인트, 레벨
+  const userPointsLevel = () => {
+    console.log('pointslevel', userPoints);
+    axios.post('http://localhost:8800/userpointslevel',{
+      usernum: state
+    })
+    .then((res)=> {
+      console.log(res.data[0]);
+      setUserPoints(res.data[0].user_point);
+      setUserLevel(res.data[0].user_level);
+    })
+    .catch((err) => {
+      console.log('error pointslevel', err);
+    })
+  }
+
+  // useEffect(() => {
+  //   async function handleDateClick(date) {
+  //     const data = await userTodo();
+  //     //setTasks(data);
+  //   }
+  //   handleDateClick();
+  // }, []);
 
   useEffect(() => {
-    async function handleDateClick(date) {
-      const data = await userTodo();
-      //setTasks(data);
-    }
-    handleDateClick();
-  }, []);
+    handleDateClick(selectedDate);
+  }, [daynum]);
+
+  useEffect(() => {
+    userPointsLevel();
+  },[]);
 
   //daynum 변경되면 userTodo실행
   // useEffect(() => {
   //   userTodo();
-  // }, [daynum])
+  // }, [daynum]);
 
   return (
     <div>
@@ -107,7 +171,7 @@ const Todo = () => {
       </menu>
 
       <div>
-        {/* <Calendar onClickDay={handleDateClick()} /> */}
+        <Calendar onClickDay={handleDateClick} />
         <div className='text-gray-500 mt-4'>
           {moment(selectedDate).format('YYYY년 MM월 DD일')}
           <br></br>
@@ -116,7 +180,12 @@ const Todo = () => {
           {tasks &&
             tasks.map((task) => (
               <div key={task.key}>
-                <input type='checkbox' checked={task.complete} onChange={() => handleCheckboxChange(task.key)} disabled={task.day !== daynum} />
+                <input 
+                  type='checkbox' 
+                  checked={isChecked} 
+                  onChange={() => handleCheckboxChange(task.key, task.day, task.complete)} 
+                  disabled={task.day !== today} 
+                />
                 <label>{task.task}</label>
               </div>
             ))}

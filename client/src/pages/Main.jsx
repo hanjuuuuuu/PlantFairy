@@ -28,6 +28,7 @@ const Main = () => {
   const [userPlantEnroll3name, setUserPlantEnroll3name] = useState('');
   const [userPlantEnroll4name, setUserPlantEnroll4name] = useState('');
   const [buttonValue, setButtonValue] = useState('');
+  const [userplantnum, setUserPlantNum] = useState('');
 
   const [userPlantInfo, setUserPlantInfo] = useState(null);
   const [plantImage, setPlantImage] = useState([]);
@@ -74,7 +75,7 @@ const Main = () => {
 
   const onTodo = () => {
     //투두리스트 페이지로 이동
-    navigate('/todo', { state: state });
+    navigate('/todo', { state: state, userplantnum: userplantnum });
   };
 
   const onRandom = () => {
@@ -116,7 +117,9 @@ const Main = () => {
 
   const userMainPlant = () => {
     //메인 식물 변경할 수 있게하기(main 0으로 바꾸기)
-    axios.post('http://localhost:8800/plantall', { usernum: state }).then((res) => {
+    axios.post('http://localhost:8800/plantall',
+    { usernum: state })
+    .then((res) => {
       console.log('userPlantALL ------------ ');
       setUserPlantEnroll1name(res.data[0].plant_name);
       console.log('DATA ___ ', res.data[0]);
@@ -129,12 +132,14 @@ const Main = () => {
   const onUserPlantPrint = () => {
     // user_plant 테이블에서 사용자의 식물 정보 가져와 메인 식물 정보 테이블로 출력
     axios
-      .post('http://localhost:8800/plantpicture', { usernum: state })
-      .then((response) => {
-        const plant_name = response.data[0].plant_name;
-        console.log('Onuser222');
-
-        setUserPlantInfo(response.data); // 메인 식물 이름, 특성, 키우기 난이도
+      .post('http://localhost:8800/plantpicture', 
+      { usernum: state })
+      .then((res) => {
+        const plant_name = res.data[(res.data.length-1)].plant_name;
+        console.log(res.data);
+        setUserPlantNum(res.data[(res.data.length - 1)].key);
+        console.log(userplantnum);
+        setUserPlantInfo(res.data); // 메인 식물 이름, 특성
         userPlantEnroll(plant_name); // 해당 식물의 이미지 출력
       })
       .catch((error) => {
@@ -159,11 +164,15 @@ const Main = () => {
   const onUserPlantSlot = () => {
     //user_plant 테이블에서 사용자의 식물 정보 가져와 슬롯별 식물 이미지 출력
     axios
-      .post('http://localhost:8800/plantslot', { usernum: state, slotnum: buttonValue })
+      .post('http://localhost:8800/plantslot', 
+      { usernum: state,
+        slotnum: buttonValue 
+      })
       .then((res) => {
         //setUserPlantEnroll0(res.data[0].plant_picture);     //메인 식물 이미지
         //setUserPlantEnroll1(res.data[res.data.length - 1].plant_picture);
         setUserPlantEnroll1name(res.data[res.data.length - 1].plant_name);
+        setUserPlantNum(res.data[res.data.length - 1].key);
         console.log('slot', res.data[res.data.length - 1]);
         //setUserPlantInfo(res.data);       //메인 식물 이름, 특성, 키우기 난이도
       })
@@ -172,8 +181,21 @@ const Main = () => {
       });
   };
 
+  const onUserPoints = () => {
+    //user 테이블에서 사용자의 포인트와 레벨 정보 가져오기
+    axios.post('http://localhost:8800/userpoints',
+    {
+      usernum: state
+    })
+    .then((res) => {
+      console.log(res.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  }
+
   useEffect(() => {
-    //console.log('Onuser333');
     async function getTableData() {
       const data0 = await onUserPlantPrint();
       setUserPlantInfo(data0);
@@ -184,6 +206,10 @@ const Main = () => {
   useEffect(() => {
     onUserPlantSlot();
   });
+
+  useEffect(()=> {
+    onUserPoints();
+  },[state]);
 
   return isRecommend ? (
     <Recommend usernum={state} buttonValue={buttonValue} />
