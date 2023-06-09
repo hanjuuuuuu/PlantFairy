@@ -165,13 +165,22 @@ const App = ({ usernum, buttonValue }) => {
 
   //식물이름 가져오기
   const userMainPlant = async () => {
-    axios.post('http://localhost:8800/plantall', { usernum: usernum }).then((res) => {
-      setUserPlantNum(res.data[res.data.length - 1].key);
-      setPlantName(res.data[res.data.length - 1].plant_name);
-      console.log('recommend page', userplantnum, plantname);
+    axios.post('http://localhost:8800/plantall', { 
+      usernum: usernum })
+      .then((res) => {
+        console.log(res.data)
+        if(res.data.length == 0){
+            console.log('first login');
+        }
+        else{
+          setUserPlantNum(res.data[res.data.length - 1].key);
+          setPlantName(res.data[res.data.length - 1].plant_name);
+          console.log('recommend page', userplantnum, plantname);
+        }
     });
   };
 
+  //등록 버튼 눌렀을 때
   const handleOk = async () => {
     console.log('button', buttonValue);
     axios
@@ -203,8 +212,8 @@ const App = ({ usernum, buttonValue }) => {
   //식물 투두리스트 todo 테이블에 저장
   const handleTodo = () => {
     axios.post('http://localhost:8800/rectodo', { 
-      plantname: plantname, 
-      userplantnum: userplantnum, 
+      plantname: recommendPlant, 
+      userplantnum: Number(userplantnum+1), 
       usernum: usernum 
     })
     .then((res) => {
@@ -262,8 +271,8 @@ const App = ({ usernum, buttonValue }) => {
   };
 
   useEffect(() => {
-    //userMainPlant();
-  }, []);
+    userMainPlant();
+  }, [userplantnum]);
 
   return isMain ? (
     <Main />
