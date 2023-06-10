@@ -1,10 +1,11 @@
 import { Button, Modal, Space, Spin } from 'antd';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, Component } from 'react';
 import axios from 'axios';
 import '../design/recommend.css';
 import Main from './Main.jsx';
 import { AuthContext } from '../context/authContext.js';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, NavLink, Link } from 'react-router-dom';
+import logo from '../img/logo.png';
 
 const App = ({ usernum, buttonValue }) => {
   /**
@@ -264,129 +265,150 @@ const App = ({ usernum, buttonValue }) => {
           onLight ? (
             onFunctions ? (
               loading ? (
-                <div>
-                  <menu className='btnmenu'>
-                    <button className='menubtn' onClick={onInfo}>
-                      마이페이지
-                    </button>
-                    <br></br>
-                    <button className='menubtn' onClick={onCommunity}>
-                      커뮤니티
-                    </button>
-                    <br></br>
-                    <button className='menubtn'>To-do list</button>
-                    <br></br>
-                    <button className='menubtn'>로그아웃</button>
-                  </menu>
-                  <form onSubmit={handleSubmit}>
-                    <button
-                      className='resultbtn'
-                      type='submit'
-                      value={`${text}`}
-                      onClick={() => {
-                        setMessage(`${text}`);
-                      }}
-                    >
-                      결과를 보시겠습니까?
-                    </button>
-                  </form>
-                  <br></br>
-                  <br></br>
-                  <div className='spin'>
-                    <Space direction='vertical'>
-                      <Spin tip='Loading' size='large'>
-                        <div className='content' />
-                      </Spin>
-                    </Space>
+                <>
+                  <div className='main_nav_rec'>
+                    <div className='main_logo_rec'>
+                      <NavLink to={'http://localhost:3000/'}>
+                        <img src={logo} alt='My Image' width='160' height='60' />
+                      </NavLink>
+                    </div>
+
+                    <div className='main_nav_but_rec'>
+                      <Link to='/main'> 메인 페이지 </Link>
+                      <Link to='/community'> 커뮤니티 </Link>
+                      <Link to='/todo'> to-do list </Link>
+                      <Link to='/random'> 식물 성향 테스트 </Link>
+                      <button onClick={handleSubmit}>로그아웃</button>
+                    </div>
                   </div>
-                </div>
+
+                  <div className='resuit'>
+                    <form onSubmit={handleSubmit}>
+                      <button
+                        className='resultbtn'
+                        type='submit'
+                        value={`${text}`}
+                        onClick={() => {
+                          setMessage(`${text}`);
+                        }}
+                      >
+                        결과를 보시겠습니까?
+                      </button>
+                    </form>
+                    <br></br>
+                    <br></br>
+                    <div className='spin'>
+                      <Space direction='vertical'>
+                        <Spin tip='Loading' size='large'>
+                          <div className='content' />
+                        </Spin>
+                      </Space>
+                    </div>
+                  </div>
+                </>
               ) : (
-                <div>
-                  <menu className='btnmenu'>
-                    <button className='menubtn' onClick={onInfo}>
-                      마이페이지
-                    </button>
-                    <br></br>
-                    <button className='menubtn' onClick={onCommunity}>
-                      커뮤니티
-                    </button>
-                    <br></br>
-                    <button className='menubtn'>To-do list</button>
-                    <br></br>
-                    <button className='menubtn'>로그아웃</button>
-                  </menu>
-                  <form onSubmit={handleSubmit}>
-                    <button
-                      className='resultbtn'
-                      type='submit'
-                      value={`${text}`}
-                      onClick={() => {
-                        setMessage(`${text}`);
-                      }}
-                    >
-                      결과를 보시겠습니까?
-                    </button>
-                  </form>
-                  <br></br>
-                  <br></br>
-                  <div>
-                    {Array.isArray(response) &&
-                      response.map((plant) => (
-                        <div className='recommend' key={plant.name}>
-                          <button value={[[plant.korName], [plant.plant_characteristic]]} className='recbtn' onClick={showModal}>
-                            {plant.korName}
-                          </button>
-                          <div style={{ justifyContent: 'space-between' }}>
-                            <h3>Plant Images:</h3>
-                            {plantImages.length > 0 && (
-                              <div className='plantimg'>
-                                {plantImages.map((imageUrl, idx) => (
-                                  <img key={idx} src={imageUrl} alt={`generated image ${idx}`} />
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                          <Modal
-                            title='식물요정'
-                            open={open}
-                            onOk={handleOk}
-                            onCancel={handleCancel}
-                            footer={[
-                              <Button key='enroll' onClick={handleOk}>
-                                등록
-                              </Button>,
-                              <Button key='cancel' onClick={handleCancel}>
-                                취소
-                              </Button>,
-                            ]}
-                          >
-                            <h2 className='enroll'>{recommendPlant} 키우시겠습니까?</h2>
-                          </Modal>
-                          <br></br>
-                          <div>{plant.plant_characteristic}</div>
-                          <br></br>
-                        </div>
-                      ))}
+                <>
+                  <div className='main_nav_rec'>
+                    <div className='main_logo_rec'>
+                      <NavLink to={'http://localhost:3000/'}>
+                        <img src={logo} alt='My Image' width='160' height='60' />
+                      </NavLink>
+                    </div>
+
+                    <div className='main_nav_but_rec'>
+                      <Link to='/main'> 메인 페이지 </Link>
+                      <Link to='/community'> 커뮤니티 </Link>
+                      <Link to='/todo'> to-do list </Link>
+                      <Link to='/random'> 식물 성향 테스트 </Link>
+                      <button onClick={handleSubmit}>로그아웃</button>
+                    </div>
                   </div>
-                </div>
+
+                  <div className='result'>
+                    <form onSubmit={handleSubmit}>
+                      <button
+                        className='resultbtn'
+                        type='submit'
+                        value={`${text}`}
+                        onClick={() => {
+                          setMessage(`${text}`);
+                        }}
+                      >
+                        결과를 보시겠습니까?
+                      </button>
+                    </form>
+                    <br></br>
+                    <br></br>
+                    <div>
+                      {Array.isArray(response) &&
+                        response.map((plant) => (
+                          <div className='recommend' key={plant.name}>
+                            <button value={[[plant.korName], [plant.plant_characteristic]]} className='recbtn' onClick={showModal}>
+                              {plant.korName}
+                            </button>
+                            <div style={{ justifyContent: 'space-between' }}>
+                              <h3>Plant Images:</h3>
+                              {plantImages.length > 0 && (
+                                <div className='plantimg'>
+                                  {plantImages.map((imageUrl, idx) => (
+                                    <img key={idx} src={imageUrl} alt={`generated image ${idx}`} />
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+
+                            <div className='encan'>
+                              <Modal
+                                title='식물요정'
+                                open={open}
+                                onOk={handleOk}
+                                onCancel={handleCancel}
+                                footer={[
+                                  <Button key='enroll' onClick={handleOk}>
+                                    등록
+                                  </Button>,
+                                  <Button key='cancel' onClick={handleCancel}>
+                                    취소
+                                  </Button>,
+                                ]}
+                              >
+                                <h2 className='enroll'>{recommendPlant} 키우시겠습니까?</h2>
+                              </Modal>
+                            </div>
+                            <br></br>
+                            <div>{plant.plant_characteristic}</div>
+                            <br></br>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                </>
               )
             ) : (
-              <div className='Functions'>
-                <menu className='btnmenu'>
-                  <button className='menubtn' onClick={onInfo}>
-                    마이페이지
-                  </button>
+              <>
+                <div className='main_nav_rec'>
+                  <div className='main_logo_rec'>
+                    <NavLink to={'http://localhost:3000/'}>
+                      <img src={logo} alt='My Image' width='160' height='60' />
+                    </NavLink>
+                  </div>
+
+                  <div className='main_nav_but_rec'>
+                    <Link to='/main'> 메인 페이지 </Link>
+                    <Link to='/community'> 커뮤니티 </Link>
+                    <Link to='/todo'> to-do list </Link>
+                    <Link to='/random'> 식물 성향 테스트 </Link>
+                    <button onClick={handleSubmit}>로그아웃</button>
+                  </div>
+                </div>
+
+                <div className='Functions'>
+                  <div className='exx6'>
+                    <p> (6/6) </p>
+                  </div>
                   <br></br>
-                  <button className='menubtn' onClick={onCommunity}>
-                    커뮤니티
-                  </button>
+                  <p>원하는 식물의 기능이 있나요?</p>
                   <br></br>
-                  <button className='menubtn'>To-do list</button>
-                  <br></br>
-                  <button className='menubtn'>로그아웃</button>
-                </menu>
-                <p>원하는 식물의 기능이 있나요?</p>
-                <div>
                   <button className='btn' value='공기정화' onClick={handleFunctionsButton}>
                     공기 정화
                   </button>
@@ -404,27 +426,35 @@ const App = ({ usernum, buttonValue }) => {
                   <br></br>
                   <button className='btn' value='상관없어요' onClick={handleFunctionsButton}>
                     상관없어요
-                  </button>
-                </div>{' '}
-              </div>
+                  </button>{' '}
+                </div>
+              </>
             )
           ) : (
-            <div className='Light'>
-              <menu className='btnmenu'>
-                <button className='menubtn' onClick={onInfo}>
-                  마이페이지
-                </button>
+            <>
+              <div className='main_nav_rec'>
+                <div className='main_logo_rec'>
+                  <NavLink to={'http://localhost:3000/'}>
+                    <img src={logo} alt='My Image' width='160' height='60' />
+                  </NavLink>
+                </div>
+
+                <div className='main_nav_but_rec'>
+                  <Link to='/main'> 메인 페이지 </Link>
+                  <Link to='/community'> 커뮤니티 </Link>
+                  <Link to='/todo'> to-do list </Link>
+                  <Link to='/random'> 식물 성향 테스트 </Link>
+                  <button onClick={handleSubmit}>로그아웃</button>
+                </div>
+              </div>
+
+              <div className='Light'>
+                <div className='exx5'>
+                  <p> (5/6) </p>
+                </div>
                 <br></br>
-                <button className='menubtn' onClick={onCommunity}>
-                  커뮤니티
-                </button>
+                <p>광량 조건은 어떻게 되나요?</p>
                 <br></br>
-                <button className='menubtn'>To-do list</button>
-                <br></br>
-                <button className='menubtn'>로그아웃</button>
-              </menu>
-              <p>광량 조건은 어떻게 되나요?</p>
-              <div>
                 <button className='btn' value='많다' onClick={handleLightButton}>
                   많다
                 </button>
@@ -439,58 +469,74 @@ const App = ({ usernum, buttonValue }) => {
                   적다
                 </button>
               </div>
-            </div>
+            </>
           )
         ) : (
-          <div className='Size'>
-            <menu className='btnmenu'>
-              <button className='menubtn' onClick={onInfo}>
-                마이페이지
-              </button>
+          <>
+            <div className='main_nav_rec'>
+              <div className='main_logo_rec'>
+                <NavLink to={'http://localhost:3000/'}>
+                  <img src={logo} alt='My Image' width='160' height='60' />
+                </NavLink>
+              </div>
+
+              <div className='main_nav_but_rec'>
+                <Link to='/main'> 메인 페이지 </Link>
+                <Link to='/community'> 커뮤니티 </Link>
+                <Link to='/todo'> to-do list </Link>
+                <Link to='/random'> 식물 성향 테스트 </Link>
+                <button onClick={handleSubmit}>로그아웃</button>
+              </div>
+            </div>
+
+            <div className='Size'>
+              <div className='exx4'>
+                <p> (4/6) </p>
+              </div>
               <br></br>
-              <button className='menubtn' onClick={onCommunity}>
-                커뮤니티
-              </button>
+              <p>원하는 식물의 크기가 있나요?</p>
               <br></br>
-              <button className='menubtn'>To-do list</button>
-              <br></br>
-              <button className='menubtn'>로그아웃</button>
-            </menu>
-            <p>원하는 식물의 크기가 있나요?</p>
-            <div>
               <button className='btn' value='크다' onClick={handleSizeButton}>
-                크다(1m이상)
+                크다
               </button>
               <br></br>
               <br></br>
               <button className='btn' value='중간' onClick={handleSizeButton}>
-                중간(30cm~1m정도)
+                중간
               </button>
               <br></br>
               <br></br>
               <button className='btn' value='작다' onClick={handleSizeButton}>
-                작다(30cm이하)
+                작다
               </button>
             </div>
-          </div>
+          </>
         )
       ) : (
-        <div className='Address'>
-          <menu className='btnmenu'>
-            <button className='menubtn' onClick={onInfo}>
-              마이페이지
-            </button>
+        <>
+          <div className='main_nav_rec'>
+            <div className='main_logo_rec'>
+              <NavLink to={'http://localhost:3000/'}>
+                <img src={logo} alt='My Image' width='160' height='60' />
+              </NavLink>
+            </div>
+
+            <div className='main_nav_but_rec'>
+              <Link to='/main'> 메인 페이지 </Link>
+              <Link to='/community'> 커뮤니티 </Link>
+              <Link to='/todo'> to-do list </Link>
+              <Link to='/random'> 식물 성향 테스트 </Link>
+              <button onClick={handleSubmit}>로그아웃</button>
+            </div>
+          </div>
+
+          <div className='Address'>
+            <div className='exx3'>
+              <p> (3/6) </p>
+            </div>
             <br></br>
-            <button className='menubtn' onClick={onCommunity}>
-              커뮤니티
-            </button>
+            <p>식물을 키우는 장소는 어디인가요?</p>
             <br></br>
-            <button className='menubtn'>To-do list</button>
-            <br></br>
-            <button className='menubtn'>로그아웃</button>
-          </menu>
-          <p>식물을 키우는 장소는 어디인가요?</p>
-          <div>
             <button className='btn' value='yes' onClick={handleAddressButton}>
               실내
             </button>
@@ -500,25 +546,33 @@ const App = ({ usernum, buttonValue }) => {
               실외
             </button>
           </div>
-        </div>
+        </>
       )
     ) : (
-      <div className='Time'>
-        <menu className='btnmenu'>
-          <button className='menubtn' onClick={onInfo}>
-            마이페이지
-          </button>
+      <>
+        <div className='main_nav_rec'>
+          <div className='main_logo_rec'>
+            <NavLink to={'http://localhost:3000/'}>
+              <img src={logo} alt='My Image' width='160' height='60' />
+            </NavLink>
+          </div>
+
+          <div className='main_nav_but_rec'>
+            <Link to='/main'> 메인 페이지 </Link>
+            <Link to='/community'> 커뮤니티 </Link>
+            <Link to='/todo'> to-do list </Link>
+            <Link to='/random'> 식물 성향 테스트 </Link>
+            <button onClick={handleSubmit}>로그아웃</button>
+          </div>
+        </div>
+
+        <div className='Time'>
+          <div className='exx2'>
+            <p> (2/6) </p>
+          </div>
           <br></br>
-          <button className='menubtn' onClick={onCommunity}>
-            커뮤니티
-          </button>
+          <p>식물 관리에 참여할 수 있는 시간이 얼마나 되나요?</p>
           <br></br>
-          <button className='menubtn'>To-do list</button>
-          <br></br>
-          <button className='menubtn'>로그아웃</button>
-        </menu>
-        <p>식물 관리에 참여할 수 있는 시간이 얼마나 되나요?</p>
-        <div>
           <button className='btn' value='yes' onClick={handleTimeButton}>
             주기적으로 참여 가능
           </button>
@@ -528,25 +582,33 @@ const App = ({ usernum, buttonValue }) => {
             체계적인 관리 없이도 잘 자랐으면 좋겠음
           </button>
         </div>
-      </div>
+      </>
     )
   ) : (
-    <div className='Experience'>
-      <menu className='btnmenu'>
-        <button className='menubtn' onClick={onInfo}>
-          마이페이지
-        </button>
+    <>
+      <div className='main_nav_rec'>
+        <div className='main_logo_rec'>
+          <NavLink to={'http://localhost:3000/'}>
+            <img src={logo} alt='My Image' width='160' height='60' />
+          </NavLink>
+        </div>
+
+        <div className='main_nav_but_rec'>
+          <Link to='/main'> 메인 페이지 </Link>
+          <Link to='/community'> 커뮤니티 </Link>
+          <Link to='/todo'> to-do list </Link>
+          <Link to='/random'> 식물 성향 테스트 </Link>
+          <button onClick={handleSubmit}>로그아웃</button>
+        </div>
+      </div>
+
+      <div className='Experience'>
+        <div className='exx'>
+          <p> (1/6) </p>
+        </div>
         <br></br>
-        <button className='menubtn' onClick={onCommunity}>
-          커뮤니티
-        </button>
+        <p>식물을 키워본 적이 있으신가요?</p>
         <br></br>
-        <button className='menubtn'>To-do list</button>
-        <br></br>
-        <button className='menubtn'>로그아웃</button>
-      </menu>
-      <p>식물을 키워본 적이 있으신가요?</p>
-      <div>
         <button className='btn' value='yes' onClick={handleExperienceButton}>
           yes
         </button>
@@ -556,7 +618,7 @@ const App = ({ usernum, buttonValue }) => {
           no
         </button>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -1,15 +1,79 @@
-* {
-  font-family: '스스로넷 칠백삼', 'Courier New', Courier;
-}
-
-.theme {
+.main_nav_random {
+  height: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1000px;
   margin: auto;
-  margin-top: 100px;
 }
 
-.choose {
-  width: 100px;
+.main_nav_random .main_logo_random img {
+  width: 140px;
+}
+
+.main_nav_random .main_nav_but_random a {
+  text-decoration: none;
+  padding-left: 20px;
+  padding-right: 20px;
+  color: black;
+}
+
+.main_nav_random .main_nav_but_random button {
+  background-color: white;
+  color: black;
+  border: 1px solid white;
+  font-size: 15px;
+}
+
+.ran .title {
+  margin-top: 100px;
+  text-align: center;
+  font-size: 18px;
+  font-style: italic;
+  color: #6c6562;
+}
+
+.ran .theme {
+  text-align: center;
   margin: auto;
   margin-top: 10px;
+  color: #6c6562;
+  font-size: 15px;
+  font-style: italic;
+}
+
+.ran .choose {
   display: block;
+  margin: auto;
+  margin-top: 80px;
+  width: 130px;
+  height: 42px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 21px;
+  transition: 0.5s ease;
+}
+
+.ran .choose:hover {
+  background: #bdcebb;
+}
+
+.ran .choose1 {
+  display: block;
+  margin: auto;
+  margin-top: 5px;
+  width: 130px;
+  height: 42px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 21px;
+  transition: 0.5s ease;
+}
+
+.ran .choose1:hover {
+  background: #bdcebb;
 }

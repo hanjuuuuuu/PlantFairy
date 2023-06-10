@@ -1,4 +1,268 @@
-.question {
-  margin-top: 40px;
+/* 상단바 */
+.main_nav_scary {
+  height: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.main_nav_scary .main_logo_scary img {
+  width: 140px;
+}
+
+.main_nav_scary .main_nav_but_scary a {
+  text-decoration: none;
+  padding-left: 20px;
+  padding-right: 20px;
+  color: black;
+}
+
+.main_nav_scary .main_nav_but_scary button {
+  background-color: white;
+  color: black;
+  border: 1px solid white;
+  font-size: 15px;
+}
+/* 여기서부터 하단 */
+
+/* 질문1 */
+.question1 h1 {
+  margin-top: 100px;
   text-align: center;
+  font-size: 18px;
+  font-style: italic;
+  color: #6c6562;
+}
+
+.question1 h2 {
+  text-align: center;
+  margin: auto;
+  margin-top: 10px;
+  color: #6c6562;
+  font-size: 18px;
+  font-style: italic;
+}
+
+.question1 .btn1 {
+  display: block;
+  margin: auto;
+  margin-top: 60px;
+  width: 500px;
+  height: 41px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 18px;
+  transition: 0.5s ease;
+}
+
+.question1 .btn2 {
+  display: block;
+  margin: auto;
+  margin-top: 20px;
+  width: 500px;
+  height: 41px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 18px;
+  transition: 0.5s ease;
+}
+
+.question1 .btn1:hover {
+  background: #bdcebb;
+}
+
+.question1 .btn2:hover {
+  background: #bdcebb;
+}
+
+/* 질문2 */
+.question2 h1 {
+  margin-top: 100px;
+  text-align: center;
+  font-size: 18px;
+  font-style: italic;
+  color: #6c6562;
+}
+
+.question2 h2 {
+  text-align: center;
+  margin: auto;
+  margin-top: 10px;
+  color: #6c6562;
+  font-size: 18px;
+  font-style: italic;
+}
+
+.question2 .btn1 {
+  display: block;
+  margin: auto;
+  margin-top: 60px;
+  width: 700px;
+  height: 41px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 18px;
+  transition: 0.5s ease;
+}
+
+.question2 .btn2 {
+  display: block;
+  margin: auto;
+  margin-top: 20px;
+  width: 700px;
+  height: 41px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 18px;
+  transition: 0.5s ease;
+}
+
+.question2 .btn1:hover {
+  background: #bdcebb;
+}
+
+.question2 .btn2:hover {
+  background: #bdcebb;
+}
+
+/* 질문3 */
+.question3 h1 {
+  margin-top: 100px;
+  text-align: center;
+  font-size: 18px;
+  font-style: italic;
+  color: #6c6562;
+}
+
+.question3 h2 {
+  text-align: center;
+  margin: auto;
+  margin-top: 10px;
+  color: #6c6562;
+  font-size: 18px;
+  font-style: italic;
+}
+
+.question3 .btn1 {
+  display: block;
+  margin: auto;
+  margin-top: 60px;
+  width: 550px;
+  height: 41px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 18px;
+  transition: 0.5s ease;
+}
+
+.question3 .btn2 {
+  display: block;
+  margin: auto;
+  margin-top: 20px;
+  width: 550px;
+  height: 41px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 18px;
+  transition: 0.5s ease;
+}
+
+.question3 .btn1:hover {
+  background: #bdcebb;
+}
+
+.question3 .btn2:hover {
+  background: #bdcebb;
+}
+
+/* 질문4 */
+.question4 h1 {
+  margin-top: 100px;
+  text-align: center;
+  font-size: 18px;
+  font-style: italic;
+  color: #6c6562;
+}
+
+.question4 h2 {
+  text-align: center;
+  margin: auto;
+  margin-top: 10px;
+  color: #6c6562;
+  font-size: 18px;
+  font-style: italic;
+}
+
+.question4 .btn1 {
+  display: block;
+  margin: auto;
+  margin-top: 60px;
+  width: 550px;
+  height: 41px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 18px;
+  transition: 0.5s ease;
+}
+
+.question4 .btn2 {
+  display: block;
+  margin: auto;
+  margin-top: 20px;
+  width: 550px;
+  height: 41px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 18px;
+  transition: 0.5s ease;
+}
+
+.question4 .btn1:hover {
+  background: #bdcebb;
+}
+
+.question4 .btn2:hover {
+  background: #bdcebb;
+}
+
+/* 결과 버튼 */
+.scary_resultbtn {
+  display: block;
+  margin: auto;
+  margin-top: 250px;
+  width: 280px;
+  height: 41px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 18px;
+  transition: 0.5s ease;
+}
+
+.scary_resultbtn:hover {
+  background: #bdcebb;
+}
+
+.scary_spin .spin {
+  padding: 50px 50px 10px 450px;
+  width: '100px';
 }

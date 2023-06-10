@@ -31,8 +31,6 @@ app.use(
   })
 );
 app.use(cookieParser());
-// app.use(bodyParser.json({ limit: '50mb' }));
-// app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.urlencoded({ extended: false }));
 
 const storage = multer.diskStorage({
@@ -58,7 +56,7 @@ app.use('/api/likes', likesRoutes);
 app.use('/api/comments', commentsRoutes);
 
 const configuration = new Configuration({
-  apiKey: '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', //process.env.API_KEY,
+  apiKey: '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', //process.env.API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
@@ -157,7 +155,7 @@ app.post('/rectodo', async (req, res) => {
 //todo 페이지에 출력할 식물 투두리스트 전달
 app.post('/planttodo', async (req, res) => {
   let plantname = req.body.plantname;
-  let userplantnum = 93;
+  let userplantnum = req.body.userplantnum;
   let usernum = req.body.usernum;
   let tododay = req.body.day;
   console.log('todo plantname', plantname, 'todo userplantnum', userplantnum, 'todo day', tododay);
@@ -193,7 +191,7 @@ app.post('/plantpicture', async (req, res) => {
   let plantpicture = req.body.usernum;
   console.log('usernum------', plantpicture);
 
-  const sqluserplant = `SELECT user_plant_num AS "key", plant_name, plant_characteristic, plant_level, plant_picture FROM user_plant WHERE user_num = '${plantpicture}'`;
+  const sqluserplant = `SELECT user_plant_num AS "key", plant_name, plant_characteristic, plant_picture FROM user_plant WHERE user_num = '${plantpicture}'`;
   db.query(sqluserplant, plantpicture, (err, data) => {
     if (!err) {
       res.send(data);
@@ -254,12 +252,12 @@ app.post('/plantenroll', async (req, res) => {
   let plantmain = req.body.plantmain;
   //let plantpicture = req.body.plantpicture;
   let plantcharacteristic = req.body.plantcharacteristic;
-  let plantlevel = req.body.plantlevel;
+  //let plantlevel = req.body.plantlevel;
   console.log('enroll', plantname);
   //console.log('pp : ', plantpicture);
 
-  const sqlplantenroll = 'INSERT INTO user_plant (user_num, plant_name, plant_main, plant_characteristic, plant_level) values(?, ?, ?, ?, ?)';
-  db.query(sqlplantenroll, [usernum, plantname, plantmain, plantcharacteristic, plantlevel], (err, data) => {
+  const sqlplantenroll = 'INSERT INTO user_plant (user_num, plant_name, plant_main, plant_characteristic) values(?, ?, ?, ?)';
+  db.query(sqlplantenroll, [usernum, plantname, plantmain, plantcharacteristic], (err, data) => {
     if (!err) {
       res.send(data);
     } else {
@@ -378,6 +376,7 @@ app.get('/imagespath/:plantName', (req, res) => {
 
 app.get('/images/:plantName', (req, res) => {
   const plant_name = req.params.plantName.replace(/\n/g, '');
+  console.log('!!!!!!!!!!!!', req.params.plantName);
   console.log('----', plant_name);
 
   // plant_name 대신 영어이름으로 바꾸기

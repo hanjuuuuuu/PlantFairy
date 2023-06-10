@@ -1,5 +1,3 @@
-// The color lerp function is from Ross Zurowski v
-// https://gist.github.com/rosszurowski/67f04465c424a9bc0dae
 import './curtain.css';
 
 function lerpColor(a, b, amount) {
@@ -374,7 +372,7 @@ let wind = {
 };
 wind.reset();
 
-let backgroundColor = '#1d0d21';
+let backgroundColor = '#ffffff';
 
 function populate() {
   plants = [];
@@ -417,3 +415,5 @@ function loop(f) {
 }
 
 loop();
+
+export default { canvas, ctx, W, H, plants, populate, draw, loop };

@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Button, Table, Modal, Radio } from 'antd';
 import axios from 'axios';
 import '../design/main.css';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, Link, NavLink, useNavigate } from 'react-router-dom';
 //import App from './App.js';
 import Recommend from './Recommend.jsx';
 import Community from './Community.jsx';
+import logo from '../img/logo.png';
 import Info from './MyPage.jsx';
 import NewRecommend from './NewReccomend.jsx';
 import Todo from './Todo';
@@ -34,12 +35,22 @@ const Main = () => {
   const [recommendPlant, setrecommendPlant] = useState('');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [err, setError] = useState(null);
   /**
    *  화면에서 사용하는 이벤트를 정의
    */
 
   const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('http://localhost:8800/api/auth/logout');
+      navigate('/');
+    } catch (err) {
+      setError(err.response.data);
+    }
+  };
 
   const onClick = (e) => {
     console.log('click', e);
@@ -188,79 +199,90 @@ const Main = () => {
   return isRecommend ? (
     <Recommend usernum={state} buttonValue={buttonValue} />
   ) : (
-    <div className='main'>
-      <br></br>
-      <h2>식물요정</h2>
-      <br></br>
-      <div>메인페이지</div>
-      <br></br>
+    <>
+      <div className='main_nav'>
+        <div className='main_logo'>
+          <NavLink to={'http://localhost:3000/'}>
+            <img src={logo} alt='My Image' width='160' height='60' />
+          </NavLink>
+        </div>
 
-      <div className='printImg'></div>
+        <div className='main_nav_but'>
+          <Link to='/main'> 메인 페이지 </Link>
+          <Link to='/community'> 커뮤니티 </Link>
+          <Link to='/todo'> to-do list </Link>
+          <Link to='#'> 식물 성향 테스트 </Link>
+          <button onClick={handleSubmit}>로그아웃</button>
+        </div>
+      </div>
 
-      <div>
-        <Button className='slot' onClick={showModal}>
-          {' '}
-          {userPlantEnroll0}{' '}
-        </Button>
-        <Modal title='메인 식물로 등록할 식물을 골라주세요' open={isModalOpen} onOk={handleOK} onCancel={handleCancel}>
-          <Radio.Group>
-            <Radio value={userPlantEnroll1name} onClick={onclick}>
-              {userPlantEnroll1name}
-            </Radio>
-            <Radio value={userPlantEnroll2name} onClick={onclick}>
-              {userPlantEnroll2name}
-            </Radio>
-            <Radio value={userPlantEnroll3name} onClick={onclick}>
-              {userPlantEnroll3name}
-            </Radio>
-            <Radio value={userPlantEnroll4name} onClick={onclick}>
-              {userPlantEnroll4name}
-            </Radio>
-          </Radio.Group>
-        </Modal>
-      </div>
-      <div>
-        <Table className='tableprint' columns={columns} pagination={false} dataSource={userPlantInfo} size='middle' />
-      </div>
-      <menu className='btnmenu'>
-        <button className='menubtn' onClick={onInfo}>
-          마이페이지
-        </button>
-        <br></br>
-        <button className='menubtn' onClick={onCommunity}>
-          커뮤니티
-        </button>
-        <br></br>
-        <button className='menubtn' onClick={onTodo}>
-          To-do list
-        </button>
-        <br></br>
-        <button className='menubtn' onClick={onRandom}>
-          다양한 식물 추천
-        </button>
-        <br></br>
-        <button className='menubtn'>로그아웃</button>
-      </menu>
-      <br></br>
-      <br></br>
-      <div style={{ marginLeft: '50%' }}>레벨이 올라가면 슬롯이 확장됩니다!</div>
-      <Button value='1' className='slots' onClick={onRecommend}>
-        {' '}
-        {userPlantEnroll1}{' '}
-      </Button>
-      <Button value='2' className='slots' disabled onClick={onRecommend}>
-        {' '}
-        {userPlantEnroll2}{' '}
-      </Button>
-      <Button value='3' className='slots' disabled onClick={onRecommend}>
-        {' '}
-        {userPlantEnroll3}{' '}
-      </Button>
-      <Button value='4' className='slots' disabled onClick={onRecommend}>
-        {' '}
-        {userPlantEnroll4}{' '}
-      </Button>
-    </div>
+      <section className='out'>
+        <div className='printImg'>
+          <button type='submit'> 내 프로필 </button>
+
+          <Button className='slot' onClick={showModal}>
+            {' '}
+            {userPlantEnroll0}{' '}
+          </Button>
+          <Modal title='메인 식물로 등록할 식물을 골라주세요' open={isModalOpen} onOk={handleOK} onCancel={handleCancel}>
+            <Radio.Group>
+              <Radio value={userPlantEnroll1name} onClick={onclick}>
+                {userPlantEnroll1name}
+              </Radio>
+              <Radio value={userPlantEnroll2name} onClick={onclick}>
+                {userPlantEnroll2name}
+              </Radio>
+              <Radio value={userPlantEnroll3name} onClick={onclick}>
+                {userPlantEnroll3name}
+              </Radio>
+              <Radio value={userPlantEnroll4name} onClick={onclick}>
+                {userPlantEnroll4name}
+              </Radio>
+            </Radio.Group>
+          </Modal>
+
+          <h1> 닉네임 : {/*{currentUser.user_nickname} */} </h1>
+        </div>
+        <div className='tab'>
+          <Table className='tableprint' columns={columns} pagination={false} dataSource={userPlantInfo} size='middle' />
+        </div>
+
+        <div className='style'>
+          <p> 이름 : {/* {currentUser.user_name} */} </p>
+          <p> 이메일 : {/* {currentUser.user_email} */} </p>
+          <p> 레벨 : </p>
+          <p> 포인트 : </p>
+
+          <button onClick={handleSubmit} className='logout'>
+            {' '}
+            로그아웃{' '}
+          </button>
+
+          <h1> 레벨이 올라가면 슬롯이 확장됩니다! </h1>
+          <Button value='1' className='slots1' onClick={onRecommend}>
+            {' '}
+            {userPlantEnroll1}{' '}
+          </Button>
+          <Button value='2' className='slots2' disabled onClick={onRecommend}>
+            {' '}
+            {userPlantEnroll2}{' '}
+          </Button>
+          <Button value='3' className='slots3' disabled onClick={onRecommend}>
+            {' '}
+            {userPlantEnroll3}{' '}
+          </Button>
+          <Button value='4' className='slots4' disabled onClick={onRecommend}>
+            {' '}
+            {userPlantEnroll4}{' '}
+          </Button>
+        </div>
+
+        <div className='event'>
+          <Button value='5'>식물 성장 모습</Button>
+          {/* <img src={fairy} alt='My Image' /> */}
+        </div>
+      </section>
+    </>
   );
 };
 

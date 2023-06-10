@@ -1,13 +1,14 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, NavLink } from 'react-router-dom';
 import '../design/home.css';
-import image11 from '../img/image11.png';
 import logo from '../img/logo.png';
 import homeimg5 from '../img/homeimg5.png';
 import homeimg6 from '../img/homeimg6.png';
 import todo from '../img/todo.png';
 import com from '../img/com.png';
 import point from '../img/point.png';
+import { useContext, useState } from 'react';
+import { AuthContext } from '../context/authContext';
 
 function Home() {
   const navigate = useNavigate();
@@ -20,6 +21,25 @@ function Home() {
     navigate('/register');
   };
 
+  const [inputs, setInputs] = useState({
+    username: '',
+    user_pw: '',
+  });
+
+  const [err, setError] = useState(null);
+  const { login } = useContext(AuthContext);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      let getUserNum = await login(inputs);
+      console.log('user_num: ', getUserNum);
+      navigate('/main', { state: getUserNum });
+    } catch (err) {
+      setError(JSON.stringify(err));
+    }
+  };
+
   return (
     <>
       <>
@@ -28,16 +48,17 @@ function Home() {
             <>
               <div className='nav'>
                 <div className='logo'>
-                  <img src={logo} alt='My Image' width='160' height='60' />
+                  <NavLink to={'http://localhost:3000/'}>
+                    <img src={logo} alt='My Image' width='160' height='60' />
+                  </NavLink>
                 </div>
 
                 <div className='nav_but'>
-                  <Link to='/mypage'> 마이 페이지 </Link>
                   <Link to='/main'> 메인 페이지 </Link>
-                  <Link to='#'> 커뮤니티 </Link>
-                  <Link to='#'> to-do list </Link>
-                  <Link to='#'> 식물 성향 테스트 </Link>
-                  <button type='submit'>로그아웃</button>
+                  <Link to='/community'> 커뮤니티 </Link>
+                  <Link to='/todo'> to-do list </Link>
+                  <Link to='/random'> 식물 성향 테스트 </Link>
+                  <button onClick={handleSubmit}>로그아웃</button>
                 </div>
               </div>
 
