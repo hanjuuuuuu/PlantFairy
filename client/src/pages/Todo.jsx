@@ -40,10 +40,8 @@ const Todo = () => {
 
   //main에서 usernum, userplantnum 받아오기
   const { state } = useLocation();
-  //console.log('todo state', state, 'userplantnum');
   let plantname;
   let userplantnum;
-  //let daynum;
   
 
   //캘린더에서 날짜를 클릭하면 식물이름 가져오기, 날짜 변경
@@ -73,6 +71,7 @@ const Todo = () => {
         console.log('daynum', daynum);
         console.log('todotodotodo', res.data);
         setTasks(res.data);
+        setIsChecked(res.data[0].complete);
       })
       .catch((error) => console.log(error));
   };
@@ -80,36 +79,49 @@ const Todo = () => {
   //투두리스트 체크박스 클릭하면
   const handleCheckboxChange = (taskKey,taskDay,taskComplete) => {
     console.log('handlecheckboxchange', taskKey,taskDay,taskComplete);
-    // const updatedTasks = tasks.map((task) => 
-    //   task.key === taskKey
-    //   ? { ...task, checked: !task.complete } 
-    //   : task
-    // );
-    // setTasks(updatedTasks);
-    setIsChecked(!isChecked);
-    if(taskDay === today) {
-      //유저 포인트 업데이트 요청
-      setUserPoints(userPoints+1);
-      console.log('points', userPoints);
-      updateUserPoints();
-      //DB에 체크 상태 업데이트 요청
+    const updatedTasks = tasks.map((task) => 
+      task.key === taskKey
+      ? { ...task, complete: !task.complete } 
+      : task
+    );
+    setTasks(updatedTasks);
+
+    // 유저 체크 상태 변경
+  //   axios.post('http://localhost:8800/updatetaskcomplete', {
+  //   todonum: taskKey,
+  //   complete: !taskComplete,
+  // })
+  //   .then((response) => {
+  //     console.log('Task complete', response);
+  //   });
+
+    //체크됐을 때 유저 포인트 올리기
+    if(!taskComplete) {
+      setUserPoints(userPoints + 1);
+      updateUserPoints(taskKey, !taskComplete);
+    } else {
+      setUserPoints(userPoints -1);
+      updateUserPoints(taskKey, !taskComplete);
     }
-  };
+  }
 
   //유저 포인트 올리기
   const updateUserPoints = () => {
-    axios.post('http://localhost:8800/updateuserpoints', {
-      userplantnum: userplantnum,
-      usernum: state,
-      userpoints: userPoints
-    })
-    .then((res) => {
-      console.log('point up');
-      console.log(res.data);
-    })
-    .catch((error) => {
-      console.log('error update points', error);
-    })
+    if(isChecked === true){
+      axios.post('http://localhost:8800/updateuserpoints', {
+        userplantnum: userplantnum,
+        usernum: state,
+        userpoints: userPoints,
+        usercomplete: isChecked
+      })
+      .then((res) => {
+        console.log('point up');
+        console.log(res.data);
+      })
+      .catch((error) => {
+        console.log('error update points', error);
+      })
+    }
   }
 
   //유저 포인트, 레벨
@@ -127,6 +139,16 @@ const Todo = () => {
       console.log('error pointslevel', err);
     })
   }
+  
+  //할 일 체크 됐으면 파란점, 안됐으면 빨간점으로 표시
+  const tileContent = ({ date }) => {
+    const day = moment(date).format('DD');
+    const todo = tasks.find((task) => task.day === day);
+    if (todo) {
+      return <div className={`dot ${todo.complete ? 'blue' : 'red'}`} />;
+    }
+    return null;
+  };
 
   // useEffect(() => {
   //   async function handleDateClick(date) {
@@ -171,7 +193,7 @@ const Todo = () => {
       </menu>
 
       <div>
-        <Calendar onClickDay={handleDateClick} />
+        <Calendar onClickDay={handleDateClick} tileContent={tileContent}/>
         <div className='text-gray-500 mt-4'>
           {moment(selectedDate).format('YYYY년 MM월 DD일')}
           <br></br>
@@ -182,7 +204,7 @@ const Todo = () => {
               <div key={task.key}>
                 <input 
                   type='checkbox' 
-                  checked={isChecked} 
+                  checked={task.complete} 
                   onChange={() => handleCheckboxChange(task.key, task.day, task.complete)} 
                   disabled={task.day !== today} 
                 />
@@ -191,7 +213,7 @@ const Todo = () => {
             ))}
         </div>
       </div>
-    </div>
+    </div> 
   );
 };
 

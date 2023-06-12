@@ -49,6 +49,7 @@ const App = ({ usernum, buttonValue }) => {
   const [plantImages, setPlantImages] = useState([]);
   const [plantname, setPlantName] = useState('');
   const [userplantnum, setUserPlantNum] = useState('');
+  const [showResult, setShowResult] = useState(false);
 
   const { state } = useLocation();
 
@@ -235,6 +236,7 @@ const App = ({ usernum, buttonValue }) => {
     e.preventDefault();
     try {
       setLoading(true);
+      setShowResult(true);
       const response = await fetch('http://localhost:8800/recommend', {
         method: 'POST',
         headers: {
@@ -305,6 +307,7 @@ const App = ({ usernum, buttonValue }) => {
                       onClick={() => {
                         setMessage(`${text}`);
                       }}
+                      disabled
                     >
                       결과를 보시겠습니까?
                     </button>
@@ -336,7 +339,7 @@ const App = ({ usernum, buttonValue }) => {
                   </menu>
                   <form onSubmit={handleSubmit}>
                     <button
-                      className='resultbtn'
+                      className={`resultbtn ${showResult || response.length > 0 ? 'hidden' : ''}`}
                       type='submit'
                       value={`${text}`}
                       onClick={() => {
@@ -350,21 +353,24 @@ const App = ({ usernum, buttonValue }) => {
                   <br></br>
                   <div>
                     {Array.isArray(response) &&
-                      response.map((plant) => (
+                      response.map((plant, idx1) => (
                         <div className='recommend' key={plant.name}>
-                          <button value={[[plant.korName], [plant.plant_characteristic]]} className='recbtn' onClick={showModal}>
+                          <button key={idx1} value={[[plant.korName], [plant.plant_characteristic]]} className='recbtn' onClick={showModal}>
                             {plant.korName}
                           </button>
+                          <br></br>
                           <div style={{ justifyContent: 'space-between' }}>
-                            <h3>Plant Images:</h3>
                             {plantImages.length > 0 && (
                               <div className='plantimg'>
-                                {plantImages.map((imageUrl, idx) => (
-                                  <img key={idx} src={imageUrl} alt={`generated image ${idx}`} />
+                                {plantImages.map((imageUrl, idx2) => (
+                                  <img key={idx2} src={imageUrl} alt={`generated image ${idx2}`} style={{display: idx2 === idx1 ? 'block' : 'none'}}/>
                                 ))}
                               </div>
                             )}
                           </div>
+                          <br></br>
+                          <div>{plant.plant_characteristic}</div>
+                          <br></br>
                           <Modal
                             title='식물요정'
                             open={open}
@@ -381,8 +387,6 @@ const App = ({ usernum, buttonValue }) => {
                           >
                             <h2 className='enroll'>{recommendPlant} 키우시겠습니까?</h2>
                           </Modal>
-                          <br></br>
-                          <div>{plant.plant_characteristic}</div>
                           <br></br>
                         </div>
                       ))}
