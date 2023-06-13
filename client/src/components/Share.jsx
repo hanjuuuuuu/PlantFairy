@@ -53,7 +53,7 @@ const Share = () => {
         <div className='top'>
           <div className='left'>
             <img src={'/upload/' + currentUser.profilePic} alt='' />
-            <input type='text' placeholder={`What's on your mind ${currentUser.name}?`} onChange={(e) => setDesc(e.target.value)} value={desc} />
+            <input type='text' placeholder={`무슨 생각 중이신가요 ${currentUser.user_nickname}?`} onChange={(e) => setDesc(e.target.value)} value={desc} />
           </div>
           <div className='right'>{file && <img className='file' alt='' src={URL.createObjectURL(file)} />}</div>
         </div>

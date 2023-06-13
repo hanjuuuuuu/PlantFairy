@@ -4,13 +4,13 @@ import axios from 'axios';
 import { AuthContext } from '../context/authContext.js';
 import Main from './Main.jsx';
 import StarRating from '../components/StarRating.jsx';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, NavLink } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import logo from '../img/logo.png';
+import '../design/newRecommend.css';
 
 const NewReccomend = ({ usernum, buttonValue }) => {
   const { currentUser } = useContext(AuthContext);
-
-  const navigate = useNavigate();
 
   const [experience, setExperience] = useState('');
   const [onExperience, setOnExperience] = useState(false);
@@ -190,6 +190,27 @@ const NewReccomend = ({ usernum, buttonValue }) => {
     setOpen(false);
   };
 
+  const [inputs, setInputs] = useState({
+    username: '',
+    user_pw: '',
+  });
+
+  const [err, setError] = useState(null);
+  const { login } = useContext(AuthContext);
+
+  const navigate = useNavigate();
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    try {
+      let getUserNum = await login(inputs);
+      console.log('user_num: ', getUserNum);
+      navigate('/main', { state: getUserNum });
+    } catch (err) {
+      setError(JSON.stringify(err));
+    }
+  };
+
   useEffect(() => {
     onUserPlantPrint();
     onUserPlantPickPrint();
@@ -201,68 +222,106 @@ const NewReccomend = ({ usernum, buttonValue }) => {
     if (isno) {
       if (loading) {
         return (
-          <div>
-            <form onSubmit={handleSubmitButton}>
-              <button
-                className='resultbtn'
-                type='submit'
-                value={`${text}`}
-                onClick={() => {
-                  setMessage(`${text}`);
-                }}
-              >
-                결과를 보시겠습니까?
-              </button>
-            </form>
-            <br></br>
-            <br></br>
-            <div>
-              {Array.isArray(response) &&
-                response.map((plant) => (
-                  <div className='recommend' key={plant.korName}>
-                    <button value={[[plant.korName], [plant.plant_characteristic]]} className='recbtn' onClick={showModal}>
-                      {plant.korName}
-                    </button>
-                    <div style={{ justifyContent: 'space-between' }}>
-                      <h3>Plant Images:</h3>
-                      {plantImages.length > 0 && (
-                        <div className='plantimg'>
-                          {plantImages.map((imageUrl, idx) => (
-                            <img key={idx} src={imageUrl} alt={`generated image ${idx}`} />
-                          ))}
-                        </div>
-                      )}
-                    </div>
+          <>
+            <div className='main_nav_rec'>
+              <div className='main_logo_rec'>
+                <NavLink to={'http://localhost:3000/'}>
+                  <img src={logo} alt='My Image' width='160' height='60' />
+                </NavLink>
+              </div>
 
-                    <Modal
-                      title='식물요정'
-                      open={open}
-                      onOk={handleOk}
-                      onCancel={handleCancel}
-                      footer={[
-                        <Button key='enroll' onClick={handleOk}>
-                          등록
-                        </Button>,
-                        <Button key='cancel' onClick={handleCancel}>
-                          취소
-                        </Button>,
-                      ]}
-                    >
-                      <h2 className='enroll'>{recommendPlant} 키우시겠습니까?</h2>
-                    </Modal>
-                    <br></br>
-                    <div>{plant.plant_characteristic}</div>
-                    <br></br>
-                  </div>
-                ))}
+              <div className='main_nav_but_rec'>
+                <Link to='/main'> 메인 페이지 </Link>
+                <Link to='/community'> 커뮤니티 </Link>
+                <Link to='/todo'> to-do list </Link>
+                <Link to='/random'> 식물 성향 테스트 </Link>
+                <button onClick={handleLogout}>로그아웃</button>
+              </div>
             </div>
-          </div>
+            <div>
+              <form onSubmit={handleSubmitButton}>
+                <button
+                  className='resultbtn'
+                  type='submit'
+                  value={`${text}`}
+                  onClick={() => {
+                    setMessage(`${text}`);
+                  }}
+                >
+                  결과를 보시겠습니까?
+                </button>
+              </form>
+              <br></br>
+              <br></br>
+              <div>
+                {Array.isArray(response) &&
+                  response.map((plant) => (
+                    <div className='recommend' key={plant.korName}>
+                      <button value={[[plant.korName], [plant.plant_characteristic]]} className='recbtn' onClick={showModal}>
+                        {plant.korName}
+                      </button>
+                      <div style={{ justifyContent: 'space-between' }}>
+                        <h3>Plant Images:</h3>
+                        {plantImages.length > 0 && (
+                          <div className='plantimg'>
+                            {plantImages.map((imageUrl, idx) => (
+                              <img key={idx} src={imageUrl} alt={`generated image ${idx}`} />
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      <Modal
+                        title='식물요정'
+                        open={open}
+                        onOk={handleOk}
+                        onCancel={handleCancel}
+                        footer={[
+                          <Button key='enroll' onClick={handleOk}>
+                            등록
+                          </Button>,
+                          <Button key='cancel' onClick={handleCancel}>
+                            취소
+                          </Button>,
+                        ]}
+                      >
+                        <h2 className='enroll'>{recommendPlant} 키우시겠습니까?</h2>
+                      </Modal>
+                      <br></br>
+                      <div>{plant.plant_characteristic}</div>
+                      <br></br>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          </>
         );
       } else {
         return (
-          <div>
-            <div className='Experience'>
+          <>
+            <div className='main_nav_rec'>
+              <div className='main_logo_rec'>
+                <NavLink to={'http://localhost:3000/'}>
+                  <img src={logo} alt='My Image' width='160' height='60' />
+                </NavLink>
+              </div>
+
+              <div className='main_nav_but_rec'>
+                <Link to='/main'> 메인 페이지 </Link>
+                <Link to='/community'> 커뮤니티 </Link>
+                <Link to='/todo'> to-do list </Link>
+                <Link to='/random'> 식물 성향 테스트 </Link>
+                <button onClick={handleLogout}>로그아웃</button>
+              </div>
+            </div>
+
+            <div className='Address'>
+              <div className='exx3'>
+                <p> (3/6) </p>
+              </div>
+              <br></br>
               <p>{plantName}가 별로였던 점을 말해주시면 새로 추천해드릴게요</p>
+              <br></br>
               <label>
                 <input type='checkbox' value='가격' checked={checkedItems.includes('가격')} onChange={handleCheckboxChange} />
                 가격
@@ -281,7 +340,7 @@ const NewReccomend = ({ usernum, buttonValue }) => {
                 </button>
               </div>
             </div>
-          </div>
+          </>
         );
       }
     } else if (isyes) {
@@ -289,19 +348,43 @@ const NewReccomend = ({ usernum, buttonValue }) => {
         <>
           {loading && (
             <>
-              <p>
-                {userPick}의 {plantName}와 비슷한 식물을 추천받으시겠어요? 아니면 새로 추천을 받으시겠어요?
-              </p>
-              <div>
-                <button className='btn' value={`${plantName}와/과 비슷한`} onClick={handleSimilarButton}>
-                  비슷한
-                </button>
+              <div className='main_nav_rec'>
+                <div className='main_logo_rec'>
+                  <NavLink to={'http://localhost:3000/'}>
+                    <img src={logo} alt='My Image' width='160' height='60' />
+                  </NavLink>
+                </div>
+
+                <div className='main_nav_but_rec'>
+                  <Link to='/main'> 메인 페이지 </Link>
+                  <Link to='/community'> 커뮤니티 </Link>
+                  <Link to='/todo'> to-do list </Link>
+                  <Link to='/random'> 식물 성향 테스트 </Link>
+                  <button onClick={handleLogout}>로그아웃</button>
+                </div>
               </div>
-              <br />
-              <div>
-                <button className='btn' value='different' onClick={onNewRecommend}>
-                  새 추천
-                </button>
+
+              <div className='Time'>
+                <div className='exx2'>
+                  <p> (2/2) </p>
+                </div>
+                <br></br>
+                <p>
+                  {userPick}의 {plantName}와 비슷한 식물을 추천받으시겠어요? 아니면 새로 추천을 받으시겠어요?
+                </p>
+                <p>(새로운 추천은 기존에 했던 선택에 추가로 구체적인 질문을 묻습니다!)</p>
+                <br></br>
+                <div>
+                  <button className='btn' value={`${plantName}와/과 비슷한`} onClick={handleSimilarButton}>
+                    비슷한
+                  </button>
+                </div>
+                <br />
+                <div>
+                  <button className='btn' value='different' onClick={onNewRecommend}>
+                    새 추천
+                  </button>
+                </div>
               </div>
             </>
           )}
@@ -351,26 +434,51 @@ const NewReccomend = ({ usernum, buttonValue }) => {
       );
     } else {
       return (
-        <div>
-          {plantName && <p>{plantName}에 대한 추천이 마음에 들었나요?</p>}
-          <div>
-            <div>
-              <button className='btn' value='yes' onClick={handleExperienceButton}>
-                yes
-              </button>
-            </div>
-            <br />
-            <div>
-              <button className='btn' value='no' onClick={handleExperienceButton}>
-                no
-              </button>
+        <>
+          <div className='main_nav_rec'>
+            <div className='main_logo_rec'>
+              <NavLink to={'http://localhost:3000/'}>
+                <img src={logo} alt='My Image' width='160' height='60' />
+              </NavLink>
             </div>
 
-            <div>
-              <StarRating />
+            <div className='main_nav_but_rec'>
+              <Link to='/main'> 메인 페이지 </Link>
+              <Link to='/community'> 커뮤니티 </Link>
+              <Link to='/todo'> to-do list </Link>
+              <Link to='/random'> 식물 성향 테스트 </Link>
+              <button onClick={handleLogout}>로그아웃</button>
             </div>
           </div>
-        </div>
+
+          <div className='Experience'>
+            <div className='exx'>
+              <p> (1/2) </p>
+            </div>
+            <br></br>
+            <div>
+              {plantName && <p>{plantName}에 대한 추천이 마음에 들었나요?</p>}
+              <div>
+                <br></br>
+                <div>
+                  <button className='btn' value='yes' onClick={handleExperienceButton}>
+                    yes
+                  </button>
+                </div>
+                <br />
+                <div>
+                  <button className='btn' value='no' onClick={handleExperienceButton}>
+                    no
+                  </button>
+                </div>
+
+                <div>
+                  <StarRating />
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
       );
     }
   }

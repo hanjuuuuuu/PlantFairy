@@ -10,11 +10,18 @@ import logo from '../img/logo.png';
 import Info from './MyPage.jsx';
 import NewRecommend from './NewReccomend.jsx';
 import Todo from './Todo';
+import { makeRequest } from '../axios';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import fairy from '../img/fairy.png';
+import { AuthContext } from '../context/authContext';
+
+//import img from '../../../api/sources/'
 
 const Main = () => {
   /**
    *  페이지에서 사용하는 상태변수
    */
+
   const [isRecommend, setIsRecommend] = useState(false);
   const [isNewRecommend, setIsNewRecommend] = useState(false);
   const [isInfo, setIsInfo] = useState(false);
@@ -33,9 +40,14 @@ const Main = () => {
   const [userPlantInfo, setUserPlantInfo] = useState(null);
   const [plantImage, setPlantImage] = useState([]);
   const [recommendPlant, setrecommendPlant] = useState('');
+  const [imagePath, setImagePath] = useState('');
+  const [newImgPath, setNewImagePath] = useState('');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [err, setError] = useState(null);
+
+  const { currentUser } = useContext(AuthContext);
+
   /**
    *  화면에서 사용하는 이벤트를 정의
    */
@@ -65,14 +77,9 @@ const Main = () => {
   };
 
   const onNewRecommend = (e) => {
-    //슬롯 + 누르면 추천페이지로 이동, 버튼에 따라 식물 출력 자리 지정
-    // name: button 번호
     const name = e.target.value;
-
-    if (name > buttonValue) {
-      setButtonValue(name);
-      setIsNewRecommend(true);
-    }
+    setButtonValue(name);
+    setIsNewRecommend(true);
   };
 
   const onInfo = () => {
@@ -143,7 +150,7 @@ const Main = () => {
       .post('http://localhost:8800/plantpicture', { usernum: state })
       .then((response) => {
         const plant_name = response.data[0].plant_name;
-        console.log('Onuser222');
+        console.log('PlantNAME: ', plant_name);
 
         setUserPlantInfo(response.data); // 메인 식물 이름, 특성, 키우기 난이도
         userPlantEnroll(plant_name); // 해당 식물의 이미지 출력
@@ -157,7 +164,6 @@ const Main = () => {
     axios
       .get(`http://localhost:8800/images/${plant_name}`)
       .then((response) => {
-        const imagePath = `${response.data}`;
         const image = document.createElement('img');
         image.src = `data:image/png;base64,${response.data}`;
         document.querySelector('div.printImg').appendChild(image);
@@ -198,6 +204,8 @@ const Main = () => {
 
   return isRecommend ? (
     <Recommend usernum={state} buttonValue={buttonValue} />
+  ) : isNewRecommend ? (
+    <NewRecommend usernum={state} buttonValue={buttonValue} />
   ) : (
     <>
       <div className='main_nav'>
@@ -217,39 +225,36 @@ const Main = () => {
       </div>
 
       <section className='out'>
-        <div className='printImg'>
-          <button type='submit'> 내 프로필 </button>
-
-          <Button className='slot' onClick={showModal}>
+        <div className='printImg'> </div>
+        {/* <Button className='slot' onClick={showModal}>
             {' '}
             {userPlantEnroll0}{' '}
-          </Button>
-          <Modal title='메인 식물로 등록할 식물을 골라주세요' open={isModalOpen} onOk={handleOK} onCancel={handleCancel}>
-            <Radio.Group>
-              <Radio value={userPlantEnroll1name} onClick={onclick}>
-                {userPlantEnroll1name}
-              </Radio>
-              <Radio value={userPlantEnroll2name} onClick={onclick}>
-                {userPlantEnroll2name}
-              </Radio>
-              <Radio value={userPlantEnroll3name} onClick={onclick}>
-                {userPlantEnroll3name}
-              </Radio>
-              <Radio value={userPlantEnroll4name} onClick={onclick}>
-                {userPlantEnroll4name}
-              </Radio>
-            </Radio.Group>
-          </Modal>
+          </Button> */}
+        <Modal title='메인 식물로 등록할 식물을 골라주세요' open={isModalOpen} onOk={handleOK} onCancel={handleCancel}>
+          <Radio.Group>
+            <Radio value={userPlantEnroll1name} onClick={onclick}>
+              {userPlantEnroll1name}
+            </Radio>
+            <Radio value={userPlantEnroll2name} onClick={onclick}>
+              {userPlantEnroll2name}
+            </Radio>
+            <Radio value={userPlantEnroll3name} onClick={onclick}>
+              {userPlantEnroll3name}
+            </Radio>
+            <Radio value={userPlantEnroll4name} onClick={onclick}>
+              {userPlantEnroll4name}
+            </Radio>
+          </Radio.Group>
+        </Modal>
 
-          <h1> 닉네임 : {/*{currentUser.user_nickname} */} </h1>
-        </div>
+        <h1> 닉네임 : {currentUser.user_nickname} </h1>
         <div className='tab'>
           <Table className='tableprint' columns={columns} pagination={false} dataSource={userPlantInfo} size='middle' />
         </div>
 
         <div className='style'>
-          <p> 이름 : {/* {currentUser.user_name} */} </p>
-          <p> 이메일 : {/* {currentUser.user_email} */} </p>
+          <p> 이름 : {currentUser.user_name} </p>
+          <p> 이메일 : {currentUser.user_email} </p>
           <p> 레벨 : </p>
           <p> 포인트 : </p>
 
@@ -263,7 +268,7 @@ const Main = () => {
             {' '}
             {userPlantEnroll1}{' '}
           </Button>
-          <Button value='2' className='slots2' disabled onClick={onRecommend}>
+          <Button value='2' className='slots2' onClick={onNewRecommend}>
             {' '}
             {userPlantEnroll2}{' '}
           </Button>
@@ -279,7 +284,7 @@ const Main = () => {
 
         <div className='event'>
           <Button value='5'>식물 성장 모습</Button>
-          {/* <img src={fairy} alt='My Image' /> */}
+          <img src={fairy} alt='My Image' />
         </div>
       </section>
     </>

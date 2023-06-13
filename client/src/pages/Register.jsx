@@ -67,7 +67,7 @@ const Register = () => {
                 <address> 패스워드 * </address>
                 <br></br>
                 <label htmlFor='password'>패스워드</label>
-                <input type='password' placeholder='패스워드' name='password' onChange={handleChange} />
+                <input type='user_pw' placeholder='패스워드' name='user_pw' onChange={handleChange} />
                 <br></br>
                 <br></br>
 

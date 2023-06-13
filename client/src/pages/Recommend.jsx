@@ -4,7 +4,7 @@ import axios from 'axios';
 import '../design/recommend.css';
 import Main from './Main.jsx';
 import { AuthContext } from '../context/authContext.js';
-import { useLocation, NavLink, Link } from 'react-router-dom';
+import { useLocation, useNavigate, NavLink, Link } from 'react-router-dom';
 import logo from '../img/logo.png';
 
 const App = ({ usernum, buttonValue }) => {
@@ -102,10 +102,10 @@ const App = ({ usernum, buttonValue }) => {
 
   const handleSizeButton = (event) => {
     const name = event.target.value;
-    if (name === '크다') {
+    if (name === '식물의 크기가 1m 이상') {
       setSize('over 1m');
       buttonSetSize(name);
-    } else if (name === '중간') {
+    } else if (name === '식물의 크기가 30cm ~ 1m 사이') {
       setSize('30cm~1m size');
       buttonSetSize(name);
     } else {
@@ -138,7 +138,7 @@ const App = ({ usernum, buttonValue }) => {
     } else if (name === '장식') {
       setFunctions('for decoration');
       buttonSetFunctions(name);
-    } else if (name === '둘 다 원해요') {
+    } else if (name === '공기정화와 장식') {
       setFunctions('for air purication and decoration');
       buttonSetFunctions(name);
     } else {
@@ -252,6 +252,27 @@ const App = ({ usernum, buttonValue }) => {
     }
   };
 
+  const [inputs, setInputs] = useState({
+    username: '',
+    user_pw: '',
+  });
+
+  const [err, setError] = useState(null);
+  const { login } = useContext(AuthContext);
+
+  const navigate = useNavigate();
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    try {
+      let getUserNum = await login(inputs);
+      console.log('user_num: ', getUserNum);
+      navigate('/main', { state: getUserNum });
+    } catch (err) {
+      setError(JSON.stringify(err));
+    }
+  };
+
   useEffect(() => {
     userMainPlant();
   }, []);
@@ -278,11 +299,11 @@ const App = ({ usernum, buttonValue }) => {
                       <Link to='/community'> 커뮤니티 </Link>
                       <Link to='/todo'> to-do list </Link>
                       <Link to='/random'> 식물 성향 테스트 </Link>
-                      <button onClick={handleSubmit}>로그아웃</button>
+                      <button onClick={handleLogout}>로그아웃</button>
                     </div>
                   </div>
 
-                  <div className='resuit'>
+                  <div className='result'>
                     <form onSubmit={handleSubmit}>
                       <button
                         className='resultbtn'
@@ -320,7 +341,7 @@ const App = ({ usernum, buttonValue }) => {
                       <Link to='/community'> 커뮤니티 </Link>
                       <Link to='/todo'> to-do list </Link>
                       <Link to='/random'> 식물 성향 테스트 </Link>
-                      <button onClick={handleSubmit}>로그아웃</button>
+                      <button onClick={handleLogout}>로그아웃</button>
                     </div>
                   </div>
 
@@ -398,7 +419,7 @@ const App = ({ usernum, buttonValue }) => {
                     <Link to='/community'> 커뮤니티 </Link>
                     <Link to='/todo'> to-do list </Link>
                     <Link to='/random'> 식물 성향 테스트 </Link>
-                    <button onClick={handleSubmit}>로그아웃</button>
+                    <button onClick={handleLogout}>로그아웃</button>
                   </div>
                 </div>
 
@@ -419,12 +440,12 @@ const App = ({ usernum, buttonValue }) => {
                   </button>
                   <br></br>
                   <br></br>
-                  <button className='btn' value='둘다' onClick={handleFunctionsButton}>
+                  <button className='btn' value='공기정화와 장식' onClick={handleFunctionsButton}>
                     둘 다 원해요
                   </button>
                   <br></br>
                   <br></br>
-                  <button className='btn' value='상관없어요' onClick={handleFunctionsButton}>
+                  <button className='btn' value='식물의 기능은 상관없음' onClick={handleFunctionsButton}>
                     상관없어요
                   </button>{' '}
                 </div>
@@ -444,7 +465,7 @@ const App = ({ usernum, buttonValue }) => {
                   <Link to='/community'> 커뮤니티 </Link>
                   <Link to='/todo'> to-do list </Link>
                   <Link to='/random'> 식물 성향 테스트 </Link>
-                  <button onClick={handleSubmit}>로그아웃</button>
+                  <button onClick={handleLogout}>로그아웃</button>
                 </div>
               </div>
 
@@ -485,7 +506,7 @@ const App = ({ usernum, buttonValue }) => {
                 <Link to='/community'> 커뮤니티 </Link>
                 <Link to='/todo'> to-do list </Link>
                 <Link to='/random'> 식물 성향 테스트 </Link>
-                <button onClick={handleSubmit}>로그아웃</button>
+                <button onClick={handleLogout}>로그아웃</button>
               </div>
             </div>
 
@@ -496,18 +517,18 @@ const App = ({ usernum, buttonValue }) => {
               <br></br>
               <p>원하는 식물의 크기가 있나요?</p>
               <br></br>
-              <button className='btn' value='크다' onClick={handleSizeButton}>
-                크다
+              <button className='btn' value='식물의 크기가 1m 이상' onClick={handleSizeButton}>
+                크다(1m 이상)
               </button>
               <br></br>
               <br></br>
-              <button className='btn' value='중간' onClick={handleSizeButton}>
-                중간
+              <button className='btn' value='식물의 크기가 30cm ~ 1m 사이' onClick={handleSizeButton}>
+                중간(30cm ~ 1m)
               </button>
               <br></br>
               <br></br>
-              <button className='btn' value='작다' onClick={handleSizeButton}>
-                작다
+              <button className='btn' value='식물의 크기가 30cm 이하' onClick={handleSizeButton}>
+                작다(30cm 이하)
               </button>
             </div>
           </>
@@ -526,7 +547,7 @@ const App = ({ usernum, buttonValue }) => {
               <Link to='/community'> 커뮤니티 </Link>
               <Link to='/todo'> to-do list </Link>
               <Link to='/random'> 식물 성향 테스트 </Link>
-              <button onClick={handleSubmit}>로그아웃</button>
+              <button onClick={handleLogout}>로그아웃</button>
             </div>
           </div>
 
@@ -537,12 +558,12 @@ const App = ({ usernum, buttonValue }) => {
             <br></br>
             <p>식물을 키우는 장소는 어디인가요?</p>
             <br></br>
-            <button className='btn' value='yes' onClick={handleAddressButton}>
+            <button className='btn' value='실내' onClick={handleAddressButton}>
               실내
             </button>
             <br></br>
             <br></br>
-            <button className='btn' value='no' onClick={handleAddressButton}>
+            <button className='btn' value='실외' onClick={handleAddressButton}>
               실외
             </button>
           </div>
@@ -562,7 +583,7 @@ const App = ({ usernum, buttonValue }) => {
             <Link to='/community'> 커뮤니티 </Link>
             <Link to='/todo'> to-do list </Link>
             <Link to='/random'> 식물 성향 테스트 </Link>
-            <button onClick={handleSubmit}>로그아웃</button>
+            <button onClick={handleLogout}>로그아웃</button>
           </div>
         </div>
 
@@ -573,12 +594,12 @@ const App = ({ usernum, buttonValue }) => {
           <br></br>
           <p>식물 관리에 참여할 수 있는 시간이 얼마나 되나요?</p>
           <br></br>
-          <button className='btn' value='yes' onClick={handleTimeButton}>
+          <button className='btn' value='주기적으로 참여 가능' onClick={handleTimeButton}>
             주기적으로 참여 가능
           </button>
           <br></br>
           <br></br>
-          <button className='btn' value='no' onClick={handleTimeButton}>
+          <button className='btn' value='체계적인 관리 없이도 잘 자랐으면 좋겠음' onClick={handleTimeButton}>
             체계적인 관리 없이도 잘 자랐으면 좋겠음
           </button>
         </div>
@@ -598,7 +619,7 @@ const App = ({ usernum, buttonValue }) => {
           <Link to='/community'> 커뮤니티 </Link>
           <Link to='/todo'> to-do list </Link>
           <Link to='/random'> 식물 성향 테스트 </Link>
-          <button onClick={handleSubmit}>로그아웃</button>
+          <button onClick={handleLogout}>로그아웃</button>
         </div>
       </div>
 
@@ -609,12 +630,12 @@ const App = ({ usernum, buttonValue }) => {
         <br></br>
         <p>식물을 키워본 적이 있으신가요?</p>
         <br></br>
-        <button className='btn' value='yes' onClick={handleExperienceButton}>
+        <button className='btn' value='초보자' onClick={handleExperienceButton}>
           yes
         </button>
         <br></br>
         <br></br>
-        <button className='btn' value='no' onClick={handleExperienceButton}>
+        <button className='btn' value='식물을 키워본 경험 있음' onClick={handleExperienceButton}>
           no
         </button>
       </div>
