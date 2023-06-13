@@ -18,6 +18,7 @@ const Todo = () => {
   const [userLevel, setUserLevel] = useState(1);
   const [isChecked, setIsChecked] = useState(false);
   const today = ('0' + new Date().getDate()).slice(-2);
+  const todaymonth = new Date().getMonth()+1;
 
   //**
   /*
@@ -71,7 +72,7 @@ const Todo = () => {
         console.log('daynum', daynum);
         console.log('todotodotodo', res.data);
         setTasks(res.data);
-        setIsChecked(res.data[0].complete);
+        //setIsChecked(res.data[0].complete); 1.
       })
       .catch((error) => console.log(error));
   };
@@ -85,6 +86,7 @@ const Todo = () => {
       : task
     );
     setTasks(updatedTasks);
+    updateUserPoints(taskKey, !taskComplete);
 
     // 유저 체크 상태 변경
   //   axios.post('http://localhost:8800/updatetaskcomplete', {
@@ -95,33 +97,46 @@ const Todo = () => {
   //     console.log('Task complete', response);
   //   });
 
-    //체크됐을 때 유저 포인트 올리기
-    if(!taskComplete) {
-      setUserPoints(userPoints + 1);
-      updateUserPoints(taskKey, !taskComplete);
-    } else {
-      setUserPoints(userPoints -1);
-      updateUserPoints(taskKey, !taskComplete);
-    }
+    //체크됐을 때 유저 포인트 올리기 2.
+    // if(!taskComplete) {
+    //   setUserPoints(userPoints + 1);
+    //   updateUserPoints(taskKey, !taskComplete);
+    // } else {
+    //   setUserPoints(userPoints -1);
+    //   updateUserPoints(taskKey, !taskComplete);
+    // }
   }
 
   //유저 포인트 올리기
-  const updateUserPoints = () => {
-    if(isChecked === true){
-      axios.post('http://localhost:8800/updateuserpoints', {
-        userplantnum: userplantnum,
-        usernum: state,
-        userpoints: userPoints,
-        usercomplete: isChecked
-      })
-      .then((res) => {
-        console.log('point up');
-        console.log(res.data);
-      })
-      .catch((error) => {
-        console.log('error update points', error);
-      })
+  const updateUserPoints = (taskKey, taskComplete) => {
+    if(taskComplete){
+      setUserPoints(userPoints + 1);
+    } else {
+      setUserPoints(userPoints - 1);
     }
+    axios.post('http://localhost:8800/updatetaskcomplete', {
+      todonum: taskKey,
+      complete: !taskComplete,
+    })
+    .then((response) => {
+      console.log('Task complete', response);
+    });
+
+    // if(isChecked === true){
+    //   axios.post('http://localhost:8800/updateuserpoints', {
+    //     userplantnum: userplantnum,
+    //     usernum: state,
+    //     userpoints: userPoints,
+    //     usercomplete: isChecked
+    //   })
+    //   .then((res) => {
+    //     console.log('point up');
+    //     console.log(res.data);
+    //   })
+    //   .catch((error) => {
+    //     console.log('error update points', error);
+    //   })
+    // } 3.
   }
 
   //유저 포인트, 레벨
@@ -160,16 +175,10 @@ const Todo = () => {
 
   useEffect(() => {
     handleDateClick(selectedDate);
-  }, [daynum]);
-
-  useEffect(() => {
     userPointsLevel();
-  },[]);
+  }, []);
+  // 4.
 
-  //daynum 변경되면 userTodo실행
-  // useEffect(() => {
-  //   userTodo();
-  // }, [daynum]);
 
   return (
     <div>
@@ -199,16 +208,26 @@ const Todo = () => {
           <br></br>
         </div>
         <div>
+          <button>{todaymonth}월의 to-do list를 만드시겠습니까?</button>
+        </div>
+        <div>
           {tasks &&
             tasks.map((task) => (
               <div key={task.key}>
-                <input 
+                <Checkbox
+                  checked={!task.complete}
+                  onChange={() => handleCheckboxChange(task.key, task.complete)}
+                  disabled={task.day !== today}
+                >
+                  {task.task}
+                </Checkbox>
+                {/* <input 
                   type='checkbox' 
                   checked={task.complete} 
                   onChange={() => handleCheckboxChange(task.key, task.day, task.complete)} 
                   disabled={task.day !== today} 
                 />
-                <label>{task.task}</label>
+                <label>{task.task}</label> */}
               </div>
             ))}
         </div>
