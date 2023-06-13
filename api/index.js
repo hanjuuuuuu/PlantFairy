@@ -13,6 +13,7 @@ import download from 'image-downloader';
 import path from 'path';
 import fs from 'fs';
 import multer from 'multer';
+import sharp from 'sharp';
 import { db } from './db.js';
 import { Configuration, OpenAIApi } from 'openai';
 
@@ -31,8 +32,6 @@ app.use(
   })
 );
 app.use(cookieParser());
-// app.use(bodyParser.json({ limit: '50mb' }));
-// app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.urlencoded({ extended: false }));
 
 const storage = multer.diskStorage({
@@ -58,7 +57,7 @@ app.use('/api/likes', likesRoutes);
 app.use('/api/comments', commentsRoutes);
 
 const configuration = new Configuration({
-  apiKey: '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', //process.env.API_KEY,
+  apiKey: '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', //process.env.API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
@@ -157,7 +156,7 @@ app.post('/rectodo', async (req, res) => {
 //todo 페이지에 출력할 식물 투두리스트 전달
 app.post('/planttodo', async (req, res) => {
   let plantname = req.body.plantname;
-  let userplantnum = 93;  //req.body.userplantnum
+  let userplantnum = req.body.userplantnum;
   let usernum = req.body.usernum;
   let tododay = req.body.day;
   console.log('todo plantname', plantname, 'todo userplantnum', userplantnum, 'todo day', tododay);
@@ -254,8 +253,6 @@ app.post('/plantenroll', async (req, res) => {
   let plantmain = req.body.plantmain;
   //let plantpicture = req.body.plantpicture;
   let plantcharacteristic = req.body.plantcharacteristic;
-  console.log('enroll', plantname);
-  //console.log('pp : ', plantpicture);
 
   const sqlplantenroll = 'INSERT INTO user_plant (user_num, plant_name, plant_main, plant_characteristic) values(?, ?, ?, ?)';
   db.query(sqlplantenroll, [usernum, plantname, plantmain, plantcharacteristic], (err, data) => {
@@ -299,17 +296,15 @@ app.post('/plantgame', async (req, res) => {
   }
 });
 
-// 여기는 돈나감!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// 여기는 돈나감!!!!!!!!!!!!!!!!!!!!!!!!!
 app.post('/', async (req, res) => {
   //const { message } = req.body;
   //console.log(message);
   const images = [];
-
   if (!plantRecommendations || !plantRecommendations.length) {
     console.log('plantRecommendations is not defined or is empty');
     return res.status(400).json({ message: 'plantRecommendations is not defined or is empty' });
   }
-
   for (let i = 0; i < plantRecommendations.length; i++) {
     const response = await openai.createImage({
       prompt: `${plantRecommendations[i].englishName}`,
@@ -319,22 +314,19 @@ app.post('/', async (req, res) => {
     const image_url = response.data.data[0].url;
     images.push(image_url);
   }
-
   if (images.length > 0) {
     for (let i = 0; i < images.length; i++) {
       const options = {
         url: images[i],
         dest: '../../sources',
       };
-
       download
         .image(options)
         .then(({ filename }) => {
           console.log('Saved to', filename); // saved to /path/to/dest/image.jpg
-
           const imagePath = path.join('sources/', path.basename(filename)).replace(/\\/g, '/');
           // Save the path to the database
-          db.query(`UPDATE plant SET img ='${imagePath}' WHERE eng_name='${plantRecommendations[i].englishName}'`, (error, results) => {
+          db.query(`UPDATE plant SET img ='${imagePath}' WHERE eng_Name='${plantRecommendations[i].englishName}'`, (error, results) => {
             if (error) {
               console.log(error);
               res.status(500).send('Error saving image path to the database');
@@ -346,7 +338,6 @@ app.post('/', async (req, res) => {
           res.status(500).send('Error saving image to local file system');
         });
     }
-
     res.json({
       message: 'Image creation complete',
       images: images,
@@ -356,7 +347,7 @@ app.post('/', async (req, res) => {
   }
 });
 
-// 이미지 받아오는 기능
+// 이미지 path 받아오는 기능
 app.get('/imagespath/:plantName', (req, res) => {
   const plant_name = req.params.plantName.replace(/\n/g, '');
 
@@ -369,15 +360,17 @@ app.get('/imagespath/:plantName', (req, res) => {
     if (result.length === 0) {
       return res.status(404).send('Plant not found');
     }
-
     const imgPath = result[0].img;
+    console.log('IMGPATH!!', imgPath);
     res.send(imgPath);
   });
 });
 
+// 이미지 받아오는 기능
 app.get('/images/:plantName', (req, res) => {
   const plant_name = req.params.plantName.replace(/\n/g, '');
-  console.log('----', plant_name);
+  console.log('PlantNameParams', req.params.plantName);
+  console.log('PlantName', plant_name);
 
   // plant_name 대신 영어이름으로 바꾸기
   db.query(`SELECT img FROM plant WHERE plant_name = '${plant_name}'`, (err, result) => {

@@ -1,8 +1,254 @@
-.recommend {
-  margin: 0 auto;
+/* 상단바 */
+.main_nav_fun {
+  height: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1000px;
+  margin: auto;
 }
 
-.question {
-  margin-top: 40px;
+.main_nav_fun .main_logo_fun img {
+  width: 140px;
+}
+
+.main_nav_fun .main_nav_but_fun a {
+  text-decoration: none;
+  padding-left: 20px;
+  padding-right: 20px;
+  color: black;
+}
+
+.main_nav_fun .main_nav_but_fun button {
+  background-color: white;
+  color: black;
+  border: 1px solid white;
+  font-size: 15px;
+}
+/* 여기서부터 하단 */
+
+/* 질문1 */
+.fun_question1 h1 {
+  margin-top: 100px;
   text-align: center;
+  font-size: 18px;
+  font-style: italic;
+  color: #6c6562;
+}
+
+.fun_question1 .fun_btn1 {
+  display: block;
+  margin: auto;
+  margin-top: 60px;
+  width: 700px;
+  height: 41px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 18px;
+  transition: 0.5s ease;
+}
+
+.fun_question1 .fun_btn2 {
+  display: block;
+  margin: auto;
+  margin-top: 20px;
+  width: 700px;
+  height: 41px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 18px;
+  transition: 0.5s ease;
+}
+
+.fun_question1 .fun_btn1:hover {
+  background: #bdcebb;
+}
+
+.fun_question1 .fun_btn2:hover {
+  background: #bdcebb;
+}
+
+/* 질문2 */
+.fun_question2 h1 {
+  margin-top: 100px;
+  text-align: center;
+  font-size: 18px;
+  font-style: italic;
+  color: #6c6562;
+}
+
+.fun_question2 h2 {
+  text-align: center;
+  margin: auto;
+  margin-top: 10px;
+  color: #6c6562;
+  font-size: 18px;
+  font-style: italic;
+}
+
+.fun_question2 .fun_btn1 {
+  display: block;
+  margin: auto;
+  margin-top: 60px;
+  width: 700px;
+  height: 41px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 18px;
+  transition: 0.5s ease;
+}
+
+.fun_question2 .fun_btn2 {
+  display: block;
+  margin: auto;
+  margin-top: 20px;
+  width: 700px;
+  height: 41px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 18px;
+  transition: 0.5s ease;
+}
+
+.fun_question2 .fun_btn1:hover {
+  background: #bdcebb;
+}
+
+.fun_question2 .fun_btn2:hover {
+  background: #bdcebb;
+}
+
+/* 질문3 */
+.fun_question3 h1 {
+  margin-top: 100px;
+  text-align: center;
+  font-size: 18px;
+  font-style: italic;
+  color: #6c6562;
+}
+
+.fun_question3 h2 {
+  text-align: center;
+  margin: auto;
+  margin-top: 10px;
+  color: #6c6562;
+  font-size: 18px;
+  font-style: italic;
+}
+
+.fun_question3 .fun_btn1 {
+  display: block;
+  margin: auto;
+  margin-top: 60px;
+  width: 600px;
+  height: 41px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 18px;
+  transition: 0.5s ease;
+}
+
+.fun_question3 .fun_btn2 {
+  display: block;
+  margin: auto;
+  margin-top: 20px;
+  width: 600px;
+  height: 41px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 18px;
+  transition: 0.5s ease;
+}
+
+.fun_question3 .fun_btn1:hover {
+  background: #bdcebb;
+}
+
+.fun_question3 .fun_btn2:hover {
+  background: #bdcebb;
+}
+
+/* 질문4 */
+.fun_question4 h1 {
+  margin-top: 100px;
+  text-align: center;
+  font-size: 18px;
+  font-style: italic;
+  color: #6c6562;
+}
+
+.fun_question4 .fun_btn1 {
+  display: block;
+  margin: auto;
+  margin-top: 60px;
+  width: 610px;
+  height: 41px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 18px;
+  transition: 0.5s ease;
+}
+
+.fun_question4 .fun_btn2 {
+  display: block;
+  margin: auto;
+  margin-top: 20px;
+  width: 610px;
+  height: 41px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 18px;
+  transition: 0.5s ease;
+}
+
+.fun_question4 .fun_btn1:hover {
+  background: #bdcebb;
+}
+
+.fun_question4 .fun_btn2:hover {
+  background: #bdcebb;
+}
+
+/* 결과 버튼 */
+.fun_resultbtn {
+  display: block;
+  margin: auto;
+  margin-top: 250px;
+  width: 280px;
+  height: 41px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 18px;
+  transition: 0.5s ease;
+}
+
+.fun_resultbtn:hover {
+  background: #bdcebb;
+}
+
+.fun_spin .spin {
+  padding: 50px 50px 10px 450px;
+  width: '100px';
+}
+
+.recommend {
+  margin: 0 auto;
 }

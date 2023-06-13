@@ -1,12 +1,9 @@
-html,
 body {
   margin: 0;
   padding: 0;
   height: 100%;
-}
-body {
   user-select: none;
-  background-color: #000;
+  background-color: rgb(255, 255, 255); /* 투명한 흰색 */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,7 +11,7 @@ body {
 }
 canvas {
   flex-shrink: 0;
-  background-color: #222;
+  background-color: rgba(255, 255, 255);
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
@@ -22,7 +19,7 @@ canvas {
 }
 
 #message {
-  color: white;
+  color: rgba(255, 255, 255);
   font-family: sans-serif;
   position: absolute;
   left: 50%;

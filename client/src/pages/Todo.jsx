@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import '../design/todo.css';
 import axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Typography, Checkbox } from 'antd';
-import Calendar from 'react-calendar';
+import { useLocation, useNavigate, NavLink, Link } from 'react-router-dom';
+import { Calendar, Col, Radio, Row, Select, Typography, theme } from 'antd';
+//import Calendar from 'react-calendar';
 //import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
+import logo from '../img/logo.png';
+import { AuthContext } from '../context/authContext';
 
 const Todo = () => {
+
   /**
    *  페이지에서 사용하는 상태변수
    */
+
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [tasks, setTasks] = useState([]);
   const [daynum, setDaynum] = useState(moment(selectedDate).format('DD'));
@@ -171,26 +175,42 @@ const Todo = () => {
   //   userTodo();
   // }, [daynum]);
 
+  const [inputs, setInputs] = useState({
+    username: '',
+    user_pw: '',
+  });
+
+  const [err, setError] = useState(null);
+  const { login } = useContext(AuthContext);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      let getUserNum = await login(inputs);
+      console.log('user_num: ', getUserNum);
+      navigate('/main', { state: getUserNum });
+    } catch (err) {
+      setError(JSON.stringify(err));
+    }
+  };
+
   return (
-    <div>
-      <Typography.Title className='title' level={4}>
-        투두 리스트
-      </Typography.Title>
-      <menu className='btnmenu'>
-        <button className='menubtn' onClick={onInfo}>
-          마이페이지
-        </button>
-        <br></br>
-        <button className='menubtn' onClick={onCommunity}>
-          커뮤니티
-        </button>
-        <br></br>
-        <button className='menubtn' onClick={onTodo}>
-          To-do list
-        </button>
-        <br></br>
-        <button className='menubtn'>로그아웃</button>
-      </menu>
+    <>
+      <div className='main_nav_todo'>
+        <div className='main_logo_todo'>
+          <NavLink to={'http://localhost:3000/'}>
+            <img src={logo} alt='My Image' width='160' height='60' />
+          </NavLink>
+        </div>
+
+        <div className='main_nav_but_todo'>
+          <Link to='/main'> 메인 페이지 </Link>
+          <Link to='/community'> 커뮤니티 </Link>
+          <Link to='/todo'> to-do list </Link>
+          <Link to='/random'> 식물 성향 테스트 </Link>
+          <button onClick={handleSubmit}>로그아웃</button>
+        </div>
+      </div>
 
       <div>
         <Calendar onClickDay={handleDateClick} tileContent={tileContent}/>

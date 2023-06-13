@@ -1,19 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Button, Table, Modal, Radio } from 'antd';
 import axios from 'axios';
 import '../design/main.css';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, Link, NavLink, useNavigate } from 'react-router-dom';
 //import App from './App.js';
 import Recommend from './Recommend.jsx';
 import Community from './Community.jsx';
+import logo from '../img/logo.png';
 import Info from './MyPage.jsx';
 import NewRecommend from './NewReccomend.jsx';
 import Todo from './Todo';
+import { makeRequest } from '../axios';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import fairy from '../img/fairy.png';
+import { AuthContext } from '../context/authContext';
+
+//import img from '../../../api/sources/'
 
 const Main = () => {
   /**
    *  페이지에서 사용하는 상태변수
    */
+
   const [isRecommend, setIsRecommend] = useState(false);
   const [isNewRecommend, setIsNewRecommend] = useState(false);
   const [isInfo, setIsInfo] = useState(false);
@@ -36,14 +44,29 @@ const Main = () => {
   const [userPlantInfo, setUserPlantInfo] = useState(null);
   const [plantImage, setPlantImage] = useState([]);
   const [recommendPlant, setrecommendPlant] = useState('');
+  const [imagePath, setImagePath] = useState('');
+  const [newImgPath, setNewImagePath] = useState('');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [err, setError] = useState(null);
+
+  const { currentUser } = useContext(AuthContext);
 
   /**
    *  화면에서 사용하는 이벤트를 정의
    */
 
   const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('http://localhost:8800/api/auth/logout');
+      navigate('/');
+    } catch (err) {
+      setError(err.response.data);
+    }
+  };
 
   const onClick = (e) => {
     console.log('click', e);
@@ -58,14 +81,9 @@ const Main = () => {
   };
 
   const onNewRecommend = (e) => {
-    //슬롯 + 누르면 추천페이지로 이동, 버튼에 따라 식물 출력 자리 지정
-    // name: button 번호
     const name = e.target.value;
-
-    if (name > buttonValue) {
-      setButtonValue(name);
-      setIsNewRecommend(true);
-    }
+    setButtonValue(name);
+    setIsNewRecommend(true);
   };
 
   const onInfo = () => {
@@ -154,7 +172,6 @@ const Main = () => {
     axios
       .get(`http://localhost:8800/images/${plant_name}`)
       .then((response) => {
-        const imagePath = `${response.data}`;
         const image = document.createElement('img');
         image.src = `data:image/png;base64,${response.data}`;
         document.querySelector('div.printImg').appendChild(image);
@@ -247,21 +264,32 @@ const Main = () => {
 
   return isRecommend ? (
     <Recommend usernum={state} buttonValue={buttonValue} />
+  ) : isNewRecommend ? (
+    <NewRecommend usernum={state} buttonValue={buttonValue} />
   ) : (
-    <div className='main'>
-      <br></br>
-      <h2>식물요정</h2>
-      <br></br>
-      <div>메인페이지</div>
-      <br></br>
+    <>
+      <div className='main_nav'>
+        <div className='main_logo'>
+          <NavLink to={'http://localhost:3000/'}>
+            <img src={logo} alt='My Image' width='160' height='60' />
+          </NavLink>
+        </div>
 
-      <div className='printImg'></div>
+        <div className='main_nav_but'>
+          <Link to='/main'> 메인 페이지 </Link>
+          <Link to='/community'> 커뮤니티 </Link>
+          <Link to='/todo'> to-do list </Link>
+          <Link to='#'> 식물 성향 테스트 </Link>
+          <button onClick={handleSubmit}>로그아웃</button>
+        </div>
+      </div>
 
-      <div>
-        <Button className='slot' onClick={showModal}>
-          {' '}
-          {userPlantEnroll0}{' '}
-        </Button>
+      <section className='out'>
+        <div className='printImg'> </div>
+        {/* <Button className='slot' onClick={showModal}>
+            {' '}
+            {userPlantEnroll0}{' '}
+          </Button> */}
         <Modal title='메인 식물로 등록할 식물을 골라주세요' open={isModalOpen} onOk={handleOK} onCancel={handleCancel}>
           <Radio.Group>
             <Radio value={userPlantEnroll1name} onClick={onclick}>
@@ -278,6 +306,7 @@ const Main = () => {
             </Radio>
           </Radio.Group>
         </Modal>
+
       </div>
       <div>
         <Table className='tableprint' columns={columns} pagination={false} dataSource={userPlantInfo} size='middle' />
@@ -325,6 +354,7 @@ const Main = () => {
         </Button>
       </div>
     </div>
+
   );
 };
 

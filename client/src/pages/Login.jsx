@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, NavLink } from 'react-router-dom';
 import { AuthContext } from '../context/authContext';
 import '../design/login.css';
 import logo from '../img/logo.png';
@@ -32,34 +32,53 @@ const Login = () => {
   };
 
   return (
-    <div className='App'>
-      <div className='loginBox'>
-        <img src={logo} alt='My Image' width='160' height='60' />
-        <address>식물요정 웹 사이트에 오신 걸 환영합니다.</address>
-        <br></br>
-        <br></br>
+    <>
+      <div className='main_nav_login'>
+        <div className='main_logo_login'>
+          <NavLink to={'http://localhost:3000/'}>
+            <img src={logo} alt='My Image' width='160' height='60' />
+          </NavLink>
+        </div>
 
-        <form>
-          <div className='loginBox2'>
-            <label htmlFor='user_id'></label>
-            <input required type='text' id='user_id' placeholder='아이디' name='user_id' onChange={handleChange} />
-            <label htmlFor='password'></label>
-            <input required type='password' id='user_pw' placeholder='패스워드' name='user_pw' onChange={handleChange} />
-          </div>
-
-          <div className='loginBox3'>
-            <button onClick={handleSubmit}>로그인</button>
-          </div>
-          {err && <p>{err}</p>}
-
-          <br></br>
-          <div className='link'>
-            회원가입하시겠습니까? &nbsp;
-            <Link to='/register'>회원가입</Link>
-          </div>
-        </form>
+        <div className='main_nav_but_login'>
+          <Link to='/main'> 메인 페이지 </Link>
+          <Link to='/community'> 커뮤니티 </Link>
+          <Link to='/todo'> to-do list </Link>
+          <Link to='/random'> 식물 성향 테스트 </Link>
+          <button onClick={handleSubmit}>로그아웃</button>
+        </div>
       </div>
-    </div>
+
+      <div className='App'>
+        <div className='loginBox'>
+          <h1> 식물요정 </h1>
+          {/* <img src={logo} alt='My Image' width='160' height='60' /> */}
+          <address>식물요정 웹 사이트에 오신 걸 환영합니다.</address>
+          <br></br>
+          <br></br>
+
+          <form>
+            <div className='loginBox2'>
+              <label htmlFor='user_id'></label>
+              <input required type='text' id='user_id' placeholder='아이디' name='user_id' onChange={handleChange} />
+              <label htmlFor='password'></label>
+              <input required type='password' id='user_pw' placeholder='패스워드' name='user_pw' onChange={handleChange} />
+            </div>
+
+            <div className='loginBox3'>
+              <button onClick={handleSubmit}>로그인</button>
+            </div>
+            {err && <p>{err}</p>}
+
+            <br></br>
+            <div className='link'>
+              회원가입하시겠습니까? &nbsp;
+              <Link to='/register'>회원가입</Link>
+            </div>
+          </form>
+        </div>
+      </div>
+    </>
   );
 };
 
