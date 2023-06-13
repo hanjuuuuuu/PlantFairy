@@ -29,6 +29,9 @@ const Main = () => {
   const [userPlantEnroll4name, setUserPlantEnroll4name] = useState('');
   const [buttonValue, setButtonValue] = useState('');
   const [userplantnum, setUserPlantNum] = useState('');
+  const [userPoints, setUserPoints] = useState(0);
+  const [userLevel, setUserLevel] = useState(1);
+  const [activeSlots, setActiveSlots] = useState(1);
 
   const [userPlantInfo, setUserPlantInfo] = useState(null);
   const [plantImage, setPlantImage] = useState([]);
@@ -181,19 +184,42 @@ const Main = () => {
       });
   };
 
-  const onUserPoints = () => {
-    //user 테이블에서 사용자의 포인트와 레벨 정보 가져오기
-    axios.post('http://localhost:8800/userpoints',
-    {
+  //유저 포인트, 레벨
+  const userPointsLevel = () => {
+    console.log('pointslevel', userPoints);
+    axios.post('http://localhost:8800/userpointslevel',{
       usernum: state
     })
-    .then((res) => {
-      console.log(res.data);
+    .then((res)=> {
+      console.log(res.data[0]);
+      setUserPoints(res.data[0].user_point);
+      const currentLevel = res.data[0].user_level;
+      if(currentLevel < 2 && userPoints >= 50) {
+        //포인트가 50이상이면 레벨 2로 업데이트
+        setUserLevel(2);
+      } else if(currentLevel < 3 && userPoints >= 100){
+        //포인트가 100이상이면 레벨 3으로 업데이트
+        setUserLevel(3);
+      } else if(currentLevel < 4 && userPoints >= 200){
+        //포인트가 200이상이면 레벨 4로 업데이트
+        setUserLevel(4);
+      }
+      else {
+        setUserLevel(currentLevel);
+      }
     })
     .catch((err) => {
-      console.log(err);
+      console.log('error pointslevel', err);
     })
   }
+
+  //슬롯 활성화
+  const calculateActiveSlots = (level) => {
+    if (level === 1) return 1;
+    if (level === 2) return 2;
+    if (level === 3) return 3;
+    if (level >= 4) return 4;
+  };
 
   useEffect(() => {
     async function getTableData() {
@@ -207,9 +233,17 @@ const Main = () => {
     onUserPlantSlot();
   });
 
-  useEffect(()=> {
-    onUserPoints();
-  },[state]);
+  useEffect(() => {
+    userPointsLevel();
+  }, [userPoints]);
+
+  useEffect(() => {
+    setActiveSlots(calculateActiveSlots(userLevel));
+  }, [userLevel]);
+
+  // useEffect(()=> {
+  //   onUserPoints();
+  // },[state]);
 
   return isRecommend ? (
     <Recommend usernum={state} buttonValue={buttonValue} />
@@ -270,22 +304,26 @@ const Main = () => {
       <br></br>
       <br></br>
       <div style={{ marginLeft: '50%' }}>레벨이 올라가면 슬롯이 확장됩니다!</div>
-      <Button value='1' className='slots' onClick={onRecommend}>
-        {' '}
-        {userPlantEnroll1}{' '}
-      </Button>
-      <Button value='2' className='slots' disabled onClick={onRecommend}>
-        {' '}
-        {userPlantEnroll2}{' '}
-      </Button>
-      <Button value='3' className='slots' disabled onClick={onRecommend}>
-        {' '}
-        {userPlantEnroll3}{' '}
-      </Button>
-      <Button value='4' className='slots' disabled onClick={onRecommend}>
-        {' '}
-        {userPlantEnroll4}{' '}
-      </Button>
+      <div style={{ display: userLevel >= 1 ? 'block' : 'none' }}>
+        <Button value='1' className='slots' onClick={onRecommend}>
+          {userPlantEnroll1}
+        </Button>
+      </div>
+      <div style={{ display: userLevel >= 2 ? 'block' : 'none' }}>
+        <Button value='2' className='slots' onClick={onRecommend}>
+          {userPlantEnroll2}
+        </Button>
+      </div>
+      <div style={{ display: userLevel >= 3 ? 'block' : 'none' }}>
+        <Button value='3' className='slots' onClick={onRecommend}>
+          {userPlantEnroll3}
+        </Button>
+      </div>
+      <div style={{ display: userLevel >= 4 ? 'block' : 'none' }}>
+        <Button value='4' className='slots' onClick={onRecommend}>
+          {userPlantEnroll4}
+        </Button>
+      </div>
     </div>
   );
 };

@@ -19,6 +19,7 @@ const FunGame = () => {
   const [onRecognition, setRecognition] = useState('');
   const [message, setMessage] = useState('');
   const [response, setResponse] = useState('');
+  const [showResult, setShowResult] = useState(false);
 
   //**
   /*
@@ -82,6 +83,7 @@ const FunGame = () => {
     try {
       e.preventDefault();
       setLoading(true);
+      setShowResult(true);
       const response = await fetch('http://localhost:8800/plantgame', {
         method: 'POST',
         headers: {
@@ -143,7 +145,7 @@ const FunGame = () => {
       </menu>
       <form onSubmit={handleSubmit}>
         <button
-          className='resultbtn'
+          className={`resultbtn ${showResult || response.length > 0 ? 'hidden' : ''}`}
           type='submit'
           value={`${text}`}
           onClick={() => {
