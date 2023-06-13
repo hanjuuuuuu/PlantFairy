@@ -36,6 +36,10 @@ const Main = () => {
   const [userPlantEnroll3name, setUserPlantEnroll3name] = useState('');
   const [userPlantEnroll4name, setUserPlantEnroll4name] = useState('');
   const [buttonValue, setButtonValue] = useState('');
+  const [userplantnum, setUserPlantNum] = useState('');
+  const [userPoints, setUserPoints] = useState(0);
+  const [userLevel, setUserLevel] = useState(1);
+  const [activeSlots, setActiveSlots] = useState(1);
 
   const [userPlantInfo, setUserPlantInfo] = useState(null);
   const [plantImage, setPlantImage] = useState([]);
@@ -92,7 +96,7 @@ const Main = () => {
 
   const onTodo = () => {
     //투두리스트 페이지로 이동
-    navigate('/todo', { state: state });
+    navigate('/todo', { state: state, userplantnum: userplantnum });
   };
 
   const onRandom = () => {
@@ -134,7 +138,9 @@ const Main = () => {
 
   const userMainPlant = () => {
     //메인 식물 변경할 수 있게하기(main 0으로 바꾸기)
-    axios.post('http://localhost:8800/plantall', { usernum: state }).then((res) => {
+    axios.post('http://localhost:8800/plantall',
+    { usernum: state })
+    .then((res) => {
       console.log('userPlantALL ------------ ');
       setUserPlantEnroll1name(res.data[0].plant_name);
       console.log('DATA ___ ', res.data[0]);
@@ -147,12 +153,14 @@ const Main = () => {
   const onUserPlantPrint = () => {
     // user_plant 테이블에서 사용자의 식물 정보 가져와 메인 식물 정보 테이블로 출력
     axios
-      .post('http://localhost:8800/plantpicture', { usernum: state })
-      .then((response) => {
-        const plant_name = response.data[0].plant_name;
-        console.log('PlantNAME: ', plant_name);
-
-        setUserPlantInfo(response.data); // 메인 식물 이름, 특성, 키우기 난이도
+      .post('http://localhost:8800/plantpicture', 
+      { usernum: state })
+      .then((res) => {
+        const plant_name = res.data[(res.data.length-1)].plant_name;
+        console.log(res.data);
+        setUserPlantNum(res.data[(res.data.length - 1)].key);
+        console.log(userplantnum);
+        setUserPlantInfo(res.data); // 메인 식물 이름, 특성
         userPlantEnroll(plant_name); // 해당 식물의 이미지 출력
       })
       .catch((error) => {
@@ -176,11 +184,15 @@ const Main = () => {
   const onUserPlantSlot = () => {
     //user_plant 테이블에서 사용자의 식물 정보 가져와 슬롯별 식물 이미지 출력
     axios
-      .post('http://localhost:8800/plantslot', { usernum: state, slotnum: buttonValue })
+      .post('http://localhost:8800/plantslot', 
+      { usernum: state,
+        slotnum: buttonValue 
+      })
       .then((res) => {
         //setUserPlantEnroll0(res.data[0].plant_picture);     //메인 식물 이미지
         //setUserPlantEnroll1(res.data[res.data.length - 1].plant_picture);
         setUserPlantEnroll1name(res.data[res.data.length - 1].plant_name);
+        setUserPlantNum(res.data[res.data.length - 1].key);
         console.log('slot', res.data[res.data.length - 1]);
         //setUserPlantInfo(res.data);       //메인 식물 이름, 특성, 키우기 난이도
       })
@@ -189,8 +201,44 @@ const Main = () => {
       });
   };
 
+  //유저 포인트, 레벨
+  const userPointsLevel = () => {
+    console.log('pointslevel', userPoints);
+    axios.post('http://localhost:8800/userpointslevel',{
+      usernum: state
+    })
+    .then((res)=> {
+      console.log(res.data[0]);
+      setUserPoints(res.data[0].user_point);
+      const currentLevel = res.data[0].user_level;
+      if(currentLevel < 2 && userPoints >= 50) {
+        //포인트가 50이상이면 레벨 2로 업데이트
+        setUserLevel(2);
+      } else if(currentLevel < 3 && userPoints >= 100){
+        //포인트가 100이상이면 레벨 3으로 업데이트
+        setUserLevel(3);
+      } else if(currentLevel < 4 && userPoints >= 200){
+        //포인트가 200이상이면 레벨 4로 업데이트
+        setUserLevel(4);
+      }
+      else {
+        setUserLevel(currentLevel);
+      }
+    })
+    .catch((err) => {
+      console.log('error pointslevel', err);
+    })
+  }
+
+  //슬롯 활성화
+  const calculateActiveSlots = (level) => {
+    if (level === 1) return 1;
+    if (level === 2) return 2;
+    if (level === 3) return 3;
+    if (level >= 4) return 4;
+  };
+
   useEffect(() => {
-    //console.log('Onuser333');
     async function getTableData() {
       const data0 = await onUserPlantPrint();
       setUserPlantInfo(data0);
@@ -201,6 +249,18 @@ const Main = () => {
   useEffect(() => {
     onUserPlantSlot();
   });
+
+  useEffect(() => {
+    userPointsLevel();
+  }, [userPoints]);
+
+  useEffect(() => {
+    setActiveSlots(calculateActiveSlots(userLevel));
+  }, [userLevel]);
+
+  // useEffect(()=> {
+  //   onUserPoints();
+  // },[state]);
 
   return isRecommend ? (
     <Recommend usernum={state} buttonValue={buttonValue} />
@@ -247,47 +307,54 @@ const Main = () => {
           </Radio.Group>
         </Modal>
 
-        <h1> 닉네임 : {currentUser.user_nickname} </h1>
-        <div className='tab'>
-          <Table className='tableprint' columns={columns} pagination={false} dataSource={userPlantInfo} size='middle' />
-        </div>
+      </div>
+      <div>
+        <Table className='tableprint' columns={columns} pagination={false} dataSource={userPlantInfo} size='middle' />
+      </div>
+      <menu className='btnmenu'>
+        <button className='menubtn' onClick={onInfo}>
+          마이페이지
+        </button>
+        <br></br>
+        <button className='menubtn' onClick={onCommunity}>
+          커뮤니티
+        </button>
+        <br></br>
+        <button className='menubtn' onClick={onTodo}>
+          To-do list
+        </button>
+        <br></br>
+        <button className='menubtn' onClick={onRandom}>
+          다양한 식물 추천
+        </button>
+        <br></br>
+        <button className='menubtn'>로그아웃</button>
+      </menu>
+      <br></br>
+      <br></br>
+      <div style={{ marginLeft: '50%' }}>레벨이 올라가면 슬롯이 확장됩니다!</div>
+      <div style={{ display: userLevel >= 1 ? 'block' : 'none' }}>
+        <Button value='1' className='slots' onClick={onRecommend}>
+          {userPlantEnroll1}
+        </Button>
+      </div>
+      <div style={{ display: userLevel >= 2 ? 'block' : 'none' }}>
+        <Button value='2' className='slots' onClick={onRecommend}>
+          {userPlantEnroll2}
+        </Button>
+      </div>
+      <div style={{ display: userLevel >= 3 ? 'block' : 'none' }}>
+        <Button value='3' className='slots' onClick={onRecommend}>
+          {userPlantEnroll3}
+        </Button>
+      </div>
+      <div style={{ display: userLevel >= 4 ? 'block' : 'none' }}>
+        <Button value='4' className='slots' onClick={onRecommend}>
+          {userPlantEnroll4}
+        </Button>
+      </div>
+    </div>
 
-        <div className='style'>
-          <p> 이름 : {currentUser.user_name} </p>
-          <p> 이메일 : {currentUser.user_email} </p>
-          <p> 레벨 : </p>
-          <p> 포인트 : </p>
-
-          <button onClick={handleSubmit} className='logout'>
-            {' '}
-            로그아웃{' '}
-          </button>
-
-          <h1> 레벨이 올라가면 슬롯이 확장됩니다! </h1>
-          <Button value='1' className='slots1' onClick={onRecommend}>
-            {' '}
-            {userPlantEnroll1}{' '}
-          </Button>
-          <Button value='2' className='slots2' onClick={onNewRecommend}>
-            {' '}
-            {userPlantEnroll2}{' '}
-          </Button>
-          <Button value='3' className='slots3' disabled onClick={onRecommend}>
-            {' '}
-            {userPlantEnroll3}{' '}
-          </Button>
-          <Button value='4' className='slots4' disabled onClick={onRecommend}>
-            {' '}
-            {userPlantEnroll4}{' '}
-          </Button>
-        </div>
-
-        <div className='event'>
-          <Button value='5'>식물 성장 모습</Button>
-          <img src={fairy} alt='My Image' />
-        </div>
-      </section>
-    </>
   );
 };
 

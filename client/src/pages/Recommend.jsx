@@ -8,6 +8,7 @@ import { useLocation, useNavigate, NavLink, Link } from 'react-router-dom';
 import logo from '../img/logo.png';
 
 const App = ({ usernum, buttonValue }) => {
+
   /**
    * 페이지에서 사용하는 상태변수
    */
@@ -49,6 +50,7 @@ const App = ({ usernum, buttonValue }) => {
   const [plantImages, setPlantImages] = useState([]);
   const [plantname, setPlantName] = useState('');
   const [userplantnum, setUserPlantNum] = useState('');
+  const [showResult, setShowResult] = useState(false);
 
   const { state } = useLocation();
 
@@ -62,6 +64,7 @@ const App = ({ usernum, buttonValue }) => {
   };
 
   /**
+
    *  화면에서 사용하는 이벤트를 정의
    */
   const handleExperienceButton = (event) => {
@@ -147,9 +150,11 @@ const App = ({ usernum, buttonValue }) => {
     setOnFunctions(true);
   };
 
+  //main에서 버튼 값 받아오기
   console.log('recommend usernum', usernum);
   console.log('recommend button', buttonValue);
   console.log('usernum', state);
+
 
   const showModal = (event) => {
     const value = event.target.value;
@@ -162,13 +167,22 @@ const App = ({ usernum, buttonValue }) => {
 
   //식물이름 가져오기
   const userMainPlant = async () => {
-    axios.post('http://localhost:8800/plantall', { usernum: usernum }).then((res) => {
-      setUserPlantNum(res.data[res.data.length - 1].key);
-      setPlantName(res.data[res.data.length - 1].plant_name);
-      console.log('recommend page', userplantnum, plantname);
+    axios.post('http://localhost:8800/plantall', { 
+      usernum: usernum })
+      .then((res) => {
+        console.log(res.data)
+        if(res.data.length == 0){
+            console.log('first login');
+        }
+        else{
+          setUserPlantNum(res.data[res.data.length - 1].key);
+          setPlantName(res.data[res.data.length - 1].plant_name);
+          console.log('recommend page', userplantnum, plantname);
+        }
     });
   };
 
+  //등록 버튼 눌렀을 때
   const handleOk = async () => {
     console.log('button', buttonValue);
     axios
@@ -199,7 +213,12 @@ const App = ({ usernum, buttonValue }) => {
 
   //식물 투두리스트 todo 테이블에 저장
   const handleTodo = () => {
-    axios.post('http://localhost:8800/rectodo', { plantname: plantname, userplantnum: userplantnum, usernum: usernum }).then((res) => {
+    axios.post('http://localhost:8800/rectodo', { 
+      plantname: recommendPlant, 
+      userplantnum: Number(userplantnum+1), 
+      usernum: usernum 
+    })
+    .then((res) => {
       console.log('todotodotodo', res.data);
     });
   };
@@ -218,6 +237,7 @@ const App = ({ usernum, buttonValue }) => {
     e.preventDefault();
     try {
       setLoading(true);
+      setShowResult(true);
       const response = await fetch('http://localhost:8800/recommend', {
         method: 'POST',
         headers: {
@@ -233,6 +253,7 @@ const App = ({ usernum, buttonValue }) => {
       //plant image creation API call
       const res2 = await axios.post('http://localhost:8800/', { message });
       setPlantImages(res2.data.images);
+
 
       const result = await response.json().then((data) => setResponse(data.message), setLoading(false));
 
@@ -275,7 +296,7 @@ const App = ({ usernum, buttonValue }) => {
 
   useEffect(() => {
     userMainPlant();
-  }, []);
+  }, [userplantnum]);
 
   return isMain ? (
     <Main />
@@ -318,13 +339,30 @@ const App = ({ usernum, buttonValue }) => {
                     </form>
                     <br></br>
                     <br></br>
-                    <div className='spin'>
-                      <Space direction='vertical'>
-                        <Spin tip='Loading' size='large'>
-                          <div className='content' />
-                        </Spin>
-                      </Space>
-                    </div>
+                    <button className='menubtn'>로그아웃</button>
+                  </menu>
+                  <form onSubmit={handleSubmit}>
+                    <button
+                      className='resultbtn'
+                      type='submit'
+                      value={`${text}`}
+                      onClick={() => {
+                        setMessage(`${text}`);
+                      }}
+                      disabled
+                    >
+                      결과를 보시겠습니까?
+                    </button>
+                  </form>
+                  <br></br>
+                  <br></br>
+                  <div className='spin'>
+                    <Space direction='vertical'>
+                      <Spin tip='Loading' size='large'>
+                        <div className='content' />
+                      </Spin>
+                    </Space>
+
                   </div>
                 </>
               ) : (
@@ -360,48 +398,62 @@ const App = ({ usernum, buttonValue }) => {
                     </form>
                     <br></br>
                     <br></br>
-                    <div>
-                      {Array.isArray(response) &&
-                        response.map((plant) => (
-                          <div className='recommend' key={plant.name}>
-                            <button value={[[plant.korName], [plant.plant_characteristic]]} className='recbtn' onClick={showModal}>
-                              {plant.korName}
-                            </button>
-                            <div style={{ justifyContent: 'space-between' }}>
-                              <h3>Plant Images:</h3>
-                              {plantImages.length > 0 && (
-                                <div className='plantimg'>
-                                  {plantImages.map((imageUrl, idx) => (
-                                    <img key={idx} src={imageUrl} alt={`generated image ${idx}`} />
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-
-                            <div className='encan'>
-                              <Modal
-                                title='식물요정'
-                                open={open}
-                                onOk={handleOk}
-                                onCancel={handleCancel}
-                                footer={[
-                                  <Button key='enroll' onClick={handleOk}>
-                                    등록
-                                  </Button>,
-                                  <Button key='cancel' onClick={handleCancel}>
-                                    취소
-                                  </Button>,
-                                ]}
-                              >
-                                <h2 className='enroll'>{recommendPlant} 키우시겠습니까?</h2>
-                              </Modal>
-                            </div>
-                            <br></br>
-                            <div>{plant.plant_characteristic}</div>
-                            <br></br>
+                           
+                    <button className='menubtn'>로그아웃</button>
+                  </menu>
+                  <form onSubmit={handleSubmit}>
+                    <button
+                      className={`resultbtn ${showResult || response.length > 0 ? 'hidden' : ''}`}
+                      type='submit'
+                      value={`${text}`}
+                      onClick={() => {
+                        setMessage(`${text}`);
+                      }}
+                    >
+                      결과를 보시겠습니까?
+                    </button>
+                  </form>
+                  <br></br>
+                  <br></br>
+                  <div>
+                    {Array.isArray(response) &&
+                      response.map((plant, idx1) => (
+                        <div className='recommend' key={plant.name}>
+                          <button key={idx1} value={[[plant.korName], [plant.plant_characteristic]]} className='recbtn' onClick={showModal}>
+                            {plant.korName}
+                          </button>
+                          <br></br>
+                          <div style={{ justifyContent: 'space-between' }}>
+                            {plantImages.length > 0 && (
+                              <div className='plantimg'>
+                                {plantImages.map((imageUrl, idx2) => (
+                                  <img key={idx2} src={imageUrl} alt={`generated image ${idx2}`} style={{display: idx2 === idx1 ? 'block' : 'none'}}/>
+                                ))}
+                              </div>
+                            )}
                           </div>
-                        ))}
-                    </div>
+                          <br></br>
+                          <div>{plant.plant_characteristic}</div>
+                          <br></br>
+                          <Modal
+                            title='식물요정'
+                            open={open}
+                            onOk={handleOk}
+                            onCancel={handleCancel}
+                            footer={[
+                              <Button key='enroll' onClick={handleOk}>
+                                등록
+                              </Button>,
+                              <Button key='cancel' onClick={handleCancel}>
+                                취소
+                              </Button>,
+                            ]}
+                          >
+                            <h2 className='enroll'>{recommendPlant} 키우시겠습니까?</h2>
+                          </Modal>
+                          <br></br>
+                        </div>
+                      ))}
                   </div>
                 </>
               )
@@ -639,8 +691,9 @@ const App = ({ usernum, buttonValue }) => {
           no
         </button>
       </div>
-    </>
-  );
+    </div>
+) 
+
 };
 
 export default App;

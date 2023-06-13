@@ -1,65 +1,65 @@
 .main_nav_todo {
-  height: 70px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1000px;
-  margin: auto;
-}
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1000px;
+    margin: auto;
+    }
+    
+    .main_nav_todo .main_logo_todo img {
+      width: 140px;
+    }
+  
+    .main_nav_todo .main_nav_but_todo a {
+    text-decoration: none;
+    padding-left: 20px;
+    padding-right: 20px;
+    color: black;
+  }
+  
+  .main_nav_todo .main_nav_but_todo button {
+    background-color: white;
+    color: black;
+    border: 1px solid white;
+    font-size: 15px;
+  }
 
-.main_nav_todo .main_logo_todo img {
-  width: 140px;
-}
-
-.main_nav_todo .main_nav_but_todo a {
-  text-decoration: none;
-  padding-left: 20px;
-  padding-right: 20px;
-  color: black;
-}
-
-.main_nav_todo .main_nav_but_todo button {
-  background-color: white;
-  color: black;
-  border: 1px solid white;
-  font-size: 15px;
-}
-
-/* 여기서 메뉴 하단 */
-.calendar .title h1 {
-  font-size: 20px;
-  color: #6c6562;
-  font-style: italic;
+/* 여기서 메뉴 하단 */ 
+.calendar .title h1{
+font-size: 20px;
+color: #6C6562;
+font-style: italic;
 }
 
 .calendar {
-  margin-left: 150px;
-  margin-top: -10px;
-  width: 100%;
-  height: 450px;
-  padding-left: 20px;
-  padding-right: 20px;
-  background-color: #bdcebb;
-  border: 3.15px outset #859c8a;
+    margin-left: 150px;
+    margin-top: -10px;
+    width: 100%;
+    height: 450px;
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color:  #BDCEBB;
+    border: 3.15px outset #859C8A;
 }
 
-.radio {
-  margin-top: 30px;
+.radio{
+    margin-top: 30px;
 }
 
 .cout p {
-  margin-top: 10px;
-  margin-left: 180px;
-  color: #6c6562;
+margin-top: 10px;
+margin-left: 180px;
+color: #6C6562;
 }
 
-.month-item {
-  background-color: #ebf8dc;
+.month-item{
+    background-color: #EBF8DC;
 }
-.year-item {
-  background-color: #ebf8dc;
+.year-item{
+    background-color: #EBF8DC;
 }
-.margins {
-  padding: 30px 0px 0px 30px;
-  margin-bottom: 0px;
+.margins{
+    padding: 30px 0px 0px 30px;
+    margin-bottom: 0px;
 }

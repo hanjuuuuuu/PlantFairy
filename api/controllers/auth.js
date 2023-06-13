@@ -4,9 +4,11 @@ import jwt from 'jsonwebtoken';
 
 export const register = (req, res) => {
   //CHECK EXISTING USER
+
   const q = 'SELECT * FROM user WHERE user_id= ? OR user_name = ?';
   console.log(req.body.user_id);
   console.log(req.body.user_name);
+
 
   db.query(q, [req.body.user_id, req.body.user_name], (err, data) => {
     if (err) return res.status(500).json(err);
@@ -27,6 +29,7 @@ export const register = (req, res) => {
 };
 
 export const login = (req, res) => {
+
   const q = 'SELECT * FROM user WHERE user_id = ?';
 
   db.query(q, [req.body.user_id], (err, data) => {
@@ -35,7 +38,9 @@ export const login = (req, res) => {
     if (data[0].user_num === undefined) return res.status(500).json('Failed to retrieve user information!');
 
     //Check password
+    console.log(req.body.password, data[0].user_pw);
     const isPasswordCorrect = bcrypt.compareSync(req.body.user_pw, data[0].user_pw);
+
 
     if (!isPasswordCorrect) return res.status(400).json('Wrong username or password!');
 

@@ -253,9 +253,6 @@ app.post('/plantenroll', async (req, res) => {
   let plantmain = req.body.plantmain;
   //let plantpicture = req.body.plantpicture;
   let plantcharacteristic = req.body.plantcharacteristic;
-  //let plantlevel = req.body.plantlevel;
-  console.log('enroll', plantname);
-  //console.log('pp : ', plantpicture);
 
   const sqlplantenroll = 'INSERT INTO user_plant (user_num, plant_name, plant_main, plant_characteristic) values(?, ?, ?, ?)';
   db.query(sqlplantenroll, [usernum, plantname, plantmain, plantcharacteristic], (err, data) => {
