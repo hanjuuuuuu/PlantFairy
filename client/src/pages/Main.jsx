@@ -158,6 +158,7 @@ const Main = () => {
         const image = document.createElement('img');
         image.src = `data:image/png;base64,${response.data}`;
         document.querySelector('div.printImg').appendChild(image);
+        //setUserPlantEnroll1(image.src)
       })
       .catch((error) => {
         console.log(error);
@@ -265,7 +266,7 @@ const Main = () => {
         <Modal title='메인 식물로 등록할 식물을 골라주세요' open={isModalOpen} onOk={handleOK} onCancel={handleCancel}>
           <Radio.Group>
             <Radio value={userPlantEnroll1name} onClick={onclick}>
-              {userPlantEnroll1name}
+              {userPlantEnroll1name !='+' ? userPlantEnroll1name :<div className='printImg'></div>}
             </Radio>
             <Radio value={userPlantEnroll2name} onClick={onclick}>
               {userPlantEnroll2name}

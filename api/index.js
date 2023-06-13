@@ -58,7 +58,7 @@ app.use('/api/likes', likesRoutes);
 app.use('/api/comments', commentsRoutes);
 
 const configuration = new Configuration({
-  apiKey: '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', //process.env.API_KEY,
+  apiKey: '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', //process.env.API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
@@ -111,6 +111,7 @@ app.post('/recommend', async (req, res) => {
 
 let todoRecommendations;
 app.post('/rectodo', async (req, res) => {
+  //식물 투두리스트 생성
   const plant = req.body;
   console.log('recplantname', plant.plantname);
   console.log('recuserplantnum', plant.userplantnum);
@@ -118,7 +119,7 @@ app.post('/rectodo', async (req, res) => {
   try {
     const response = await openai.createCompletion({
       model: 'text-davinci-003',
-      prompt: `Please make a to-do list in Korean for 31 days with one thing to do to grow ${plant.plantname}, and the answer format is numbered as 1.2.3 `,
+      prompt: `Please make a to-do list in Korean for 31 days with one thing to do to grow ${plant.plantname}, and the answer format is numbered as 01.02.03 `,
       max_tokens: 4000,
       temperature: 0.2,
     });
@@ -157,12 +158,11 @@ app.post('/rectodo', async (req, res) => {
 //todo 페이지에 출력할 식물 투두리스트 전달
 app.post('/planttodo', async (req, res) => {
   let plantname = req.body.plantname;
-  let userplantnum = 93;  //req.body.userplantnum
-  let usernum = req.body.usernum;
-  let tododay = req.body.day;
+  let userplantnum = req.body.userplantnum;  //req.body.userplantnum
+  let tododay = req.body.day; //req.body.day
   console.log('todo plantname', plantname, 'todo userplantnum', userplantnum, 'todo day', tododay);
 
-  const sqlplanttodo = `SELECT todo_num AS "key", task, complete, day FROM todo WHERE user_plant_num = '${userplantnum}'`;
+  const sqlplanttodo = `SELECT todo_num AS "key", task, complete, day FROM todo WHERE user_plant_num = '${userplantnum}' and day = '${tododay}'`;
   db.query(sqlplanttodo, (err, data) => {
     if (!err) {
       console.log('planttodo', data);
@@ -173,6 +173,56 @@ app.post('/planttodo', async (req, res) => {
   });
 });
 
+//todo list 체크하면 체크 상태 변경
+app.post('/updatetaskcomplete', async(req, res) => {
+  let todonum = req.body.todonum;
+  let complete = req.body.complete;
+  console.log('updatetaskcomplete',todonum, complete)
+
+  const sqltodocomplete = `UPDATE todo SET complete = '${complete}' WHERE todo_num = '${todonum}'`;
+
+  db.query(sqltodocomplete, (err, data) => {
+    if(!err){
+      console.log('update todocomplete', data);
+      res.send(data);
+    } else {
+      console.log(err);
+    }
+  })
+})
+
+//todo list 체크하면 user 포인트 올리기
+app.post('/updateuserpoints', async (req, res) => {
+  let usernum = req.body.usernum;
+  let userpoints = req.body.userpoints;
+
+  const sqluserpoint = `UPDATE user SET user_point = '${userpoints}' WHERE user_num = '${usernum}'`;
+  db.query(sqluserpoint, (err, data) => {
+    if(!err){
+      console.log('update points', data);
+      res.send(data);
+    } else {
+      console.log(err);
+    }
+  })
+})
+
+//사용자 포인트, 레벨 전달
+app.post('/userpointslevel', async(req, res)=> {
+  console.log('userpointslevel');
+  let usernum = req.body.usernum;
+  const sqluserpoint = `SELECT user_point, user_level FROM user WHERE user_num = '${usernum}'`;
+  db.query(sqluserpoint, (err, data) => {
+    if(!err){
+      console.log('userpoint', data);
+      res.send(data);
+    } else {
+      console.log(err);
+    }
+  })
+})
+
+//리뷰 
 app.post('/inserttext', async (req, res) => {
   const { message } = req.body;
   const userNum = req.body.usernum;
@@ -187,6 +237,7 @@ app.post('/inserttext', async (req, res) => {
     }
   });
 });
+
 
 // 메인 페이지에 출력할 메인 식물 정보 전달
 app.post('/plantpicture', async (req, res) => {
@@ -312,7 +363,7 @@ app.post('/', async (req, res) => {
 
   for (let i = 0; i < plantRecommendations.length; i++) {
     const response = await openai.createImage({
-      prompt: `${plantRecommendations[i].englishName}`,
+      prompt: `${plantRecommendations[i].englishName} plant`,
       n: 1,
       size: '256x256',
     });
@@ -326,7 +377,7 @@ app.post('/', async (req, res) => {
         url: images[i],
         dest: '../../sources',
       };
-
+ 
       download
         .image(options)
         .then(({ filename }) => {
