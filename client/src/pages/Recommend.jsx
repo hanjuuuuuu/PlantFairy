@@ -8,7 +8,6 @@ import { useLocation, useNavigate, NavLink, Link } from 'react-router-dom';
 import logo from '../img/logo.png';
 
 const App = ({ usernum, buttonValue }) => {
-
   /**
    * 페이지에서 사용하는 상태변수
    */
@@ -54,13 +53,23 @@ const App = ({ usernum, buttonValue }) => {
 
   const { state } = useLocation();
 
-  const onInfo = () => {
-    //마이 페이지로 이동
-    setIsInfo(true);
-  };
   const onCommunity = () => {
     //커뮤니티 페이지로 이동
-    setIsCommunity(true);
+    navigate('/community', { state: state });
+  };
+  const onTodo = () => {
+    //투두리스트 페이지로 이동
+    navigate('/todo', { state: state });
+  };
+
+  const onRandom = () => {
+    // 페이지로 이동
+    navigate('/random', { state: state });
+  };
+
+  const onMain = () => {
+    // 페이지로 이동
+    navigate('/main', { state: state });
   };
 
   /**
@@ -73,7 +82,7 @@ const App = ({ usernum, buttonValue }) => {
       setExperience('experienced person');
       buttonSetExperience(name);
     } else {
-      setExperience('초보자');
+      setExperience('beginner');
       buttonSetExperience(name);
     }
     setOnExperience(true);
@@ -155,7 +164,6 @@ const App = ({ usernum, buttonValue }) => {
   console.log('recommend button', buttonValue);
   console.log('usernum', state);
 
-
   const showModal = (event) => {
     const value = event.target.value;
     const text = value.split(',');
@@ -167,19 +175,20 @@ const App = ({ usernum, buttonValue }) => {
 
   //식물이름 가져오기
   const userMainPlant = async () => {
-    axios.post('http://localhost:8800/plantall', { 
-      usernum: usernum })
+    axios
+      .post('http://localhost:8800/plantall', {
+        usernum: usernum,
+      })
       .then((res) => {
-        console.log(res.data)
-        if(res.data.length == 0){
-            console.log('first login');
-        }
-        else{
+        console.log(res.data);
+        if (res.data.length == 0) {
+          console.log('first login');
+        } else {
           setUserPlantNum(res.data[res.data.length - 1].key);
           setPlantName(res.data[res.data.length - 1].plant_name);
           console.log('recommend page', userplantnum, plantname);
         }
-    });
+      });
   };
 
   //등록 버튼 눌렀을 때
@@ -197,13 +206,6 @@ const App = ({ usernum, buttonValue }) => {
         alert('등록되었습니다');
         console.log(response.data);
         setIsMain(true);
-        userMainPlant()
-          .then(() => {
-            handleTodo();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
       })
       .catch((error) => {
         console.log(error);
@@ -212,16 +214,16 @@ const App = ({ usernum, buttonValue }) => {
   };
 
   //식물 투두리스트 todo 테이블에 저장
-  const handleTodo = () => {
-    axios.post('http://localhost:8800/rectodo', { 
-      plantname: recommendPlant, 
-      userplantnum: Number(userplantnum+1), 
-      usernum: usernum 
-    })
-    .then((res) => {
-      console.log('todotodotodo', res.data);
-    });
-  };
+  // const handleTodo = () => {
+  //   axios.post('http://localhost:8800/rectodo', {
+  //     plantname: recommendPlant,
+  //     userplantnum: Number(userplantnum+1),
+  //     usernum: usernum
+  //   })
+  //   .then((res) => {
+  //     console.log('todotodotodo', res.data);
+  //   });
+  // };
 
   const handleCancel = () => {
     setOpen(false);
@@ -253,7 +255,6 @@ const App = ({ usernum, buttonValue }) => {
       //plant image creation API call
       const res2 = await axios.post('http://localhost:8800/', { message });
       setPlantImages(res2.data.images);
-
 
       const result = await response.json().then((data) => setResponse(data.message), setLoading(false));
 
@@ -316,11 +317,11 @@ const App = ({ usernum, buttonValue }) => {
                     </div>
 
                     <div className='main_nav_but_rec'>
-                      <Link to='/main'> 메인 페이지 </Link>
-                      <Link to='/community'> 커뮤니티 </Link>
-                      <Link to='/todo'> to-do list </Link>
-                      <Link to='/random'> 식물 성향 테스트 </Link>
-                      <button onClick={handleLogout}>로그아웃</button>
+                      <button onClick={onMain}> 메인페이지 </button>
+                      <button onClick={onCommunity}> 커뮤니티 </button>
+                      <button onClick={onTodo}> 투두리스트 </button>
+                      <button onClick={onRandom}> 식물 성향 테스트 </button>
+                      <button onClick={handleSubmit}>로그아웃</button>
                     </div>
                   </div>
 
@@ -333,15 +334,16 @@ const App = ({ usernum, buttonValue }) => {
                         onClick={() => {
                           setMessage(`${text}`);
                         }}
+                        disabled
                       >
                         결과를 보시겠습니까?
                       </button>
                     </form>
                     <br></br>
                     <br></br>
-                    <button className='menubtn'>로그아웃</button>
-                  </menu>
-                  <form onSubmit={handleSubmit}>
+                    {/* <button className='menubtn'>로그아웃</button> */}
+                  </div>
+                  {/* <form onSubmit={handleSubmit}>
                     <button
                       className='resultbtn'
                       type='submit'
@@ -353,7 +355,7 @@ const App = ({ usernum, buttonValue }) => {
                     >
                       결과를 보시겠습니까?
                     </button>
-                  </form>
+                  </form> */}
                   <br></br>
                   <br></br>
                   <div className='spin'>
@@ -362,7 +364,6 @@ const App = ({ usernum, buttonValue }) => {
                         <div className='content' />
                       </Spin>
                     </Space>
-
                   </div>
                 </>
               ) : (
@@ -375,11 +376,11 @@ const App = ({ usernum, buttonValue }) => {
                     </div>
 
                     <div className='main_nav_but_rec'>
-                      <Link to='/main'> 메인 페이지 </Link>
-                      <Link to='/community'> 커뮤니티 </Link>
-                      <Link to='/todo'> to-do list </Link>
-                      <Link to='/random'> 식물 성향 테스트 </Link>
-                      <button onClick={handleLogout}>로그아웃</button>
+                      <button onClick={onMain}> 메인페이지 </button>
+                      <button onClick={onCommunity}> 커뮤니티 </button>
+                      <button onClick={onTodo}> 투두리스트 </button>
+                      <button onClick={onRandom}> 식물 성향 테스트 </button>
+                      <button onClick={handleSubmit}>로그아웃</button>
                     </div>
                   </div>
 
@@ -398,9 +399,8 @@ const App = ({ usernum, buttonValue }) => {
                     </form>
                     <br></br>
                     <br></br>
-                           
-                    <button className='menubtn'>로그아웃</button>
-                  </menu>
+                    {/* <button className='menubtn'>로그아웃</button> */}
+                  </div>
                   <form onSubmit={handleSubmit}>
                     <button
                       className={`resultbtn ${showResult || response.length > 0 ? 'hidden' : ''}`}
@@ -427,7 +427,7 @@ const App = ({ usernum, buttonValue }) => {
                             {plantImages.length > 0 && (
                               <div className='plantimg'>
                                 {plantImages.map((imageUrl, idx2) => (
-                                  <img key={idx2} src={imageUrl} alt={`generated image ${idx2}`} style={{display: idx2 === idx1 ? 'block' : 'none'}}/>
+                                  <img key={idx2} src={imageUrl} alt={`generated image ${idx2}`} style={{ display: idx2 === idx1 ? 'block' : 'none' }} />
                                 ))}
                               </div>
                             )}
@@ -467,11 +467,11 @@ const App = ({ usernum, buttonValue }) => {
                   </div>
 
                   <div className='main_nav_but_rec'>
-                    <Link to='/main'> 메인 페이지 </Link>
-                    <Link to='/community'> 커뮤니티 </Link>
-                    <Link to='/todo'> to-do list </Link>
-                    <Link to='/random'> 식물 성향 테스트 </Link>
-                    <button onClick={handleLogout}>로그아웃</button>
+                    <button onClick={onMain}> 메인페이지 </button>
+                    <button onClick={onCommunity}> 커뮤니티 </button>
+                    <button onClick={onTodo}> 투두리스트 </button>
+                    <button onClick={onRandom}> 식물 성향 테스트 </button>
+                    <button onClick={handleSubmit}>로그아웃</button>
                   </div>
                 </div>
 
@@ -513,10 +513,10 @@ const App = ({ usernum, buttonValue }) => {
                 </div>
 
                 <div className='main_nav_but_rec'>
-                  <Link to='/main'> 메인 페이지 </Link>
-                  <Link to='/community'> 커뮤니티 </Link>
-                  <Link to='/todo'> to-do list </Link>
-                  <Link to='/random'> 식물 성향 테스트 </Link>
+                  <button onClick={onMain}> 메인페이지 </button>
+                  <button onClick={onCommunity}> 커뮤니티 </button>
+                  <button onClick={onTodo}> 투두리스트 </button>
+                  <button onClick={onRandom}> 식물 성향 테스트 </button>
                   <button onClick={handleLogout}>로그아웃</button>
                 </div>
               </div>
@@ -554,10 +554,10 @@ const App = ({ usernum, buttonValue }) => {
               </div>
 
               <div className='main_nav_but_rec'>
-                <Link to='/main'> 메인 페이지 </Link>
-                <Link to='/community'> 커뮤니티 </Link>
-                <Link to='/todo'> to-do list </Link>
-                <Link to='/random'> 식물 성향 테스트 </Link>
+                <button onClick={onMain}> 메인페이지 </button>
+                <button onClick={onCommunity}> 커뮤니티 </button>
+                <button onClick={onTodo}> 투두리스트 </button>
+                <button onClick={onRandom}> 식물 성향 테스트 </button>
                 <button onClick={handleLogout}>로그아웃</button>
               </div>
             </div>
@@ -595,10 +595,10 @@ const App = ({ usernum, buttonValue }) => {
             </div>
 
             <div className='main_nav_but_rec'>
-              <Link to='/main'> 메인 페이지 </Link>
-              <Link to='/community'> 커뮤니티 </Link>
-              <Link to='/todo'> to-do list </Link>
-              <Link to='/random'> 식물 성향 테스트 </Link>
+              <button onClick={onMain}> 메인페이지 </button>
+              <button onClick={onCommunity}> 커뮤니티 </button>
+              <button onClick={onTodo}> 투두리스트 </button>
+              <button onClick={onRandom}> 식물 성향 테스트 </button>
               <button onClick={handleLogout}>로그아웃</button>
             </div>
           </div>
@@ -631,10 +631,10 @@ const App = ({ usernum, buttonValue }) => {
           </div>
 
           <div className='main_nav_but_rec'>
-            <Link to='/main'> 메인 페이지 </Link>
-            <Link to='/community'> 커뮤니티 </Link>
-            <Link to='/todo'> to-do list </Link>
-            <Link to='/random'> 식물 성향 테스트 </Link>
+            <button onClick={onMain}> 메인페이지 </button>
+            <button onClick={onCommunity}> 커뮤니티 </button>
+            <button onClick={onTodo}> 투두리스트 </button>
+            <button onClick={onRandom}> 식물 성향 테스트 </button>
             <button onClick={handleLogout}>로그아웃</button>
           </div>
         </div>
@@ -667,10 +667,10 @@ const App = ({ usernum, buttonValue }) => {
         </div>
 
         <div className='main_nav_but_rec'>
-          <Link to='/main'> 메인 페이지 </Link>
-          <Link to='/community'> 커뮤니티 </Link>
-          <Link to='/todo'> to-do list </Link>
-          <Link to='/random'> 식물 성향 테스트 </Link>
+          <button onClick={onMain}> 메인페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
           <button onClick={handleLogout}>로그아웃</button>
         </div>
       </div>
@@ -691,9 +691,8 @@ const App = ({ usernum, buttonValue }) => {
           no
         </button>
       </div>
-    </div>
-) 
-
+    </>
+  );
 };
 
 export default App;

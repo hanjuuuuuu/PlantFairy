@@ -33,14 +33,34 @@ const NewReccomend = ({ usernum, buttonValue }) => {
 
   const [showNewRec, setShowNewRec] = useState(false);
 
-  const { state } = useLocation();
+  const { state, userplantnum } = useLocation();
 
   // 별점이 안눌렸다면 다음 페이지로 넘어갈 수 없어야 함..
 
   const [checkedItems, setCheckedItems] = useState([]);
 
+  const onCommunity = () => {
+    //커뮤니티 페이지로 이동
+    navigate('/community', { state: state });
+  };
+
+  const onTodo = () => {
+    //투두리스트 페이지로 이동
+    navigate('/todo', { state: state, userplantnum: userplantnum });
+  };
+
+  const onRandom = () => {
+    // 페이지로 이동
+    navigate('/random', { state: state });
+  };
+
   const onNewRecommend = () => {
-    navigate('/newRecommend');
+    navigate('/newRecommend', { state: state });
+  };
+
+  const onMain = () => {
+    // 페이지로 이동
+    navigate('/main', { state: state });
   };
 
   const onUserPlantPrint = () => {
@@ -231,10 +251,10 @@ const NewReccomend = ({ usernum, buttonValue }) => {
               </div>
 
               <div className='main_nav_but_rec'>
-                <Link to='/main'> 메인 페이지 </Link>
-                <Link to='/community'> 커뮤니티 </Link>
-                <Link to='/todo'> to-do list </Link>
-                <Link to='/random'> 식물 성향 테스트 </Link>
+                <button onClick={onMain}> 메인페이지 </button>
+                <button onClick={onCommunity}> 커뮤니티 </button>
+                <button onClick={onTodo}> 투두리스트 </button>
+                <button onClick={onRandom}> 식물 성향 테스트 </button>
                 <button onClick={handleLogout}>로그아웃</button>
               </div>
             </div>
@@ -307,10 +327,10 @@ const NewReccomend = ({ usernum, buttonValue }) => {
               </div>
 
               <div className='main_nav_but_rec'>
-                <Link to='/main'> 메인 페이지 </Link>
-                <Link to='/community'> 커뮤니티 </Link>
-                <Link to='/todo'> to-do list </Link>
-                <Link to='/random'> 식물 성향 테스트 </Link>
+                <button onClick={onMain}> 메인페이지 </button>
+                <button onClick={onCommunity}> 커뮤니티 </button>
+                <button onClick={onTodo}> 투두리스트 </button>
+                <button onClick={onRandom}> 식물 성향 테스트 </button>
                 <button onClick={handleLogout}>로그아웃</button>
               </div>
             </div>
@@ -356,10 +376,10 @@ const NewReccomend = ({ usernum, buttonValue }) => {
                 </div>
 
                 <div className='main_nav_but_rec'>
-                  <Link to='/main'> 메인 페이지 </Link>
-                  <Link to='/community'> 커뮤니티 </Link>
-                  <Link to='/todo'> to-do list </Link>
-                  <Link to='/random'> 식물 성향 테스트 </Link>
+                  <button onClick={onMain}> 메인페이지 </button>
+                  <button onClick={onCommunity}> 커뮤니티 </button>
+                  <button onClick={onTodo}> 투두리스트 </button>
+                  <button onClick={onRandom}> 식물 성향 테스트 </button>
                   <button onClick={handleLogout}>로그아웃</button>
                 </div>
               </div>
@@ -443,10 +463,10 @@ const NewReccomend = ({ usernum, buttonValue }) => {
             </div>
 
             <div className='main_nav_but_rec'>
-              <Link to='/main'> 메인 페이지 </Link>
-              <Link to='/community'> 커뮤니티 </Link>
-              <Link to='/todo'> to-do list </Link>
-              <Link to='/random'> 식물 성향 테스트 </Link>
+              <button onClick={onMain}> 메인페이지 </button>
+              <button onClick={onCommunity}> 커뮤니티 </button>
+              <button onClick={onTodo}> 투두리스트 </button>
+              <button onClick={onRandom}> 식물 성향 테스트 </button>
               <button onClick={handleLogout}>로그아웃</button>
             </div>
           </div>

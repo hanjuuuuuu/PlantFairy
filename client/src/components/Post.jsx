@@ -28,8 +28,8 @@ const Post = ({ post }) => {
 
   const mutation = useMutation(
     (liked) => {
-      if (liked) return makeRequest.delete('/likes?postid=' + post.communutyid);
-      return makeRequest.post('/likes', { postid: post.communutyid });
+      if (liked) return makeRequest.delete('/likes?postid=' + post.communityid);
+      return makeRequest.post('/likes', { postid: post.communityid });
     },
     {
       onSuccess: () => {
@@ -64,8 +64,8 @@ const Post = ({ post }) => {
           <div className='userInfo'>
             <img src={post.profilePic} alt='' />
             <div className='details'>
-              <Link to={`/profile/${post.userId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                <span className='name'>{post.name}</span>
+              <Link to={`/profile/${post.userid}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <span className='name'>{post.user_nickname}</span>
               </Link>
               <span className='date'>{moment(post.createdAt).fromNow()}</span>
             </div>
@@ -84,7 +84,7 @@ const Post = ({ post }) => {
             ) : data.includes(currentUser.user_num) ? (
               <FavoriteOutlinedIcon //
                 style={{ color: 'red' }}
-                onclick={handleLike}
+                onClick={handleLike}
               />
             ) : (
               <FavoriteBorderOutlinedIcon onClick={handleLike} />

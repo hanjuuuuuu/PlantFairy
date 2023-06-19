@@ -34,6 +34,11 @@ app.use(
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
+const configuration = new Configuration({
+  apiKey: process.env.API_KEY,
+});
+const openai = new OpenAIApi(configuration);
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, '../client/public/upload');
@@ -55,11 +60,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/posts', postsRoutes);
 app.use('/api/likes', likesRoutes);
 app.use('/api/comments', commentsRoutes);
-
-const configuration = new Configuration({
-  apiKey: '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', //process.env.API_KEY,
-});
-const openai = new OpenAIApi(configuration);
 
 let plantRecommendations;
 
@@ -307,7 +307,7 @@ app.post('/', async (req, res) => {
   }
   for (let i = 0; i < plantRecommendations.length; i++) {
     const response = await openai.createImage({
-      prompt: `${plantRecommendations[i].englishName}`,
+      prompt: `${plantRecommendations[i].englishName} plant`,
       n: 1,
       size: '256x256',
     });

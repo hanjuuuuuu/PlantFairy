@@ -2,12 +2,37 @@ import Posts from '../components/Posts.jsx';
 import Share from '../components/Share.jsx';
 import '../design/community.scss';
 import logo from '../img/logo.png';
-import { Link, useNavigate, NavLink } from 'react-router-dom';
+import { Link, useNavigate, NavLink, useLocation } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import { AuthContext } from '../context/authContext';
 
 const Community = () => {
   const navigate = useNavigate();
+
+  const { state, userplantnum } = useLocation();
+
+  const onInfo = () => {
+    navigate('/info');
+  };
+  const onCommunity = () => {
+    //커뮤니티 페이지로 이동
+    navigate('/community', { state: state });
+  };
+
+  const onTodo = () => {
+    //투두리스트 페이지로 이동
+    navigate('/todo', { state: state, userplantnum: userplantnum });
+  };
+
+  const onRandom = () => {
+    // 페이지로 이동
+    navigate('/random', { state: state });
+  };
+
+  const onMain = () => {
+    // 페이지로 이동
+    navigate('/main', { state: state });
+  };
 
   const [inputs, setInputs] = useState({
     username: '',
@@ -38,10 +63,10 @@ const Community = () => {
         </div>
 
         <div className='main_nav_but_commu'>
-          <Link to='/main'> 메인 페이지 </Link>
-          <Link to='/community'> 커뮤니티 </Link>
-          <Link to='/todo'> to-do list </Link>
-          <Link to='/random'> 식물 성향 테스트 </Link>
+          <button onClick={onMain}> 메인페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
           <button onClick={handleSubmit}>로그아웃</button>
         </div>
       </div>

@@ -1,10 +1,10 @@
 import { Button, Modal, Space, Spin } from 'antd';
-import React, { useState, useEffect, useContext, Component } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import '../design/recommend.css';
 import Main from './Main.jsx';
 import { AuthContext } from '../context/authContext.js';
-import { useLocation, NavLink, Link } from 'react-router-dom';
+import { useLocation, NavLink, Link, useNavigate } from 'react-router-dom';
 import logo from '../img/logo.png';
 
 const App = ({ usernum, buttonValue }) => {
@@ -52,13 +52,30 @@ const App = ({ usernum, buttonValue }) => {
 
   const { state } = useLocation();
 
+  const navigate = useNavigate();
+
+  const onTodo = () => {
+    //투두리스트 페이지로 이동
+    navigate('/todo', { state: state, userplantnum: userplantnum });
+  };
+
+  const onRandom = () => {
+    // 페이지로 이동
+    navigate('/random', { state: state });
+  };
+
   const onInfo = () => {
     //마이 페이지로 이동
     setIsInfo(true);
   };
   const onCommunity = () => {
     //커뮤니티 페이지로 이동
-    setIsCommunity(true);
+    navigate('/community', { state: state });
+  };
+
+  const onMain = () => {
+    // 페이지로 이동
+    navigate('/main', { state: state });
   };
 
   /**
@@ -66,11 +83,11 @@ const App = ({ usernum, buttonValue }) => {
    */
   const handleExperienceButton = (event) => {
     const name = event.target.value;
-    if (name === '식물을 키워본 경험 있음') {
-      setExperience('experienced person');
+    if (name === '자주 줄 수 있음') {
+      setExperience('I can water it frequently, ');
       buttonSetExperience(name);
     } else {
-      setExperience('초보자');
+      setExperience('I can water it infrequently, ');
       buttonSetExperience(name);
     }
     setOnExperience(true);
@@ -78,11 +95,11 @@ const App = ({ usernum, buttonValue }) => {
 
   const handleTimeButton = (event) => {
     const name = event.target.value;
-    if (name === '주기적으로 참여 가능') {
-      setTime('Can participate periodically');
+    if (name === '계절마다 변화하는 식물') {
+      setTime('Plant that changes with the seasons, ');
       buttonSetTime(name);
     } else {
-      setTime('hope it grows well without systematic management');
+      setTime('Plant that maintains a similar state throughout the year, ');
       buttonSetTime(name);
     }
     setOnTime(true);
@@ -90,26 +107,31 @@ const App = ({ usernum, buttonValue }) => {
 
   const handleAddressButton = (event) => {
     const name = event.target.value;
-    if (name === '실내') {
-      setAddress('Indoor');
+    if (name === '꽃의 향기를 선호') {
+      setAddress('Prefer floral fragrance, ');
+      buttonSetAddress(name);
+    } else if (name === '상쾌하고 신선한 향기 선호') {
+      setAddress('Prefer fresh and refreshing fragrance, ');
+      buttonSetAddress(name);
+    } else if (name === '특별한 향기를 선호') {
+      setAddress('Prefer unique fragrance, ');
       buttonSetAddress(name);
     } else {
-      setAddress('Outdoor');
-      buttonSetAddress(name);
+      setAddress('');
     }
     setOnAddress(true);
   };
 
   const handleSizeButton = (event) => {
     const name = event.target.value;
-    if (name === '크다') {
-      setSize('over 1m');
+    if (name === '화려하고 선명한 잎을 가진 식물') {
+      setSize('Plant with vibrant and vivid leaves, ');
       buttonSetSize(name);
-    } else if (name === '중간') {
-      setSize('30cm~1m size');
+    } else if (name === '조화롭고 차분한 분위기를 연출하는 식물') {
+      setSize('Plant that creates a harmonious and tranquil atmosphere, ');
       buttonSetSize(name);
     } else {
-      setSize('under 30cm');
+      setSize('');
       buttonSetSize(name);
     }
     setOnSize(true);
@@ -117,14 +139,11 @@ const App = ({ usernum, buttonValue }) => {
 
   const handleLightButton = (event) => {
     const name = event.target.value;
-    if (name === '많다') {
-      setLight('receiving a lot of sunlight');
-      buttonSetLight(name);
-    } else if (name === '적당하다') {
-      setLight('get enough sunlight');
+    if (name === '있다') {
+      setLight('have the intention to raise a pet with plant, ');
       buttonSetLight(name);
     } else {
-      setLight('less sunlight');
+      setLight('have no intention to raise a pet with plant, ');
       buttonSetLight(name);
     }
     setOnLight(true);
@@ -132,14 +151,11 @@ const App = ({ usernum, buttonValue }) => {
 
   const handleFunctionsButton = (event) => {
     const name = event.target.value;
-    if (name === '공기정화') {
-      setFunctions('for air purification');
+    if (name === '빠른 성장') {
+      setFunctions('Rapid growth');
       buttonSetFunctions(name);
-    } else if (name === '장식') {
-      setFunctions('for decoration');
-      buttonSetFunctions(name);
-    } else if (name === '둘 다 원해요') {
-      setFunctions('for air purication and decoration');
+    } else if (name === '느린 성장') {
+      setFunctions('Slow growth');
       buttonSetFunctions(name);
     } else {
       setFunctions('');
@@ -226,10 +242,6 @@ const App = ({ usernum, buttonValue }) => {
         body: JSON.stringify({ message }),
       });
 
-      // plant recommendations API call
-      // const res1 = await axios.post('http://localhost:8800/recommend', { message });
-      // setPlantRecommendations(res1.data.message);
-
       //plant image creation API call
       const res2 = await axios.post('http://localhost:8800/', { message });
       setPlantImages(res2.data.images);
@@ -274,10 +286,11 @@ const App = ({ usernum, buttonValue }) => {
                     </div>
 
                     <div className='main_nav_but_rec'>
-                      <Link to='/main'> 메인 페이지 </Link>
-                      <Link to='/community'> 커뮤니티 </Link>
-                      <Link to='/todo'> to-do list </Link>
-                      <Link to='/random'> 식물 성향 테스트 </Link>
+                      <button onClick={onMain}> 메인페이지 </button>
+                      <button onClick={onCommunity}> 커뮤니티 </button>
+                      <button onClick={onTodo}> 투두리스트 </button>
+                      <button onClick={onRandom}> 식물 성향 테스트 </button>
+
                       <button onClick={handleSubmit}>로그아웃</button>
                     </div>
                   </div>
@@ -316,10 +329,11 @@ const App = ({ usernum, buttonValue }) => {
                     </div>
 
                     <div className='main_nav_but_rec'>
-                      <Link to='/main'> 메인 페이지 </Link>
-                      <Link to='/community'> 커뮤니티 </Link>
-                      <Link to='/todo'> to-do list </Link>
-                      <Link to='/random'> 식물 성향 테스트 </Link>
+                      <button onClick={onMain}> 메인페이지 </button>
+                      <button onClick={onCommunity}> 커뮤니티 </button>
+                      <button onClick={onTodo}> 투두리스트 </button>
+                      <button onClick={onRandom}> 식물 성향 테스트 </button>
+
                       <button onClick={handleSubmit}>로그아웃</button>
                     </div>
                   </div>
@@ -394,10 +408,10 @@ const App = ({ usernum, buttonValue }) => {
                   </div>
 
                   <div className='main_nav_but_rec'>
-                    <Link to='/main'> 메인 페이지 </Link>
-                    <Link to='/community'> 커뮤니티 </Link>
-                    <Link to='/todo'> to-do list </Link>
-                    <Link to='/random'> 식물 성향 테스트 </Link>
+                    <button onClick={onMain}> 메인페이지 </button>
+                    <button onClick={onCommunity}> 커뮤니티 </button>
+                    <button onClick={onTodo}> 투두리스트 </button>
+                    <button onClick={onRandom}> 식물 성향 테스트 </button>
                     <button onClick={handleSubmit}>로그아웃</button>
                   </div>
                 </div>
@@ -409,12 +423,12 @@ const App = ({ usernum, buttonValue }) => {
                   <br></br>
                   <p>원하는 식물의 성장속도가 있나요?</p>
                   <br></br>
-                  <button className='btn' value='공기정화' onClick={handleFunctionsButton}>
+                  <button className='btn' value='빠른 성장' onClick={handleFunctionsButton}>
                     빠른 성장
                   </button>
                   <br></br>
                   <br></br>
-                  <button className='btn' value='장식' onClick={handleFunctionsButton}>
+                  <button className='btn' value='느린 성장' onClick={handleFunctionsButton}>
                     느린 성장
                   </button>
                   <br></br>
@@ -435,10 +449,10 @@ const App = ({ usernum, buttonValue }) => {
                 </div>
 
                 <div className='main_nav_but_rec'>
-                  <Link to='/main'> 메인 페이지 </Link>
-                  <Link to='/community'> 커뮤니티 </Link>
-                  <Link to='/todo'> to-do list </Link>
-                  <Link to='/random'> 식물 성향 테스트 </Link>
+                  <button onClick={onMain}> 메인페이지 </button>
+                  <button onClick={onCommunity}> 커뮤니티 </button>
+                  <button onClick={onTodo}> 투두리스트 </button>
+                  <button onClick={onRandom}> 식물 성향 테스트 </button>
                   <button onClick={handleSubmit}>로그아웃</button>
                 </div>
               </div>
@@ -450,12 +464,12 @@ const App = ({ usernum, buttonValue }) => {
                 <br></br>
                 <p>애완동물과 함께 키울 계획이 있으신가요?</p>
                 <br></br>
-                <button className='btn' value='많다' onClick={handleLightButton}>
+                <button className='btn' value='있다' onClick={handleLightButton}>
                   있다
                 </button>
                 <br></br>
                 <br></br>
-                <button className='btn' value='적당하다' onClick={handleLightButton}>
+                <button className='btn' value='없다' onClick={handleLightButton}>
                   없다
                 </button>
               </div>
@@ -471,10 +485,10 @@ const App = ({ usernum, buttonValue }) => {
               </div>
 
               <div className='main_nav_but_rec'>
-                <Link to='/main'> 메인 페이지 </Link>
-                <Link to='/community'> 커뮤니티 </Link>
-                <Link to='/todo'> to-do list </Link>
-                <Link to='/random'> 식물 성향 테스트 </Link>
+                <button onClick={onMain}> 메인페이지 </button>
+                <button onClick={onCommunity}> 커뮤니티 </button>
+                <button onClick={onTodo}> 투두리스트 </button>
+                <button onClick={onRandom}> 식물 성향 테스트 </button>
                 <button onClick={handleSubmit}>로그아웃</button>
               </div>
             </div>
@@ -486,17 +500,17 @@ const App = ({ usernum, buttonValue }) => {
               <br></br>
               <p>식물의 장식적 가치에 대해 어떻게 생각하시나요?</p>
               <br></br>
-              <button className='btn' value='크다' onClick={handleSizeButton}>
+              <button className='btn' value='화려하고 선명한 잎을 가진 식물' onClick={handleSizeButton}>
                 화려하고 선명한 잎을 가진 식물
               </button>
               <br></br>
               <br></br>
-              <button className='btn' value='중간' onClick={handleSizeButton}>
+              <button className='btn' value='조화롭고 차분한 분위기를 연출하는 식물' onClick={handleSizeButton}>
                 조화롭고 차분한 분위기를 연출하는 식물
               </button>
               <br></br>
               <br></br>
-              <button className='btn' value='작다' onClick={handleSizeButton}>
+              <button className='btn' value='장식적 가치를 고려하지 않음' onClick={handleSizeButton}>
                 장식적 가치를 고려하지 않음
               </button>
             </div>
@@ -512,10 +526,10 @@ const App = ({ usernum, buttonValue }) => {
             </div>
 
             <div className='main_nav_but_rec'>
-              <Link to='/main'> 메인 페이지 </Link>
-              <Link to='/community'> 커뮤니티 </Link>
-              <Link to='/todo'> to-do list </Link>
-              <Link to='/random'> 식물 성향 테스트 </Link>
+              <button onClick={onMain}> 메인페이지 </button>
+              <button onClick={onCommunity}> 커뮤니티 </button>
+              <button onClick={onTodo}> 투두리스트 </button>
+              <button onClick={onRandom}> 식물 성향 테스트 </button>
               <button onClick={handleSubmit}>로그아웃</button>
             </div>
           </div>
@@ -527,21 +541,21 @@ const App = ({ usernum, buttonValue }) => {
             <br></br>
             <p>식물의 향기에 대해 어떤 것을 선호하시나요?</p>
             <br></br>
-            <button className='btn' value='yes' onClick={handleAddressButton}>
+            <button className='btn' value='꽃의 향기를 선호' onClick={handleAddressButton}>
               꽃의 향기를 선호
             </button>
             <br></br>
             <br></br>
-            <button className='btn' value='no' onClick={handleAddressButton}>
+            <button className='btn' value='상쾌하고 신선한 향기 선호' onClick={handleAddressButton}>
               상쾌하고 신선한 향기 선호
             </button>
             <br></br>
-            <button className='btn' value='special' onClick={handleAddressButton}>
+            <button className='btn' value='특별한 향기를 선호' onClick={handleAddressButton}>
               특별한 향기를 선호
             </button>
             <br></br>
             <br></br>
-            <button className='btn' value='nothing' onClick={handleAddressButton}>
+            <button className='btn' value='향기를 선호하지 않음' onClick={handleAddressButton}>
               향기를 선호하지 않음
             </button>
             <br></br>
@@ -558,10 +572,10 @@ const App = ({ usernum, buttonValue }) => {
           </div>
 
           <div className='main_nav_but_rec'>
-            <Link to='/main'> 메인 페이지 </Link>
-            <Link to='/community'> 커뮤니티 </Link>
-            <Link to='/todo'> to-do list </Link>
-            <Link to='/random'> 식물 성향 테스트 </Link>
+            <button onClick={onMain}> 메인페이지 </button>
+            <button onClick={onCommunity}> 커뮤니티 </button>
+            <button onClick={onTodo}> 투두리스트 </button>
+            <button onClick={onRandom}> 식물 성향 테스트 </button>
             <button onClick={handleSubmit}>로그아웃</button>
           </div>
         </div>
@@ -573,12 +587,12 @@ const App = ({ usernum, buttonValue }) => {
           <br></br>
           <p>식물의 수명 주기에 대해 어떤 것을 선호하시나요?</p>
           <br></br>
-          <button className='btn' value='yes' onClick={handleTimeButton}>
+          <button className='btn' value='계절마다 변화하는 식물' onClick={handleTimeButton}>
             계절마다 변화하는 식물
           </button>
           <br></br>
           <br></br>
-          <button className='btn' value='no' onClick={handleTimeButton}>
+          <button className='btn' value='일년내내 비슷한 상태를 유지하는 식물' onClick={handleTimeButton}>
             일년내내 비슷한 상태를 유지하는 식물
           </button>
         </div>
@@ -594,10 +608,10 @@ const App = ({ usernum, buttonValue }) => {
         </div>
 
         <div className='main_nav_but_rec'>
-          <Link to='/main'> 메인 페이지 </Link>
-          <Link to='/community'> 커뮤니티 </Link>
-          <Link to='/todo'> to-do list </Link>
-          <Link to='/random'> 식물 성향 테스트 </Link>
+          <button onClick={onMain}> 메인페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
           <button onClick={handleSubmit}>로그아웃</button>
         </div>
       </div>
@@ -609,12 +623,12 @@ const App = ({ usernum, buttonValue }) => {
         <br></br>
         <p>식물의 수분 요구량에 대해 어떻게 생각하세요?</p>
         <br></br>
-        <button className='btn' value='yes' onClick={handleExperienceButton}>
+        <button className='btn' value='자주 줄 수 있음' onClick={handleExperienceButton}>
           자주 줄 수 있음
         </button>
         <br></br>
         <br></br>
-        <button className='btn' value='no' onClick={handleExperienceButton}>
+        <button className='btn' value='드물게 줄 수 있음' onClick={handleExperienceButton}>
           드물게 줄 수 있음
         </button>
       </div>

@@ -52,14 +52,6 @@ function Home() {
                     <img src={logo} alt='My Image' width='160' height='60' />
                   </NavLink>
                 </div>
-
-                <div className='nav_but'>
-                  <Link to='/main'> 메인 페이지 </Link>
-                  <Link to='/community'> 커뮤니티 </Link>
-                  <Link to='/todo'> to-do list </Link>
-                  <Link to='/random'> 식물 성향 테스트 </Link>
-                  <button onClick={handleSubmit}>로그아웃</button>
-                </div>
               </div>
 
               <section className='header'>

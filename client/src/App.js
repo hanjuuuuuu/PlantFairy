@@ -75,6 +75,7 @@ function App() {
       element: <Info />,
     },
   ]);
+
   return (
     <div className='app'>
       <div className='container'>
