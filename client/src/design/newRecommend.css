@@ -36,3 +36,17 @@
   color: #6c6562;
   font-size: 16px;
 }
+
+.Address {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  /* 다른 스타일 속성들 */
+}
+
+.Address label {
+  display: inline-block;
+  margin-right: 10px; /* 원하는 간격으로 조정 */
+}

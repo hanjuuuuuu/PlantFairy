@@ -100,32 +100,12 @@ const Main = () => {
 
   const onTodo = () => {
     //투두리스트 페이지로 이동
-    try {
-      navigate('/todo', {
-        state: {
-          state: state,
-          userplantnum: userplantnum,
-          userplantname1: userPlantEnroll1name,
-        },
-      });
-    } catch (err) {
-      console.log(err);
-    }
+    navigate('/todo', { state: state, userplantnum: userplantnum });
   };
 
   const onRandom = () => {
-    //성향테스트 페이지로 이동
-    try {
-      navigate('/random', {
-        state: {
-          state: state,
-          userpoints: userPoints,
-          userlevel: userLevel,
-        },
-      });
-    } catch (err) {
-      console.log(err);
-    }
+    // 페이지로 이동
+    navigate('/random', { state: state });
   };
 
   const onMain = () => {
@@ -318,19 +298,25 @@ const Main = () => {
       </div>
 
       <section className='out'>
-        <div className='printImg'>
-          <h1> 닉네임 : {currentUser.user_nickname} </h1>
+        <section className='out1'>
+          <div className='printImg'> </div>
+
           <div className='tab'>
             <Table className='tableprint' columns={columns} pagination={false} dataSource={userPlantInfo} size='middle' />
           </div>
-        </div>
-        <br></br> <br></br>
+        </section>
+
         <div className='info'>
-          <p1> 이름 : {currentUser.user_name} </p1>
+          <h1> 닉네임 : {currentUser.user_nickname}</h1>
+
+          <br></br>
+
+          <p1> 이름 : {currentUser.user_name}</p1>
           <p> 이메일 : {currentUser.user_email} </p>
           <p> 레벨 : {currentUser.user_level} </p>
           <p> 포인트 : {currentUser.user_point} </p>
         </div>
+
         <div className='main_plant'>
           <button onClick={showModal} className='logout'>
             메인 식물 바꾸기
@@ -347,43 +333,47 @@ const Main = () => {
             로그아웃
           </button> */}
         </div>
-        <br></br>
-        <br></br>
-        <div className='style'>
-          {/* <div style={{ marginLeft: '50%' }}>레벨이 올라가면 슬롯이 확장됩니다!</div> */}
-          <h1> 레벨이 올라가면 슬롯이 확장됩니다! </h1>
-          <div style={{ display: userLevel >= 1 ? 'block' : 'none' }}>
-            <Button value='1' className='slots1' onClick={onRecommend}>
-              {userPlantEnroll1}
-            </Button>
-          </div>
-          <div style={{ display: userLevel >= 2 ? 'block' : 'none' }}>
-            <Button value='2' className='slots2' onClick={onNewRecommend}>
-              {userPlantEnroll2}
-            </Button>
-          </div>
-          <div style={{ display: userLevel >= 3 ? 'block' : 'none' }}>
-            <Button value='3' className='slots3' onClick={onNewRecommend}>
-              {userPlantEnroll3}
-            </Button>
-          </div>
-          <div style={{ display: userLevel >= 4 ? 'block' : 'none' }}>
-            <Button value='4' className='slots4' onClick={onNewRecommend}>
-              {userPlantEnroll4}
-            </Button>
-          </div>
 
-          {/* <button className='menubtn' onClick={onRandom}>
+        <br></br>
+        <br></br>
+        <section className='style_slot'>
+          <div className='style'>
+            {/* <div style={{ marginLeft: '50%' }}>레벨이 올라가면 슬롯이 확장됩니다!</div> */}
+            <h1> 레벨이 올라가면 슬롯이 확장됩니다! </h1>
+            <div style={{ display: userLevel >= 1 ? 'block' : 'none' }}>
+              <Button value='1' className='slots1' onClick={onRecommend}>
+                {userPlantEnroll1}
+              </Button>
+            </div>
+            <div style={{ display: userLevel >= 2 ? 'block' : 'none' }}>
+              <Button value='2' className='slots2' onClick={onNewRecommend}>
+                {userPlantEnroll2}
+              </Button>
+            </div>
+            <div style={{ display: userLevel >= 4 ? 'block' : 'none' }}>
+              <Button value='3' className='slots3' onClick={onNewRecommend}>
+                {userPlantEnroll3}
+              </Button>
+            </div>
+            <div style={{ display: userLevel >= 4 ? 'block' : 'none' }}>
+              <Button value='4' className='slots4' onClick={onNewRecommend}>
+                {userPlantEnroll4}
+              </Button>
+            </div>
+
+            {/* <button className='menubtn' onClick={onRandom}>
             다양한 식물 추천
           </button> */}
-        </div>
+          </div>
+        </section>
+
         <div className='img'>
           <h1>(식물 성장 이미지)</h1>
         </div>
-        {/* <div className='event'>
-          <Button value='5'>식물 성장 모습</Button>
+        <div className='event'>
+          {/* <Button value='5'>식물 성장 모습</Button> */}
           <img src={fairy} alt='My Image' />
-        </div> */}
+        </div>
       </section>
     </>
   );

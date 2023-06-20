@@ -12,12 +12,14 @@
 }
 
 .main_nav .main_nav_but button {
+  text-decoration: none;
+  padding-left: 20px;
+  padding-right: 20px;
   background-color: white;
   color: black;
   border: 1px solid white;
   font-size: 15px;
 }
-
 /* 여기부터 메뉴 하단 */
 
 .out {
@@ -29,18 +31,29 @@
   margin-left: 220px;
 }
 
-.out .printImg {
+.out .out1 .printImg {
   position: relative;
   left: 20px;
   top: 10px;
-  height: 350px;
-  width: 100px;
+  width: 1000px;
+  height: 280px;
+}
+
+/* 식물 이름, 특성 창 */
+.out .out1 .tab .tableprint {
+  border: 3.15px outset #bdcebb;
+  border-radius: 4px;
+  width: 760px;
+  height: 211px;
+  position: absolute;
+  left: 545px; /* 550px */
+  top: 90px; /* 85 */
 }
 
 /* 닉네임 : */
-.out h1 {
-  margin-top: 280px;
-  margin-left: 30px;
+.out .info h1 {
+  margin-top: 10px;
+  margin-left: 35px;
   font-size: 15px;
   font-style: italic;
 }
@@ -110,31 +123,25 @@
   margin-left: 80px;
 }
 
-/* 식물 이름, 특성 창 */
-.out .tab .tableprint {
-  border: 3.15px outset #bdcebb;
-  border-radius: 4px;
-  width: 45%;
-  height: 29.2%; /* 29.2%*/
-  position: absolute;
-  left: 300px; /* 550px */
-  top: -275px; /* 85 */
+.out .style_slot {
+  width: 75%;
+  height: 200px;
 }
 
-.out .style {
+.out .style_slot .style {
   width: 75%;
 }
 
 /* 레벨이 올라가면 슬롯이 확장됩니다! */
-.out .style h1 {
+.out .style_slot .style h1 {
   margin-left: 320px;
-  margin-top: -280px;
+  margin-top: -270px;
   font-size: 13px;
   font-style: italic;
   color: #6c6562;
 }
 
-.out .style .slots1 {
+.out .style_slot .style .slots1 {
   clear: both;
   border: 3.15px outset #859c8a;
   background-color: white;
@@ -145,31 +152,34 @@
   margin-left: 320px;
 }
 
-.out .style .slots2 {
+.out .style_slot .style .slots2 {
   border: 3.15px outset #859c8a;
   background-color: white;
   border-radius: 10px;
   width: 150px;
   height: 150px;
-  margin-left: 25px;
+  margin-left: 523px;
+  top: -150px;
 }
 
-.out .style .slots3 {
+.out .style_slot .style .slots3 {
   border: 3.15px outset #859c8a;
   background-color: white;
   border-radius: 10px;
   width: 150px;
   height: 150px;
-  margin-left: 25px;
+  margin-left: 723px;
+  top: -300px;
 }
 
-.out .style .slots4 {
+.out .style_slot .style .slots4 {
   border: 3.15px outset #859c8a;
   background-color: white;
   border-radius: 10px;
   width: 150px;
   height: 150px;
-  margin-left: 25px;
+  margin-left: 930px;
+  top: -450px;
 }
 
 .out .img h1 {
@@ -192,5 +202,5 @@
   width: 310px;
   height: 210px;
   margin-left: -30px;
-  margin-top: -200px;
+  margin-top: -100px;
 }

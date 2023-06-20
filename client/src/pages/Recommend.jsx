@@ -39,6 +39,7 @@ const App = ({ usernum, buttonValue }) => {
   const [open, setOpen] = useState(false);
   const [isMain, setIsMain] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [hasData, setHasData] = useState(false);
 
   const [message, setMessage] = useState('');
   const [response, setResponse] = useState('');
@@ -53,9 +54,13 @@ const App = ({ usernum, buttonValue }) => {
 
   const { state } = useLocation();
 
+  const onInfo = () => {
+    //마이 페이지로 이동
+    setIsInfo(true);
+  };
   const onCommunity = () => {
     //커뮤니티 페이지로 이동
-    navigate('/community', { state: state });
+    setIsCommunity(true);
   };
   const onTodo = () => {
     //투두리스트 페이지로 이동
@@ -63,7 +68,7 @@ const App = ({ usernum, buttonValue }) => {
   };
 
   const onRandom = () => {
-    // 페이지로 이동
+    //성향테스트 페이지로 이동
     navigate('/random', { state: state });
   };
 
@@ -82,7 +87,7 @@ const App = ({ usernum, buttonValue }) => {
       setExperience('experienced person');
       buttonSetExperience(name);
     } else {
-      setExperience('beginner');
+      setExperience('초보자');
       buttonSetExperience(name);
     }
     setOnExperience(true);
@@ -206,6 +211,13 @@ const App = ({ usernum, buttonValue }) => {
         alert('등록되었습니다');
         console.log(response.data);
         setIsMain(true);
+        // userMainPlant()
+        //   .then(() => {
+        //     handleTodo();
+        //   })
+        //   .catch((error) => {
+        //     console.log(error);
+        //   });
       })
       .catch((error) => {
         console.log(error);
@@ -256,7 +268,7 @@ const App = ({ usernum, buttonValue }) => {
       const res2 = await axios.post('http://localhost:8800/', { message });
       setPlantImages(res2.data.images);
 
-      const result = await response.json().then((data) => setResponse(data.message), setLoading(false));
+      const result = await response.json().then((data) => setResponse(data.message), setHasData(true));
 
       // handleSubmit이 완료된 후에 추가 요청 보내기
       await handleInsertText();
@@ -308,64 +320,105 @@ const App = ({ usernum, buttonValue }) => {
           onLight ? (
             onFunctions ? (
               loading ? (
-                <>
-                  <div className='main_nav_rec'>
-                    <div className='main_logo_rec'>
-                      <NavLink to={'http://localhost:3000/'}>
-                        <img src={logo} alt='My Image' width='160' height='60' />
-                      </NavLink>
+                hasData ? (
+                  <>
+                    <div className='main_nav_rec'>
+                      <div className='main_logo_rec'>
+                        <NavLink to={'http://localhost:3000/'}>
+                          <img src={logo} alt='My Image' width='160' height='60' />
+                        </NavLink>
+                      </div>
+
+                      <div className='main_nav_but_rec'>
+                        <button onClick={onMain}> 메인페이지 </button>
+                        <button onClick={onCommunity}> 커뮤니티 </button>
+                        <button onClick={onTodo}> 투두리스트 </button>
+                        <button onClick={onRandom}> 식물 성향 테스트 </button>
+                        <button onClick={handleSubmit}>로그아웃</button>
+                      </div>
                     </div>
 
-                    <div className='main_nav_but_rec'>
-                      <button onClick={onMain}> 메인페이지 </button>
-                      <button onClick={onCommunity}> 커뮤니티 </button>
-                      <button onClick={onTodo}> 투두리스트 </button>
-                      <button onClick={onRandom}> 식물 성향 테스트 </button>
-                      <button onClick={handleSubmit}>로그아웃</button>
+                    <div className='result'>
+                      <br></br>
+                      <br></br>
                     </div>
-                  </div>
+                    <br></br>
+                    <br></br>
+                    <div>
+                      {Array.isArray(response) &&
+                        response.map((plant, idx1) => (
+                          <div className='recommend' key={plant.name}>
+                            <button key={idx1} value={[[plant.korName], [plant.plant_characteristic]]} className='recbtn' onClick={showModal}>
+                              {plant.korName}
+                            </button>
+                            <br></br>
+                            <div style={{ justifyContent: 'space-between' }}>
+                              {plantImages.length > 0 && (
+                                <div className='plantimg'>
+                                  {plantImages.map((imageUrl, idx2) => (
+                                    <img key={idx2} src={imageUrl} alt={`generated image ${idx2}`} style={{ display: idx2 === idx1 ? 'block' : 'none' }} />
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                            <br></br>
+                            <div>{plant.plant_characteristic}</div>
+                            <br></br>
+                            <Modal
+                              title='식물요정'
+                              open={open}
+                              onOk={handleOk}
+                              onCancel={handleCancel}
+                              footer={[
+                                <Button key='enroll' onClick={handleOk}>
+                                  등록
+                                </Button>,
+                                <Button key='cancel' onClick={handleCancel}>
+                                  취소
+                                </Button>,
+                              ]}
+                            >
+                              <h2 className='enroll'>{recommendPlant} 키우시겠습니까?</h2>
+                            </Modal>
+                            <br></br>
+                          </div>
+                        ))}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className='main_nav_rec'>
+                      <div className='main_logo_rec'>
+                        <NavLink to={'http://localhost:3000/'}>
+                          <img src={logo} alt='My Image' width='160' height='60' />
+                        </NavLink>
+                      </div>
 
-                  <div className='result'>
-                    <form onSubmit={handleSubmit}>
-                      <button
-                        className='resultbtn'
-                        type='submit'
-                        value={`${text}`}
-                        onClick={() => {
-                          setMessage(`${text}`);
-                        }}
-                        disabled
-                      >
-                        결과를 보시겠습니까?
-                      </button>
-                    </form>
+                      <div className='main_nav_but_rec'>
+                        <button onClick={onMain}> 메인페이지 </button>
+                        <button onClick={onCommunity}> 커뮤니티 </button>
+                        <button onClick={onTodo}> 투두리스트 </button>
+                        <button onClick={onRandom}> 식물 성향 테스트 </button>
+                        <button onClick={handleSubmit}>로그아웃</button>
+                      </div>
+                    </div>
+
+                    <div className='result'>
+                      <br></br>
+                      <br></br>
+                    </div>
+                    <h4>30초 정도 기다려주세요</h4>
                     <br></br>
                     <br></br>
-                    {/* <button className='menubtn'>로그아웃</button> */}
-                  </div>
-                  {/* <form onSubmit={handleSubmit}>
-                    <button
-                      className='resultbtn'
-                      type='submit'
-                      value={`${text}`}
-                      onClick={() => {
-                        setMessage(`${text}`);
-                      }}
-                      disabled
-                    >
-                      결과를 보시겠습니까?
-                    </button>
-                  </form> */}
-                  <br></br>
-                  <br></br>
-                  <div className='spin'>
-                    <Space direction='vertical'>
-                      <Spin tip='Loading' size='large'>
-                        <div className='content' />
-                      </Spin>
-                    </Space>
-                  </div>
-                </>
+                    <div className='spin'>
+                      <Space direction='vertical'>
+                        <Spin tip='Loading' size='large'>
+                          <div className='content' />
+                        </Spin>
+                      </Space>
+                    </div>
+                  </>
+                )
               ) : (
                 <>
                   <div className='main_nav_rec'>
@@ -399,62 +452,9 @@ const App = ({ usernum, buttonValue }) => {
                     </form>
                     <br></br>
                     <br></br>
-                    {/* <button className='menubtn'>로그아웃</button> */}
                   </div>
-                  <form onSubmit={handleSubmit}>
-                    <button
-                      className={`resultbtn ${showResult || response.length > 0 ? 'hidden' : ''}`}
-                      type='submit'
-                      value={`${text}`}
-                      onClick={() => {
-                        setMessage(`${text}`);
-                      }}
-                    >
-                      결과를 보시겠습니까?
-                    </button>
-                  </form>
                   <br></br>
                   <br></br>
-                  <div>
-                    {Array.isArray(response) &&
-                      response.map((plant, idx1) => (
-                        <div className='recommend' key={plant.name}>
-                          <button key={idx1} value={[[plant.korName], [plant.plant_characteristic]]} className='recbtn' onClick={showModal}>
-                            {plant.korName}
-                          </button>
-                          <br></br>
-                          <div style={{ justifyContent: 'space-between' }}>
-                            {plantImages.length > 0 && (
-                              <div className='plantimg'>
-                                {plantImages.map((imageUrl, idx2) => (
-                                  <img key={idx2} src={imageUrl} alt={`generated image ${idx2}`} style={{ display: idx2 === idx1 ? 'block' : 'none' }} />
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                          <br></br>
-                          <div>{plant.plant_characteristic}</div>
-                          <br></br>
-                          <Modal
-                            title='식물요정'
-                            open={open}
-                            onOk={handleOk}
-                            onCancel={handleCancel}
-                            footer={[
-                              <Button key='enroll' onClick={handleOk}>
-                                등록
-                              </Button>,
-                              <Button key='cancel' onClick={handleCancel}>
-                                취소
-                              </Button>,
-                            ]}
-                          >
-                            <h2 className='enroll'>{recommendPlant} 키우시겠습니까?</h2>
-                          </Modal>
-                          <br></br>
-                        </div>
-                      ))}
-                  </div>
                 </>
               )
             ) : (
@@ -517,7 +517,7 @@ const App = ({ usernum, buttonValue }) => {
                   <button onClick={onCommunity}> 커뮤니티 </button>
                   <button onClick={onTodo}> 투두리스트 </button>
                   <button onClick={onRandom}> 식물 성향 테스트 </button>
-                  <button onClick={handleLogout}>로그아웃</button>
+                  <button onClick={handleSubmit}>로그아웃</button>
                 </div>
               </div>
 
@@ -558,7 +558,7 @@ const App = ({ usernum, buttonValue }) => {
                 <button onClick={onCommunity}> 커뮤니티 </button>
                 <button onClick={onTodo}> 투두리스트 </button>
                 <button onClick={onRandom}> 식물 성향 테스트 </button>
-                <button onClick={handleLogout}>로그아웃</button>
+                <button onClick={handleSubmit}>로그아웃</button>
               </div>
             </div>
 
@@ -599,7 +599,7 @@ const App = ({ usernum, buttonValue }) => {
               <button onClick={onCommunity}> 커뮤니티 </button>
               <button onClick={onTodo}> 투두리스트 </button>
               <button onClick={onRandom}> 식물 성향 테스트 </button>
-              <button onClick={handleLogout}>로그아웃</button>
+              <button onClick={handleSubmit}>로그아웃</button>
             </div>
           </div>
 
@@ -635,7 +635,7 @@ const App = ({ usernum, buttonValue }) => {
             <button onClick={onCommunity}> 커뮤니티 </button>
             <button onClick={onTodo}> 투두리스트 </button>
             <button onClick={onRandom}> 식물 성향 테스트 </button>
-            <button onClick={handleLogout}>로그아웃</button>
+            <button onClick={handleSubmit}>로그아웃</button>
           </div>
         </div>
 
@@ -651,8 +651,8 @@ const App = ({ usernum, buttonValue }) => {
           </button>
           <br></br>
           <br></br>
-          <button className='btn' value='체계적인 관리 없이도 잘 자랐으면 좋겠음' onClick={handleTimeButton}>
-            체계적인 관리 없이도 잘 자랐으면 좋겠음
+          <button className='btn' value='체계적인 관리 없이도 자랐으면 좋겠음' onClick={handleTimeButton}>
+            체계적인 관리 없이도 자랐으면 좋겠음
           </button>
         </div>
       </>
@@ -671,7 +671,7 @@ const App = ({ usernum, buttonValue }) => {
           <button onClick={onCommunity}> 커뮤니티 </button>
           <button onClick={onTodo}> 투두리스트 </button>
           <button onClick={onRandom}> 식물 성향 테스트 </button>
-          <button onClick={handleLogout}>로그아웃</button>
+          <button onClick={handleSubmit}>로그아웃</button>
         </div>
       </div>
 

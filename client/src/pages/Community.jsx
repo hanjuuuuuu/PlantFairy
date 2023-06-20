@@ -9,6 +9,10 @@ import { AuthContext } from '../context/authContext';
 const Community = () => {
   const navigate = useNavigate();
 
+  const [userPoints, setUserPoints] = useState(0);
+  const [userLevel, setUserLevel] = useState(1);
+  const [userPlantEnroll1name, setUserPlantEnroll1name] = useState('');
+
   const { state, userplantnum } = useLocation();
 
   const onInfo = () => {
@@ -21,12 +25,32 @@ const Community = () => {
 
   const onTodo = () => {
     //투두리스트 페이지로 이동
-    navigate('/todo', { state: state, userplantnum: userplantnum });
+    try {
+      navigate('/todo', {
+        state: {
+          state: state,
+          userplantnum: userplantnum,
+          userplantname1: userPlantEnroll1name,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const onRandom = () => {
-    // 페이지로 이동
-    navigate('/random', { state: state });
+    //성향테스트 페이지로 이동
+    try {
+      navigate('/random', {
+        state: {
+          state: state,
+          userpoints: userPoints,
+          userlevel: userLevel,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const onMain = () => {

@@ -337,10 +337,11 @@ const NewReccomend = ({ usernum, buttonValue }) => {
 
             <div className='Address'>
               <div className='exx3'>
-                <p> (3/6) </p>
+                <p> (3/3) </p>
               </div>
               <br></br>
               <p>{plantName}가 별로였던 점을 말해주시면 새로 추천해드릴게요</p>
+              <br></br>
               <br></br>
               <label>
                 <input type='checkbox' value='가격' checked={checkedItems.includes('가격')} onChange={handleCheckboxChange} />
@@ -351,10 +352,21 @@ const NewReccomend = ({ usernum, buttonValue }) => {
                 관리의 어려움
               </label>
               <label>
+                <input type='checkbox' value='시각적 취향이 아님' checked={checkedItems.includes('시각적 취향이 아님')} onChange={handleCheckboxChange} />
+                시각적 취향이 아님
+              </label>
+              <label>
                 <input type='checkbox' value='알레르기 반응' checked={checkedItems.includes('알레르기 반응')} onChange={handleCheckboxChange} />
                 알레르기 반응
               </label>
+              <label>
+                <input type='checkbox' value='냄새나 향기' checked={checkedItems.includes('냄새나 향기')} onChange={handleCheckboxChange} />
+                냄새나 향기
+              </label>
+              <br></br>
+              <br></br>
               <div>
+                <br></br>
                 <button className='btn' value='different' onClick={handleSubmitButton}>
                   제출
                 </button>
@@ -390,7 +402,8 @@ const NewReccomend = ({ usernum, buttonValue }) => {
                 </div>
                 <br></br>
                 <p>
-                  {userPick}의 {plantName}와 비슷한 식물을 추천받으시겠어요? 아니면 새로 추천을 받으시겠어요?
+                  {/* {userPick}의 {plantName}와 비슷한 식물을 추천받으시겠어요? 아니면 새로 추천을 받으시겠어요? */}
+                  {plantName}와 비슷한 식물을 추천받으시겠어요? 아니면 새로 추천을 받으시겠어요?
                 </p>
                 <p>(새로운 추천은 기존에 했던 선택에 추가로 구체적인 질문을 묻습니다!)</p>
                 <br></br>
