@@ -50,6 +50,8 @@ const Main = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [err, setError] = useState(null);
 
+  const [selectedPlant, setSelectedPlant] = useState(null);
+
   const { currentUser } = useContext(AuthContext);
 
   /**
@@ -83,7 +85,7 @@ const Main = () => {
   const onNewRecommend = (e) => {
     const name = e.target.value;
     setButtonValue(name);
-    setIsRecommend(true);
+    setIsNewRecommend(true);
     //navigate('/newRecommend', { state: state });
   };
 
@@ -98,13 +100,32 @@ const Main = () => {
 
   const onTodo = () => {
     //투두리스트 페이지로 이동
-    navigate('/todo', { state: state, userplantnum: userplantnum });
+    try {
+      navigate('/todo', {
+        state: {
+          state: state,
+          userplantnum: userplantnum,
+          userplantname1: userPlantEnroll1name,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const onRandom = () => {
-    // 페이지로 이동
-    navigate('/random', { state: state });
-    console.log('random STate, ', state);
+    //성향테스트 페이지로 이동
+    try {
+      navigate('/random', {
+        state: {
+          state: state,
+          userpoints: userPoints,
+          userlevel: userLevel,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const onMain = () => {
@@ -114,6 +135,7 @@ const Main = () => {
 
   const showModal = () => {
     //메인식물 고르는 모달 창 띄우기
+    console.log('modal');
     setIsModalOpen(true);
   };
 
@@ -162,10 +184,7 @@ const Main = () => {
       .post('http://localhost:8800/plantpicture', { usernum: state })
       .then((res) => {
         const plant_name = res.data[res.data.length - 1].plant_name;
-        console.log('PLANTNAME: !!!', plant_name);
-        console.log(res.data);
         setUserPlantNum(res.data[res.data.length - 1].key);
-        console.log(userplantnum);
         setUserPlantInfo(res.data); // 메인 식물 이름, 특성
         userPlantEnroll(plant_name); // 해당 식물의 이미지 출력
       })
@@ -173,19 +192,6 @@ const Main = () => {
         console.log(error);
       });
   };
-
-  // const userPlantEnroll = (plant_name) => {
-  //   axios
-  //     .get(`http://localhost:8800/images/${plant_name}`)
-  //     .then((response) => {
-  //       const image = document.createElement('img');
-  //       image.src = `data:image/png;base64,${response.data}`;
-  //       document.querySelector('div.printImg').appendChild(image);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // };
 
   const userPlantEnroll = (plant_name) => {
     const printImgContainer = document.querySelector('div.printImg');
@@ -214,9 +220,11 @@ const Main = () => {
     axios
       .post('http://localhost:8800/plantslot', { usernum: state, slotnum: buttonValue })
       .then((res) => {
+        console.log('onUserPlantSlot!');
         //setUserPlantEnroll0(res.data[0].plant_picture);     //메인 식물 이미지
         //setUserPlantEnroll1(res.data[res.data.length - 1].plant_picture);
-        setUserPlantEnroll1name(res.data[res.data.length - 1].plant_name);
+        const test = setUserPlantEnroll1name(res.data[res.data.length - 1].plant_name);
+        console.log(test); // undefined
         setUserPlantNum(res.data[res.data.length - 1].key);
         console.log('slot', res.data[res.data.length - 1]);
         //setUserPlantInfo(res.data);       //메인 식물 이름, 특성, 키우기 난이도
@@ -301,7 +309,6 @@ const Main = () => {
         </div>
 
         <div className='main_nav_but'>
-          {/* <Link to='/main'> 메인 페이지 </Link> */}
           <button onClick={onMain}> 메인페이지 </button>
           <button onClick={onCommunity}> 커뮤니티 </button>
           <button onClick={onTodo}> 투두리스트 </button>
@@ -311,46 +318,38 @@ const Main = () => {
       </div>
 
       <section className='out'>
-        <div className='printImg'> </div>
-        {/* <Button className='slot' onClick={showModal}>
-            {' '}
-            {userPlantEnroll0}{' '}
-          </Button> */}
-        <Modal title='메인 식물로 등록할 식물을 골라주세요' open={isModalOpen} onOk={handleOK} onCancel={handleCancel}>
-          <Radio.Group>
-            <Radio value={userPlantEnroll1name} onClick={onclick}>
-              {userPlantEnroll1name}
-            </Radio>
-            <Radio value={userPlantEnroll2name} onClick={onclick}>
-              {userPlantEnroll2name}
-            </Radio>
-            <Radio value={userPlantEnroll3name} onClick={onclick}>
-              {userPlantEnroll3name}
-            </Radio>
-            <Radio value={userPlantEnroll4name} onClick={onclick}>
-              {userPlantEnroll4name}
-            </Radio>
-          </Radio.Group>
-        </Modal>
-
-        <h1> 닉네임 : {currentUser.user_nickname} </h1>
-        <div className='tab'>
-          <Table className='tableprint' columns={columns} pagination={false} dataSource={userPlantInfo} size='middle' />
+        <div className='printImg'>
+          <h1> 닉네임 : {currentUser.user_nickname} </h1>
+          <div className='tab'>
+            <Table className='tableprint' columns={columns} pagination={false} dataSource={userPlantInfo} size='middle' />
+          </div>
         </div>
-
-        <div className='style'>
-          <p> 이름 : {currentUser.user_name} </p>
+        <br></br> <br></br>
+        <div className='info'>
+          <p1> 이름 : {currentUser.user_name} </p1>
           <p> 이메일 : {currentUser.user_email} </p>
-          <p> 레벨 : </p>
-          <p> 포인트 : </p>
-
-          <button onClick={handleSubmit} className='logout'>
-            {' '}
-            로그아웃{' '}
+          <p> 레벨 : {currentUser.user_level} </p>
+          <p> 포인트 : {currentUser.user_point} </p>
+        </div>
+        <div className='main_plant'>
+          <button onClick={showModal} className='logout'>
+            메인 식물 바꾸기
           </button>
-
-          <br></br>
-          <br></br>
+          <Modal title='메인 식물로 등록할 식물을 골라주세요' open={isModalOpen} onOk={handleOK} onCancel={handleCancel}>
+            <Radio.Group onChange={(e) => setSelectedPlant(e.target.value)} value={selectedPlant}>
+              <Radio value={userPlantEnroll1name}>{userPlantEnroll1name}</Radio>
+              <Radio value={userPlantEnroll2name}>{userPlantEnroll2name}</Radio>
+              <Radio value={userPlantEnroll3name}>{userPlantEnroll3name}</Radio>
+              <Radio value={userPlantEnroll4name}>{userPlantEnroll4name}</Radio>
+            </Radio.Group>
+          </Modal>
+          {/* <button onClick={handleSubmit} className='logout'>
+            로그아웃
+          </button> */}
+        </div>
+        <br></br>
+        <br></br>
+        <div className='style'>
           {/* <div style={{ marginLeft: '50%' }}>레벨이 올라가면 슬롯이 확장됩니다!</div> */}
           <h1> 레벨이 올라가면 슬롯이 확장됩니다! </h1>
           <div style={{ display: userLevel >= 1 ? 'block' : 'none' }}>
@@ -373,11 +372,18 @@ const Main = () => {
               {userPlantEnroll4}
             </Button>
           </div>
+
+          {/* <button className='menubtn' onClick={onRandom}>
+            다양한 식물 추천
+          </button> */}
         </div>
-        <div className='event'>
+        <div className='img'>
+          <h1>(식물 성장 이미지)</h1>
+        </div>
+        {/* <div className='event'>
           <Button value='5'>식물 성장 모습</Button>
           <img src={fairy} alt='My Image' />
-        </div>
+        </div> */}
       </section>
     </>
   );

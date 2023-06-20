@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate, NavLink } from 'react-router-dom';
 import '../design/home.css';
+import image11 from '../img/image11.png';
 import logo from '../img/logo.png';
 import homeimg5 from '../img/homeimg5.png';
 import homeimg6 from '../img/homeimg6.png';
@@ -23,7 +24,7 @@ function Home() {
 
   const [inputs, setInputs] = useState({
     username: '',
-    user_pw: '',
+    password: '',
   });
 
   const [err, setError] = useState(null);
@@ -52,6 +53,16 @@ function Home() {
                     <img src={logo} alt='My Image' width='160' height='60' />
                   </NavLink>
                 </div>
+
+                {/* 여기부터 */}
+                {/* <div className='nav_but'>
+                  <Link to='/main'> 메인페이지 </Link>
+                  <Link to='/community'> 커뮤니티 </Link>
+                  <Link to='/todo'> 투두리스트 </Link>
+                  <Link to='/random'> 식물성향테스트 </Link>
+                  <button onClick={handleSubmit}>로그아웃</button>
+                </div> */}
+                {/* 여기까지 빼기 (상단바) */}
               </div>
 
               <section className='header'>
@@ -137,16 +148,16 @@ function Home() {
             <div className='list'>
               <h2> CONTECT </h2>
               <ul>
-                <li> contect #1 </li>
-                <li> contect #2 </li>
+                <li> 사이트소개 </li>
+                <li> 이용약관 </li>
               </ul>
             </div>
             &nbsp; &nbsp;
             <div className='list'>
               <h2> ABOUT </h2>
               <ul>
-                <li> about #1 </li>
-                <li> about #2 </li>
+                <li> 운영정책 </li>
+                <li> 개인정보처리방침 </li>
               </ul>
             </div>
           </div>

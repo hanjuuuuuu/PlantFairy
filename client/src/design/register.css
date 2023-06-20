@@ -1,51 +1,30 @@
-.main_nav_register {
-  height: 70px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1000px;
-  margin: auto;
-}
-
-.main_nav_register .main_logo_register img {
-  width: 140px;
-}
-
-.main_nav_register .main_nav_but_register a {
-  text-decoration: none;
-  padding-left: 20px;
-  padding-right: 20px;
-  color: black;
-}
-
-.main_nav_register .main_nav_but_register button {
-  background-color: white;
-  color: black;
-  border: 1px solid white;
-  font-size: 15px;
-}
-
-.App .form h1 {
+/*
+.App1 .form h1 {
   font-size: 30x;
-  color: #6c6562;
+  color: #6C6562;
   margin-top: 20px;
   margin-bottom: 30px;
+} */
+
+.App1 img {
+  width: 150px;
+  margin-top: -10px;
 }
 
-.App {
+.App1 {
   text-align: center;
   width: 460px;
   margin: 0 auto;
   margin-top: 30px;
 }
 
-.App .form {
+.App1 .form {
+  margin-top: 20px;
   display: block;
-  margin: auto;
   text-align: center;
   margin-bottom: 60px;
   border: 2px solid #859c8a;
-  height: 790px;
+  height: 770px;
   border-radius: 7px;
 }
 
@@ -53,22 +32,22 @@ body {
   background-color: white;
 }
 
-.App .form .joinBox address {
+.App1 .form .joinBox address {
   text-align: left;
   font-weight: nomal;
   color: black;
   margin-top: -10px;
 }
 
-.App .form .joinBox {
+.App1 .form .joinBox {
   padding: 20px;
 }
 
-.App .form .joinBox label {
+.App1 .form .joinBox label {
   display: none;
 }
 
-.App .form .joinBox .joinBox2 input {
+.App1 .form .joinBox .joinBox2 input {
   width: calc(100% - 34px);
   padding: 15px;
   border: 1px solid #6c6562;
@@ -76,7 +55,7 @@ body {
   border-radius: 7px;
 }
 
-.App .form .joinBox button {
+.App1 .form .joinBox button {
   width: 100%;
   padding: 15px;
   border: 1px solid #6c6562;
@@ -86,26 +65,20 @@ body {
   border-radius: 7px;
 }
 
-.App .form .joinBox button:hover {
+.App1 .form .joinBox button:hover {
   background: #bdcebb;
 }
 
-.App .form .joinBox .link {
+.App1 .form .joinBox .link {
   text-align: center;
   font-size: 12px;
   margin-top: 25px;
-}
-
-.App-logo {
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
-}
-
-.App-link {
 }
 
 @keyframes App-logo-spin {

@@ -33,18 +33,13 @@ const Login = () => {
 
   return (
     <>
-      <div className='main_nav_login'>
-        <div className='main_logo_login'>
-          <NavLink to={'http://localhost:3000/'}>
-            <img src={logo} alt='My Image' width='160' height='60' />
-          </NavLink>
-        </div>
-      </div>
-
       <div className='App'>
+        <NavLink to={'http://localhost:3000/'}>
+          <img src={logo} alt='My Image' width='160' height='60' />
+        </NavLink>
+
         <div className='loginBox'>
-          <h1> 식물요정 </h1>
-          {/* <img src={logo} alt='My Image' width='160' height='60' /> */}
+          {/* <h1> 식물요정 </h1> */}
           <address>식물요정 웹 사이트에 오신 걸 환영합니다.</address>
           <br></br>
           <br></br>
