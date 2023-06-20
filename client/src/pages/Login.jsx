@@ -14,6 +14,7 @@ const Login = () => {
 
   const navigate = useNavigate();
 
+
   const { login } = useContext(AuthContext);
 
   const handleChange = (e) => {
@@ -40,13 +41,13 @@ const Login = () => {
           </NavLink>
         </div>
 
-        <div className='main_nav_but_login'>
-          <Link to='/main'> 메인 페이지 </Link>
-          <Link to='/community'> 커뮤니티 </Link>
-          <Link to='/todo'> to-do list </Link>
-          <Link to='/random'> 식물 성향 테스트 </Link>
+        {/* <div className='main_nav_but_login'>
+          <button onclick={onMain}> 메인 페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
           <button onClick={handleSubmit}>로그아웃</button>
-        </div>
+        </div> */}
       </div>
 
       <div className='App'>

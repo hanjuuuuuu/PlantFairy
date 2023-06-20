@@ -40,6 +40,22 @@ const FunGame = () => {
     //투두리스트 페이지로 이동
     navigate('/todo', { state: state });
   };
+  const onMain = () => {
+    //메인 페이지로 이동
+    navigate('/main', {state: state});
+  }
+  const onRandom = () => {
+    //성향테스트 페이지로 이동
+    try{
+      navigate('/random', { 
+        state: {
+          state: state,
+        },
+      });
+    } catch(err){
+      console.log(err);
+    }
+  };
 
   //usernum 받아오기
   const { state } = useLocation();
@@ -108,10 +124,10 @@ const FunGame = () => {
         </div>
 
         <div className='main_nav_but_fun'>
-          <Link to='/main'> 메인 페이지 </Link>
-          <Link to='/community'> 커뮤니티 </Link>
-          <Link to='/todo'> to-do list </Link>
-          <Link to='/random'> 식물 성향 테스트 </Link>
+        <button onclick={onMain}> 메인 페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
           <button onClick={handleSubmit}>로그아웃</button>
         </div>
       </div>
@@ -119,7 +135,6 @@ const FunGame = () => {
 
       <br></br>
       <br></br>
-      <div className='fun_spin'>
         <div className='spin'>
           <Space direction='vertical'>
             <Spin tip='Loading' size='large'>
@@ -127,7 +142,6 @@ const FunGame = () => {
             </Spin>
           </Space>
         </div>
-      </div>
     </div>
   ) : //결과
   fourth ? (
@@ -140,11 +154,12 @@ const FunGame = () => {
         </div>
 
         <div className='main_nav_but_fun'>
-          <Link to='/main'> 메인 페이지 </Link>
-          <Link to='/community'> 커뮤니티 </Link>
-          <Link to='/todo'> to-do list </Link>
-          <Link to='/random'> 식물 성향 테스트 </Link>
+          <button onclick={onMain}> 메인 페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
           <button onClick={handleSubmit}>로그아웃</button>
+        
         </div>
       </div>
 
@@ -182,11 +197,12 @@ const FunGame = () => {
         </div>
 
         <div className='main_nav_but_fun'>
-          <Link to='/main'> 메인 페이지 </Link>
-          <Link to='/community'> 커뮤니티 </Link>
-          <Link to='/todo'> to-do list </Link>
-          <Link to='/random'> 식물 성향 테스트 </Link>
+          <button onclick={onMain}> 메인 페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
           <button onClick={handleSubmit}>로그아웃</button>
+        
         </div>
       </div>
 
@@ -222,10 +238,10 @@ const FunGame = () => {
         </div>
 
         <div className='main_nav_but_fun'>
-          <Link to='/main'> 메인 페이지 </Link>
-          <Link to='/community'> 커뮤니티 </Link>
-          <Link to='/todo'> to-do list </Link>
-          <Link to='/random'> 식물 성향 테스트 </Link>
+          <button onclick={onMain}> 메인 페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
           <button onClick={handleSubmit}>로그아웃</button>
         </div>
       </div>
@@ -263,10 +279,10 @@ const FunGame = () => {
         </div>
 
         <div className='main_nav_but_fun'>
-          <Link to='/main'> 메인 페이지 </Link>
-          <Link to='/community'> 커뮤니티 </Link>
-          <Link to='/todo'> to-do list </Link>
-          <Link to='/random'> 식물 성향 테스트 </Link>
+        <button onclick={onMain}> 메인 페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
           <button onClick={handleSubmit}>로그아웃</button>
         </div>
       </div>

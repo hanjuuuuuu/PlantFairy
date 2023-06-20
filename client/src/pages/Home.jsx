@@ -54,11 +54,11 @@ function Home() {
                 </div>
 
                 <div className='nav_but'>
-                  <Link to='/main'> 메인 페이지 </Link>
-                  <Link to='/community'> 커뮤니티 </Link>
-                  <Link to='/todo'> to-do list </Link>
-                  <Link to='/random'> 식물 성향 테스트 </Link>
-                  <button onClick={handleSubmit}>로그아웃</button>
+                  {/* <Link to='/main'> 메인 페이지 </Link>
+                  <button onClick={onCommunity}> 커뮤니티 </button>
+                  <button onClick={onTodo}> 투두리스트 </button>
+                  <button onClick={onRandom}> 식물 성향 테스트 </button>
+                  <button onClick={handleSubmit}>로그아웃</button> */}
                 </div>
               </div>
 

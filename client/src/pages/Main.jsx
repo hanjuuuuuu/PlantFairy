@@ -94,14 +94,39 @@ const Main = () => {
     navigate('/community');
   };
 
+  const onMain = () => {
+    //메인 페이지로 이동
+    navigate('/main', {state: state});
+  }
+
   const onTodo = () => {
     //투두리스트 페이지로 이동
-    navigate('/todo', { state: state, userplantnum: userplantnum });
+    try{
+      navigate('/todo', { 
+        state: {
+          state: state,
+          userplantnum: userplantnum,
+          userplantname1: userPlantEnroll1name,
+        },
+      });
+    } catch (err){
+      console.log(err)
+    }
   };
 
   const onRandom = () => {
-    // 페이지로 이동
-    navigate('/random', { state: state });
+    //성향테스트 페이지로 이동
+    try{
+      navigate('/random', { 
+        state: {
+          state: state,
+          userpoints: userPoints,
+          userlevel: userLevel
+        },
+      });
+    } catch(err){
+      console.log(err);
+    }
   };
 
   const showModal = () => {
@@ -175,11 +200,34 @@ const Main = () => {
         const image = document.createElement('img');
         image.src = `data:image/png;base64,${response.data}`;
         document.querySelector('div.printImg').appendChild(image);
+        //setUserPlantEnroll1(image.src)
       })
       .catch((error) => {
         console.log(error);
       });
   };
+
+  // const userPlantEnroll = (plant_name) => {
+  //   const printImgContainer = document.querySelector('div.printImg');
+
+  //   // 이전 이미지가 있으면 제거
+  //   while (printImgContainer.firstChild) {
+  //     printImgContainer.removeChild(printImgContainer.firstChild);
+  //   }
+
+  //   axios
+  //     .get(`http://localhost:8800/images/${plant_name}`)
+  //     .then((response) => {
+  //       if (response.data) {
+  //         const image = document.createElement('img');
+  //         image.src = `data:image/png;base64,${response.data}`;
+  //         printImgContainer.appendChild(image);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
 
   const onUserPlantSlot = () => {
     //user_plant 테이블에서 사용자의 식물 정보 가져와 슬롯별 식물 이미지 출력
@@ -189,8 +237,6 @@ const Main = () => {
         slotnum: buttonValue 
       })
       .then((res) => {
-        //setUserPlantEnroll0(res.data[0].plant_picture);     //메인 식물 이미지
-        //setUserPlantEnroll1(res.data[res.data.length - 1].plant_picture);
         setUserPlantEnroll1name(res.data[res.data.length - 1].plant_name);
         setUserPlantNum(res.data[res.data.length - 1].key);
         console.log('slot', res.data[res.data.length - 1]);
@@ -199,6 +245,7 @@ const Main = () => {
       .catch((err) => {
         console.log(err);
       });
+      return userplantnum;
   };
 
   //유저 포인트, 레벨
@@ -276,24 +323,24 @@ const Main = () => {
         </div>
 
         <div className='main_nav_but'>
-          <Link to='/main'> 메인 페이지 </Link>
-          <Link to='/community'> 커뮤니티 </Link>
-          <Link to='/todo'> to-do list </Link>
-          <Link to='#'> 식물 성향 테스트 </Link>
+          <button onclick={onMain}> 메인 페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
           <button onClick={handleSubmit}>로그아웃</button>
         </div>
       </div>
 
-      <section className='out'>
         <div className='printImg'> </div>
-        {/* <Button className='slot' onClick={showModal}>
+        <div>
+        <Button className='slot' onClick={showModal}>
             {' '}
             {userPlantEnroll0}{' '}
-          </Button> */}
+          </Button>
         <Modal title='메인 식물로 등록할 식물을 골라주세요' open={isModalOpen} onOk={handleOK} onCancel={handleCancel}>
           <Radio.Group>
             <Radio value={userPlantEnroll1name} onClick={onclick}>
-              {userPlantEnroll1name}
+              {userPlantEnroll1name !='+' ? userPlantEnroll1name :<div className='printImg'></div>}
             </Radio>
             <Radio value={userPlantEnroll2name} onClick={onclick}>
               {userPlantEnroll2name}
@@ -306,8 +353,8 @@ const Main = () => {
             </Radio>
           </Radio.Group>
         </Modal>
-
       </div>
+      
       <div>
         <Table className='tableprint' columns={columns} pagination={false} dataSource={userPlantInfo} size='middle' />
       </div>
@@ -339,7 +386,7 @@ const Main = () => {
         </Button>
       </div>
       <div style={{ display: userLevel >= 2 ? 'block' : 'none' }}>
-        <Button value='2' className='slots' onClick={onRecommend}>
+        <Button value='2' className='slots' onClick={onNewRecommend}>
           {userPlantEnroll2}
         </Button>
       </div>
@@ -353,8 +400,7 @@ const Main = () => {
           {userPlantEnroll4}
         </Button>
       </div>
-    </div>
-
+    </>
   );
 };
 

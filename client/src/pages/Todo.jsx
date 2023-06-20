@@ -1,27 +1,31 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../design/todo.css';
 import axios from 'axios';
-import { useLocation, useNavigate, NavLink, Link } from 'react-router-dom';
-import { Calendar, Col, Radio, Row, Select, Typography, theme } from 'antd';
-//import Calendar from 'react-calendar';
+import logo from '../img/logo.png';
+import { useLocation, useNavigate, NavLink } from 'react-router-dom';
+import { Typography, Checkbox, Space, Spin } from 'antd';
+import Calendar from 'react-calendar';
 //import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
-import logo from '../img/logo.png';
-import { AuthContext } from '../context/authContext';
 
 const Todo = () => {
-
   /**
    *  페이지에서 사용하는 상태변수
    */
-
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [tasks, setTasks] = useState([]);
-  const [daynum, setDaynum] = useState(moment(selectedDate).format('DD'));
+  const [todaytasks, setTodayTasks] = useState(tasks);
   const [userPoints, setUserPoints] = useState(0);
   const [userLevel, setUserLevel] = useState(1);
   const [isChecked, setIsChecked] = useState(false);
   const today = ('0' + new Date().getDate()).slice(-2);
+  const todayday = (new Date().getDate()); 
+  const todaymonth = new Date().getMonth()+1;
+  const todayfiltermonth = ('0'+(1+new Date().getMonth())).slice(-2);
+  const todayyear = new Date().getFullYear();
+  const [plantname, setPlantName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [hasData, setHasData] = useState(false);
 
   //**
   /*
@@ -33,73 +37,119 @@ const Todo = () => {
     //마이 페이지로 이동
     navigate('/info', { state: state });
   };
+
   const onCommunity = () => {
     //커뮤니티 페이지로 이동
     navigate('/community', { state: state });
   };
+
   const onTodo = () => {
     //투두리스트 페이지로 이동
     navigate('/todo', { state: state });
   };
 
-  //main에서 usernum, userplantnum 받아오기
-  const { state } = useLocation();
-  let plantname;
-  let userplantnum;
-  
-
-  //캘린더에서 날짜를 클릭하면 식물이름 가져오기, 날짜 변경
-  const handleDateClick = (date) => {
-    setSelectedDate(date);
-    setDaynum(moment(date).format('DD'));
-
-    axios.post('http://localhost:8800/plantall', { usernum: state })
-    .then((res) => {
-      userplantnum = res.data[res.data.length - 1].key;
-      plantname = res.data[res.data.length - 1].plant_name;
-      console.log(userplantnum, plantname);
-      console.log('daynum!!!!!!!!', daynum);
-      userTodo();
-    });
+  const onRandom = () => {
+    //성향테스트 페이지로 이동
+    navigate('/random', { state: state });
   };
 
+  const onMain = () => {
+    //메인 페이지로 이동
+    navigate('/main', {state: state});
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('http://localhost:8800/api/auth/logout');
+      navigate('/');
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  //main에서 usernum, userplantnum 받아오기
+  const location = useLocation();
+  const {state, userplantnum, userplantname1} = location.state;
+  console.log('from main', state, userplantnum, userplantname1);
+  
+
+  //캘린더에서 날짜를 클릭하면 날짜 변경, 투두 가져오기
+  const handleDateClick = (date) => {
+      setSelectedDate(moment(date).format('YYYYMMDD'));
+      console.log(selectedDate);
+      userTodo();
+  };
+
+  const createTodo = () => {
+    //투두리스트 생성하기
+    //식물 투두리스트 todo 테이블에 저장
+    setLoading(true);
+    setPlantName(userplantname1);
+    let engtodaymonth;
+    let monthNames = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"];
+    engtodaymonth = monthNames[todaymonth-1];
+    console.log('month',engtodaymonth);
+    console.log(userplantnum, userplantname1);
+
+    try{
+      axios.post('http://localhost:8800/rectodo', { 
+        plantname: userplantname1, 
+        userplantnum: userplantnum, 
+        usernum: state,
+        engtodaymonth: engtodaymonth
+      })
+      .then((res) => {
+        setLoading(false);
+        console.log('todotodotodo', res.data);
+        userTodo();
+      });
+    } catch(err){
+      console.log(err);
+    }
+  }
 
   const userTodo = () => {
     //등록된 식물 투두리스트 (날짜에 맞게) 가져오기
     //값이 와야지만 넘어가게
     axios.post('http://localhost:8800/planttodo', { 
-      plantname: plantname, 
+      plantname: userplantname1, //plantname
       userplantnum: userplantnum, 
-      day: daynum })
+      day: moment(selectedDate).format('YYYYMMDD') })
       .then((res) => {
-        console.log('daynum', daynum);
         console.log('todotodotodo', res.data);
+        console.log('hey', res.data[today]);
         setTasks(res.data);
-        setIsChecked(res.data[0].complete);
+        setTodayTasks(res.data[today]);
+        setHasData(res.data.length > 0);
+        setIsChecked(res.data[0].complete); 
       })
       .catch((error) => console.log(error));
   };
 
   //투두리스트 체크박스 클릭하면
-  const handleCheckboxChange = (taskKey,taskDay,taskComplete) => {
-    console.log('handlecheckboxchange', taskKey,taskDay,taskComplete);
+  const handleCheckboxChange = (taskKey,taskComplete) => {
+  console.log('handlecheckboxchange', taskKey,taskComplete);
     const updatedTasks = tasks.map((task) => 
       task.key === taskKey
-      ? { ...task, complete: !task.complete } 
+      ? { ...task, complete: 'false' } 
       : task
     );
     setTasks(updatedTasks);
+    setIsChecked(taskComplete);
+    updateUserPoints(taskKey, !taskComplete);
 
-    // 유저 체크 상태 변경
-  //   axios.post('http://localhost:8800/updatetaskcomplete', {
-  //   todonum: taskKey,
-  //   complete: !taskComplete,
-  // })
-  //   .then((response) => {
-  //     console.log('Task complete', response);
-  //   });
+    //유저 체크 상태 변경
+    axios.post('http://localhost:8800/updatetaskcomplete', {
+      todonum: taskKey,
+      complete: !taskComplete,
+    })
+    .then((response) => {
+      console.log('Task complete', response);
+    });
 
-    //체크됐을 때 유저 포인트 올리기
+    //체크됐을 때 유저 포인트 올리기 2.
     if(!taskComplete) {
       setUserPoints(userPoints + 1);
       updateUserPoints(taskKey, !taskComplete);
@@ -109,8 +159,21 @@ const Todo = () => {
     }
   }
 
-  //유저 포인트 올리기
-  const updateUserPoints = () => {
+  //유저 포인트 변경
+  const updateUserPoints = (taskKey, taskComplete) => {
+    if(taskComplete){
+      setUserPoints(userPoints + 1);
+    } else {
+      setUserPoints(userPoints - 1);
+    }
+    axios.post('http://localhost:8800/updatetaskcomplete', {
+      todonum: taskKey,
+      complete: !taskComplete,
+    })
+    .then((response) => {
+      console.log('UpdateUserPoints');
+    });
+
     if(isChecked === true){
       axios.post('http://localhost:8800/updateuserpoints', {
         userplantnum: userplantnum,
@@ -145,95 +208,206 @@ const Todo = () => {
   }
   
   //할 일 체크 됐으면 파란점, 안됐으면 빨간점으로 표시
-  const tileContent = ({ date }) => {
-    const day = moment(date).format('DD');
-    const todo = tasks.find((task) => task.day === day);
+  const tileContent = ({ date, view }) => {
+    const todo = tasks.find((task) => task.complete === 'false');
     if (todo) {
-      return <div className={`dot ${todo.complete ? 'blue' : 'red'}`} />;
+      var dotColor = 'dotblue';
+      console.log('1',tasks.complete);
     }
-    return null;
+    else dotColor = 'dotred';
+    return <div className={`${dotColor}`} />;;
   };
 
-  // useEffect(() => {
-  //   async function handleDateClick(date) {
-  //     const data = await userTodo();
-  //     //setTasks(data);
-  //   }
-  //   handleDateClick();
-  // }, []);
-
   useEffect(() => {
-    handleDateClick(selectedDate);
-  }, [daynum]);
-
-  useEffect(() => {
+    //handleDateClick(selectedDate);
     userPointsLevel();
-  },[]);
+    //userTodo();
+  }, [userPoints]);
 
-  //daynum 변경되면 userTodo실행
-  // useEffect(() => {
-  //   userTodo();
-  // }, [daynum]);
+  useEffect(() => {
+    userTodo();
+  }, [selectedDate]);
 
-  const [inputs, setInputs] = useState({
-    username: '',
-    user_pw: '',
-  });
 
-  const [err, setError] = useState(null);
-  const { login } = useContext(AuthContext);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      let getUserNum = await login(inputs);
-      console.log('user_num: ', getUserNum);
-      navigate('/main', { state: getUserNum });
-    } catch (err) {
-      setError(JSON.stringify(err));
-    }
-  };
-
-  return (
+  return loading ? (
+    //todo 리스트 로딩중인 경우
     <>
-      <div className='main_nav_todo'>
-        <div className='main_logo_todo'>
+    <div className='main_nav'>
+        <div className='main_logo'>
           <NavLink to={'http://localhost:3000/'}>
             <img src={logo} alt='My Image' width='160' height='60' />
           </NavLink>
         </div>
 
-        <div className='main_nav_but_todo'>
-          <Link to='/main'> 메인 페이지 </Link>
-          <Link to='/community'> 커뮤니티 </Link>
-          <Link to='/todo'> to-do list </Link>
-          <Link to='/random'> 식물 성향 테스트 </Link>
+        <div className='main_nav_but'>
+          <button onclick={onMain}> 메인 페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
           <button onClick={handleSubmit}>로그아웃</button>
         </div>
       </div>
 
+    <div>
+      {/* <Typography.Title className='title' level={4}>
+        투두 리스트
+      </Typography.Title> */}
+      {/* <menu className='btnmenu'>
+        <button className='menubtn' onClick={onInfo}>
+          마이페이지
+        </button>
+        <br></br>
+        <button className='menubtn' onClick={onCommunity}>
+          커뮤니티
+        </button>
+        <br></br>
+        <button className='menubtn' onClick={onTodo}>
+          To-do list
+        </button>
+        <br></br>
+        <button className='menubtn'>로그아웃</button>
+      </menu> */}
+
       <div>
-        <Calendar onClickDay={handleDateClick} tileContent={tileContent}/>
+        <Calendar onClickDay={handleDateClick} />
         <div className='text-gray-500 mt-4'>
           {moment(selectedDate).format('YYYY년 MM월 DD일')}
           <br></br>
         </div>
         <div>
-          {tasks &&
-            tasks.map((task) => (
-              <div key={task.key}>
-                <input 
-                  type='checkbox' 
-                  checked={task.complete} 
-                  onChange={() => handleCheckboxChange(task.key, task.day, task.complete)} 
-                  disabled={task.day !== today} 
-                />
-                <label>{task.task}</label>
-              </div>
-            ))}
+          <button onClick={createTodo} disabled>{todaymonth}월의 to-do list를 만드시겠습니까?</button>
+        </div>
+        <br></br>
+        <h4>1분정도 소요됩니다!</h4>
+        <div className='spin'>
+            <Space direction='vertical'>
+              <Spin tip='Loading' size='large'>
+                <div className='content' />
+              </Spin>
+            </Space>
         </div>
       </div>
     </div> 
+    </>
+  ) : hasData? (
+    //저장된 투두리스트가 있을 경우
+    <>
+    <div className='main_nav'>
+        <div className='main_logo'>
+          <NavLink to={'http://localhost:3000/'}>
+            <img src={logo} alt='My Image' width='160' height='60' />
+          </NavLink>
+        </div>
+
+        <div className='main_nav_but'>
+          <button onclick={onMain}> 메인 페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
+          <button onClick={handleSubmit}>로그아웃</button>
+        </div>
+    </div>
+  <div>
+  {/* <Typography.Title className='title' level={4}>
+    투두 리스트
+  </Typography.Title> */}
+  {/* <menu className='btnmenu'>
+    <button className='menubtn' onClick={onInfo}>
+      마이페이지
+    </button>
+    <br></br>
+    <button className='menubtn' onClick={onCommunity}>
+      커뮤니티
+    </button>
+    <br></br>
+    <button className='menubtn' onClick={onTodo}>
+      To-do list
+    </button>
+    <br></br>
+    <button className='menubtn'>로그아웃</button>
+  </menu> */}
+
+  <div>
+    <Calendar onClickDay={handleDateClick} tileContent={({date, view})=> {
+      const isComplete = tasks.some((task)=> task.day === moment(date).format('YYYYMMDD') && task.complete === 'false')
+      return(
+        <div>
+          <div className={isComplete ? 'dotblue' : 'dotred'}/>
+        </div>
+      )
+    }}
+    />
+    <div className='text-gray-500 mt-4'>
+      {moment(selectedDate).format('YYYY년 MM월 DD일')}
+      <br></br>
+    </div>
+    <div>
+      {tasks &&
+        tasks.map((task) => (
+          <div key={task.key}>
+            <Checkbox
+              checked={task.complete}
+              onChange={() => handleCheckboxChange(task.key, task.complete)}
+              disabled={task.day !== todayyear+todayfiltermonth+today}
+            >
+              {task.task}
+            </Checkbox>
+          </div>
+        ))}
+    </div>
+  </div>
+</div> 
+</>) :
+  //저장된 투두리스트가 없는 경우
+  (<>
+    <div className='main_nav'>
+        <div className='main_logo'>
+          <NavLink to={'http://localhost:3000/'}>
+            <img src={logo} alt='My Image' width='160' height='60' />
+          </NavLink>
+        </div>
+
+        <div className='main_nav_but'>
+          <button onclick={onMain}> 메인 페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
+          <button onClick={handleSubmit}>로그아웃</button>
+        </div>
+    </div>
+
+    <div>
+      {/* <Typography.Title className='title' level={4}>
+        투두 리스트
+      </Typography.Title> */}
+      {/* <menu className='btnmenu'>
+        <button className='menubtn' onClick={onInfo}>
+          마이페이지
+        </button>
+        <br></br>
+        <button className='menubtn' onClick={onCommunity}>
+          커뮤니티
+        </button>
+        <br></br>
+        <button className='menubtn' onClick={onTodo}>
+          To-do list
+        </button>
+        <br></br>
+        <button className='menubtn'>로그아웃</button>
+      </menu> */}
+
+      <div>
+        <Calendar onClickDay={handleDateClick} />
+        <div className='text-gray-500 mt-4'>
+          {moment(selectedDate).format('YYYY년 MM월 DD일')}
+          <br></br>
+        </div>
+        <div>
+          <button onClick={createTodo}>{todaymonth}월의 to-do list를 만드시겠습니까?</button>
+        </div>
+      </div>
+    </div> 
+    </>
   );
 };
 

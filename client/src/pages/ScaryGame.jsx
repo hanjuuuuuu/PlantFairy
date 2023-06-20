@@ -6,7 +6,7 @@ import logo from '../img/logo.png';
 import '../design/scarygame.css';
 
 const ScaryGame = () => {
-  /**
+  /**s
    * 페이지에서 사용하는 상태변수
    */
   const [first, setFirst] = useState(false);
@@ -39,6 +39,24 @@ const ScaryGame = () => {
   const onTodo = () => {
     //투두리스트 페이지로 이동
     navigate('/todo', { state: state });
+  };
+
+  const onMain = () => {
+    //메인 페이지로 이동
+    navigate('/main', {state: state});
+  }
+
+  const onRandom = () => {
+    //성향테스트 페이지로 이동
+    try{
+      navigate('/random', { 
+        state: {
+          state: state
+        },
+      });
+    } catch(err){
+      console.log(err);
+    }
   };
 
   //usernum 받아오기
@@ -108,10 +126,10 @@ const ScaryGame = () => {
         </div>
 
         <div className='main_nav_but_scary'>
-          <Link to='/main'> 메인 페이지 </Link>
-          <Link to='/community'> 커뮤니티 </Link>
-          <Link to='/todo'> to-do list </Link>
-          <Link to='/random'> 식물 성향 테스트 </Link>
+          <button onclick={onMain}> 메인 페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
           <button onClick={handleSubmit}>로그아웃</button>
         </div>
       </div>
@@ -119,15 +137,13 @@ const ScaryGame = () => {
       {/* <Typography.Title className='title' level={4}>식물 추천</Typography.Title> */}
       <br></br>
       <br></br>
-      <div className='scary_spin'>
-        <div className='spin'>
-          <Space direction='vertical'>
-            <Spin tip='Loading' size='large'>
-              <div className='content' />
-            </Spin>
-          </Space>
+      <div className='spin'>
+            <Space direction='vertical'>
+              <Spin tip='Loading' size='large'>
+                <div className='content' />
+              </Spin>
+            </Space>
         </div>
-      </div>
     </div>
   ) : //결과
   fourth ? (
@@ -140,11 +156,12 @@ const ScaryGame = () => {
         </div>
 
         <div className='main_nav_but_scary'>
-          <Link to='/main'> 메인 페이지 </Link>
-          <Link to='/community'> 커뮤니티 </Link>
-          <Link to='/todo'> to-do list </Link>
-          <Link to='/random'> 식물 성향 테스트 </Link>
+        <button onclick={onMain}> 메인 페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
           <button onClick={handleSubmit}>로그아웃</button>
+        
         </div>
       </div>
 
@@ -182,11 +199,12 @@ const ScaryGame = () => {
         </div>
 
         <div className='main_nav_but_scary'>
-          <Link to='/main'> 메인 페이지 </Link>
-          <Link to='/community'> 커뮤니티 </Link>
-          <Link to='/todo'> to-do list </Link>
-          <Link to='/random'> 식물 성향 테스트 </Link>
+          <button onclick={onMain}> 메인 페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
           <button onClick={handleSubmit}>로그아웃</button>
+        
         </div>
       </div>
 
@@ -223,10 +241,10 @@ const ScaryGame = () => {
         </div>
 
         <div className='main_nav_but_scary'>
-          <Link to='/main'> 메인 페이지 </Link>
-          <Link to='/community'> 커뮤니티 </Link>
-          <Link to='/todo'> to-do list </Link>
-          <Link to='/random'> 식물 성향 테스트 </Link>
+          <button onclick={onMain}> 메인 페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
           <button onClick={handleSubmit}>로그아웃</button>
         </div>
       </div>
@@ -264,11 +282,12 @@ const ScaryGame = () => {
         </div>
 
         <div className='main_nav_but_scary'>
-          <Link to='/main'> 메인 페이지 </Link>
-          <Link to='/community'> 커뮤니티 </Link>
-          <Link to='/todo'> to-do list </Link>
-          <Link to='/random'> 식물 성향 테스트 </Link>
+          <button onclick={onMain}> 메인 페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
           <button onClick={handleSubmit}>로그아웃</button>
+          
         </div>
       </div>
 
@@ -305,11 +324,12 @@ const ScaryGame = () => {
         </div>
 
         <div className='main_nav_but_scary'>
-          <Link to='/main'> 메인 페이지 </Link>
-          <Link to='/community'> 커뮤니티 </Link>
-          <Link to='/todo'> to-do list </Link>
-          <Link to='/random'> 식물 성향 테스트 </Link>
+          <button onclick={onMain}> 메인 페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
           <button onClick={handleSubmit}>로그아웃</button>
+        
         </div>
       </div>
       <div className='question1'>

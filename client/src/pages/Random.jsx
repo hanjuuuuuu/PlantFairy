@@ -14,6 +14,8 @@ const Random = () => {
    */
   const [fun, setFun] = useState(false);
   const [scary, setScary] = useState(false);
+  const [userPoints, setUserPoints] = useState(0);
+  const [userLevel, setUserLevel] = useState(1);
 
   //**
   /*
@@ -31,19 +33,73 @@ const Random = () => {
   };
   const onTodo = () => {
     //투두리스트 페이지로 이동
-    navigate('/todo', { state: state });
+    navigate('/todo');
+  };
+  const onMain = () => {
+    //메인 페이지로 이동
+    navigate('/main', {state: state});
+  }
+  const onRandom = () => {
+    //성향테스트 페이지로 이동
+    try{
+      navigate('/random', { 
+        state: {
+          state: state
+        },
+      });
+    } catch(err){
+      console.log(err);
+    }
   };
 
-  //usernum 받아오기
-  const { state } = useLocation();
-  console.log('usernum', state);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('http://localhost:8800/api/auth/logout');
+      navigate('/');
+    } catch (err) {
+      setError(err.response.data);
+    }
+  };
+
+   //main에서 usernum, points, level 받아오기
+  const location = useLocation();
+  const {state, userpoints, userlevel} = location.state;
+  console.log('from main', state, userpoints, userlevel);
+
+  const resetPoints = () => {
+    setUserLevel(userlevel);
+    setUserPoints(userpoints);
+  }
 
   const userFunGame = () => {
-    setFun(true);
+    setUserLevel(userlevel);
+    setUserPoints(userpoints);
+    if(userPoints < 10){
+      alert('포인트가 부족합니다!');
+    }
+    else{
+      const updatedPoints = userPoints - 10;
+        setUserPoints(updatedPoints);
+        updateUserPoints(updatedPoints);
+        console.log('here',userPoints);
+        setFun(true);
+    }
   };
 
   const userScaryGame = () => {
-    setScary(true);
+    setUserLevel(userlevel);
+    setUserPoints(userpoints);
+    if(userPoints < 10){
+      alert('포인트가 부족합니다!');
+    }
+    else{
+      const updatedPoints = userPoints - 10;
+        setUserPoints(updatedPoints);
+        updateUserPoints(updatedPoints);
+        console.log('here',userPoints);
+        setScary(true);
+    }
   };
 
   const [inputs, setInputs] = useState({
@@ -54,7 +110,7 @@ const Random = () => {
   const [err, setError] = useState(null);
   const { login } = useContext(AuthContext);
 
-  const handleSubmit = async (e) => {
+  const handleLogoutSubmit = async (e) => {
     e.preventDefault();
     try {
       let getUserNum = await login(inputs);
@@ -64,6 +120,25 @@ const Random = () => {
       setError(JSON.stringify(err));
     }
   };
+
+  //유저 10포인트 차감
+  const updateUserPoints = (points) => {
+    axios.post('http://localhost:8800/updateuserpoints', {
+      usernum: state,
+      userpoints: points,
+    })
+    .then((res) => {
+      console.log('-10points');
+      console.log(res.data);
+    })
+    .catch((error) => {
+      console.log('error update points', error);
+    })
+  }
+
+  useEffect(()=> {
+    resetPoints();
+  },[])
 
   return scary ? (
     <ScaryGame />
@@ -79,10 +154,10 @@ const Random = () => {
         </div>
 
         <div className='main_nav_but_random'>
-          <Link to='/main'> 메인 페이지 </Link>
-          <Link to='/community'> 커뮤니티 </Link>
-          <Link to='/todo'> to-do list </Link>
-          <Link to='/random'> 식물 성향 테스트 </Link>
+          <button onclick={onMain}> 메인 페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
           <button onClick={handleSubmit}>로그아웃</button>
         </div>
       </div>
@@ -93,6 +168,8 @@ const Random = () => {
           성향에 맞는 식물을 추천해 드립니다 !{' '}
         </Typography.Title>
         <h1 className='theme'>원하는 질문 테마를 선택해주세요.</h1>
+        <br></br>
+        <h4 className='theme'>테스트를 이용하시면 10포인트가 차감됩니다.</h4>
         <div>
           <Button className='choose' onClick={userScaryGame}>
             {' '}

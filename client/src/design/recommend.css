@@ -222,7 +222,10 @@
   .encan .cancel {
     background-color: white;
   }
-  
+  .spin{
+    margin-top: 30px;
+    margin-left: 300px;
+  }
   .result .spin {
     padding:50px 50px 10px 450px;
     width: '100px',

@@ -62,6 +62,16 @@ const App = ({ usernum, buttonValue }) => {
     //커뮤니티 페이지로 이동
     setIsCommunity(true);
   };
+  const onTodo = () => {
+    //투두리스트 페이지로 이동
+    navigate('/todo', { state: state });
+  };
+
+  const onRandom = () => {
+    //성향테스트 페이지로 이동
+    navigate('/random', { state: state });
+  };
+
 
   /**
 
@@ -197,13 +207,13 @@ const App = ({ usernum, buttonValue }) => {
         alert('등록되었습니다');
         console.log(response.data);
         setIsMain(true);
-        userMainPlant()
-          .then(() => {
-            handleTodo();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        // userMainPlant()
+        //   .then(() => {
+        //     handleTodo();
+        //   })
+        //   .catch((error) => {
+        //     console.log(error);
+        //   });
       })
       .catch((error) => {
         console.log(error);
@@ -212,16 +222,16 @@ const App = ({ usernum, buttonValue }) => {
   };
 
   //식물 투두리스트 todo 테이블에 저장
-  const handleTodo = () => {
-    axios.post('http://localhost:8800/rectodo', { 
-      plantname: recommendPlant, 
-      userplantnum: Number(userplantnum+1), 
-      usernum: usernum 
-    })
-    .then((res) => {
-      console.log('todotodotodo', res.data);
-    });
-  };
+  // const handleTodo = () => {
+  //   axios.post('http://localhost:8800/rectodo', { 
+  //     plantname: recommendPlant, 
+  //     userplantnum: Number(userplantnum+1), 
+  //     usernum: usernum 
+  //   })
+  //   .then((res) => {
+  //     console.log('todotodotodo', res.data);
+  //   });
+  // };
 
   const handleCancel = () => {
     setOpen(false);
@@ -317,43 +327,18 @@ const App = ({ usernum, buttonValue }) => {
 
                     <div className='main_nav_but_rec'>
                       <Link to='/main'> 메인 페이지 </Link>
-                      <Link to='/community'> 커뮤니티 </Link>
-                      <Link to='/todo'> to-do list </Link>
-                      <Link to='/random'> 식물 성향 테스트 </Link>
+                      <button onClick={onCommunity}> 커뮤니티 </button>
+                      <button onClick={onTodo}> 투두리스트 </button>
+                      <button onClick={onRandom}> 식물 성향 테스트 </button>
                       <button onClick={handleLogout}>로그아웃</button>
                     </div>
                   </div>
 
                   <div className='result'>
-                    <form onSubmit={handleSubmit}>
-                      <button
-                        className='resultbtn'
-                        type='submit'
-                        value={`${text}`}
-                        onClick={() => {
-                          setMessage(`${text}`);
-                        }}
-                      >
-                        결과를 보시겠습니까?
-                      </button>
-                    </form>
                     <br></br>
                     <br></br>
-                    <button className='menubtn'>로그아웃</button>
-                  </menu>
-                  <form onSubmit={handleSubmit}>
-                    <button
-                      className='resultbtn'
-                      type='submit'
-                      value={`${text}`}
-                      onClick={() => {
-                        setMessage(`${text}`);
-                      }}
-                      disabled
-                    >
-                      결과를 보시겠습니까?
-                    </button>
-                  </form>
+                  </div>
+                  <h4>30초 정도 기다려주세요</h4>
                   <br></br>
                   <br></br>
                   <div className='spin'>
@@ -362,7 +347,6 @@ const App = ({ usernum, buttonValue }) => {
                         <div className='content' />
                       </Spin>
                     </Space>
-
                   </div>
                 </>
               ) : (
@@ -376,15 +360,15 @@ const App = ({ usernum, buttonValue }) => {
 
                     <div className='main_nav_but_rec'>
                       <Link to='/main'> 메인 페이지 </Link>
-                      <Link to='/community'> 커뮤니티 </Link>
-                      <Link to='/todo'> to-do list </Link>
-                      <Link to='/random'> 식물 성향 테스트 </Link>
+                      <button onClick={onCommunity}> 커뮤니티 </button>
+                      <button onClick={onTodo}> 투두리스트 </button>
+                      <button onClick={onRandom}> 식물 성향 테스트 </button>
                       <button onClick={handleLogout}>로그아웃</button>
                     </div>
                   </div>
 
                   <div className='result'>
-                    <form onSubmit={handleSubmit}>
+                  <form onSubmit={handleSubmit}>
                       <button
                         className='resultbtn'
                         type='submit'
@@ -398,21 +382,7 @@ const App = ({ usernum, buttonValue }) => {
                     </form>
                     <br></br>
                     <br></br>
-                           
-                    <button className='menubtn'>로그아웃</button>
-                  </menu>
-                  <form onSubmit={handleSubmit}>
-                    <button
-                      className={`resultbtn ${showResult || response.length > 0 ? 'hidden' : ''}`}
-                      type='submit'
-                      value={`${text}`}
-                      onClick={() => {
-                        setMessage(`${text}`);
-                      }}
-                    >
-                      결과를 보시겠습니까?
-                    </button>
-                  </form>
+                  </div>
                   <br></br>
                   <br></br>
                   <div>
@@ -468,9 +438,10 @@ const App = ({ usernum, buttonValue }) => {
 
                   <div className='main_nav_but_rec'>
                     <Link to='/main'> 메인 페이지 </Link>
-                    <Link to='/community'> 커뮤니티 </Link>
-                    <Link to='/todo'> to-do list </Link>
-                    <Link to='/random'> 식물 성향 테스트 </Link>
+                    <button onClick={onCommunity}> 커뮤니티 </button>
+                    <button onClick={onTodo}> 투두리스트 </button>
+                    <button onClick={onRandom}> 식물 성향 테스트 </button>
+                    <button onClick={handleSubmit}>로그아웃</button>
                     <button onClick={handleLogout}>로그아웃</button>
                   </div>
                 </div>
@@ -632,9 +603,9 @@ const App = ({ usernum, buttonValue }) => {
 
           <div className='main_nav_but_rec'>
             <Link to='/main'> 메인 페이지 </Link>
-            <Link to='/community'> 커뮤니티 </Link>
-            <Link to='/todo'> to-do list </Link>
-            <Link to='/random'> 식물 성향 테스트 </Link>
+            <button onClick={onCommunity}> 커뮤니티 </button>
+            <button onClick={onTodo}> 투두리스트 </button>
+            <button onClick={onRandom}> 식물 성향 테스트 </button>
             <button onClick={handleLogout}>로그아웃</button>
           </div>
         </div>
@@ -691,9 +662,10 @@ const App = ({ usernum, buttonValue }) => {
           no
         </button>
       </div>
-    </div>
+    </>
 ) 
 
 };
 
 export default App;
+
