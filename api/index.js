@@ -349,8 +349,8 @@ app.post('/plantgame', async (req, res) => {
 
 // 여기는 돈나감!!!!!!!!!!!!!!!!!!!!!!!!!
 app.post('/', async (req, res) => {
-  //const { message } = req.body;
-  //console.log(message);
+  const { message } = req.body;
+  console.log('여기는 돈나감!!! ', message);
   const images = [];
   if (!plantRecommendations || !plantRecommendations.length) {
     console.log('plantRecommendations is not defined or is empty');

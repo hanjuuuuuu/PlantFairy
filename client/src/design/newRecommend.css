@@ -50,3 +50,10 @@
   display: inline-block;
   margin-right: 10px; /* 원하는 간격으로 조정 */
 }
+
+.result .spin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* Adjust the height as needed */
+}

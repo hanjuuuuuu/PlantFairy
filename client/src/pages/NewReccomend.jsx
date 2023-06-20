@@ -24,6 +24,7 @@ const NewReccomend = ({ usernum, buttonValue }) => {
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loading2, setLoading2] = useState(false);
 
   const [response, setResponse] = useState('');
   const [recommendPlant, setrecommendPlant] = useState('');
@@ -60,7 +61,7 @@ const NewReccomend = ({ usernum, buttonValue }) => {
 
   const onMain = () => {
     // 페이지로 이동
-    navigate('/main', { state: state });
+    setIsMain(true);
   };
 
   const onUserPlantPrint = () => {
@@ -83,6 +84,7 @@ const NewReccomend = ({ usernum, buttonValue }) => {
       .then((response) => {
         const user_pick = response.data[0].user_pick;
         setUserPick(user_pick);
+        console.log('픽미픽미 픽미업', user_pick);
       })
       .catch((error) => {
         console.log(error);
@@ -127,8 +129,9 @@ const NewReccomend = ({ usernum, buttonValue }) => {
   };
 
   const handleSubmitButton = async (e) => {
-    setLoading(false);
+    setLoading(true);
     e.preventDefault();
+    console.log('submit');
     try {
       const response = await fetch('http://localhost:8800/unsatisfied', {
         method: 'POST',
@@ -138,21 +141,19 @@ const NewReccomend = ({ usernum, buttonValue }) => {
         body: JSON.stringify({ reasons: checkedItems, plantName }),
       });
 
-      // const res2 = await axios.post('http://localhost:8800/', { message });
-      // setPlantImages(res2.data.images);
+      const res2 = await axios.post('http://localhost:8800/', { message });
+      setPlantImages(res2.data.images);
 
       const result = await response.json().then((data) => setResponse(data.message));
-
-      //setLoading(false);
     } catch (error) {
       window.alert(error);
     }
   };
 
   const handleSimilarButton = async (e) => {
+    setLoading2(true);
     e.preventDefault();
     try {
-      setLoading(false);
       const response = await fetch('http://localhost:8800/similar', {
         method: 'POST',
         headers: {
@@ -162,14 +163,12 @@ const NewReccomend = ({ usernum, buttonValue }) => {
       });
 
       //plant image creation API call
-      // const res2 = await axios.post('http://localhost:8800/', { message });
-      // setPlantImages(res2.data.images);
+      const res2 = await axios.post('http://localhost:8800/', { message });
+      setPlantImages(res2.data.images);
 
       const result = await response.json().then((data) => setResponse(data.message));
     } catch (error) {
       window.alert(error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -185,7 +184,7 @@ const NewReccomend = ({ usernum, buttonValue }) => {
   const text = '';
 
   const handleOk = async () => {
-    //console.log('button', buttonValue);
+    console.log('button', buttonValue);
 
     axios
       .post('http://localhost:8800/plantenroll', {
@@ -258,61 +257,59 @@ const NewReccomend = ({ usernum, buttonValue }) => {
                 <button onClick={handleLogout}>로그아웃</button>
               </div>
             </div>
-            <div>
-              <form onSubmit={handleSubmitButton}>
-                <button
-                  className='resultbtn'
-                  type='submit'
-                  value={`${text}`}
-                  onClick={() => {
-                    setMessage(`${text}`);
-                  }}
-                >
-                  결과를 보시겠습니까?
-                </button>
-              </form>
-              <br></br>
-              <br></br>
-              <div>
-                {Array.isArray(response) &&
-                  response.map((plant) => (
-                    <div className='recommend' key={plant.korName}>
-                      <button value={[[plant.korName], [plant.plant_characteristic]]} className='recbtn' onClick={showModal}>
-                        {plant.korName}
-                      </button>
-                      <div style={{ justifyContent: 'space-between' }}>
-                        <h3>Plant Images:</h3>
-                        {plantImages.length > 0 && (
-                          <div className='plantimg'>
-                            {plantImages.map((imageUrl, idx) => (
-                              <img key={idx} src={imageUrl} alt={`generated image ${idx}`} />
-                            ))}
-                          </div>
-                        )}
-                      </div>
 
-                      <Modal
-                        title='식물요정'
-                        open={open}
-                        onOk={handleOk}
-                        onCancel={handleCancel}
-                        footer={[
-                          <Button key='enroll' onClick={handleOk}>
-                            등록
-                          </Button>,
-                          <Button key='cancel' onClick={handleCancel}>
-                            취소
-                          </Button>,
-                        ]}
-                      >
-                        <h2 className='enroll'>{recommendPlant} 키우시겠습니까?</h2>
-                      </Modal>
-                      <br></br>
-                      <div>{plant.plant_characteristic}</div>
-                      <br></br>
-                    </div>
-                  ))}
-              </div>
+            <div className='result'>
+              {response ? (
+                <div>
+                  {Array.isArray(response) &&
+                    response.map((plant, idx1) => (
+                      <div className='recommend' key={plant.name}>
+                        <button key={idx1} value={[[plant.korName], [plant.plant_characteristic]]} className='recbtn' onClick={showModal}>
+                          {plant.korName}
+                        </button>
+                        <br></br>
+                        <div style={{ justifyContent: 'space-between' }}>
+                          {plantImages.length > 0 && (
+                            <div className='plantimg'>
+                              {plantImages.map((imageUrl, idx2) => (
+                                <img key={idx2} src={imageUrl} alt={`generated image ${idx2}`} style={{ display: idx2 === idx1 ? 'block' : 'none' }} />
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                        <br></br>
+
+                        <Modal
+                          title='식물요정'
+                          open={open}
+                          onOk={handleOk}
+                          onCancel={handleCancel}
+                          footer={[
+                            <Button key='enroll' onClick={handleOk}>
+                              등록
+                            </Button>,
+                            <Button key='cancel' onClick={handleCancel}>
+                              취소
+                            </Button>,
+                          ]}
+                        >
+                          <h2 className='enroll'>{recommendPlant} 키우시겠습니까?</h2>
+                        </Modal>
+                        <br></br>
+                        <div>{plant.plant_characteristic}</div>
+                        <br></br>
+                      </div>
+                    ))}
+                </div>
+              ) : (
+                <div className='spin'>
+                  <Space direction='vertical'>
+                    <Spin tip='Loading' size='large'>
+                      <div className='content' />
+                    </Spin>
+                  </Space>
+                </div>
+              )}
             </div>
           </>
         );
@@ -376,95 +373,125 @@ const NewReccomend = ({ usernum, buttonValue }) => {
         );
       }
     } else if (isyes) {
-      return (
-        <>
-          {loading && (
-            <>
-              <div className='main_nav_rec'>
-                <div className='main_logo_rec'>
-                  <NavLink to={'http://localhost:3000/'}>
-                    <img src={logo} alt='My Image' width='160' height='60' />
-                  </NavLink>
-                </div>
-
-                <div className='main_nav_but_rec'>
-                  <button onClick={onMain}> 메인페이지 </button>
-                  <button onClick={onCommunity}> 커뮤니티 </button>
-                  <button onClick={onTodo}> 투두리스트 </button>
-                  <button onClick={onRandom}> 식물 성향 테스트 </button>
-                  <button onClick={handleLogout}>로그아웃</button>
-                </div>
+      if (loading2) {
+        return (
+          <>
+            <div className='main_nav_rec'>
+              <div className='main_logo_rec'>
+                <NavLink to={'http://localhost:3000/'}>
+                  <img src={logo} alt='My Image' width='160' height='60' />
+                </NavLink>
               </div>
 
-              <div className='Time'>
-                <div className='exx2'>
-                  <p> (2/2) </p>
-                </div>
-                <br></br>
-                <p>
-                  {/* {userPick}의 {plantName}와 비슷한 식물을 추천받으시겠어요? 아니면 새로 추천을 받으시겠어요? */}
-                  {plantName}와 비슷한 식물을 추천받으시겠어요? 아니면 새로 추천을 받으시겠어요?
-                </p>
-                <p>(새로운 추천은 기존에 했던 선택에 추가로 구체적인 질문을 묻습니다!)</p>
-                <br></br>
-                <div>
-                  <button className='btn' value={`${plantName}와/과 비슷한`} onClick={handleSimilarButton}>
-                    비슷한
-                  </button>
-                </div>
-                <br />
-                <div>
-                  <button className='btn' value='different' onClick={onNewRecommend}>
-                    새 추천
-                  </button>
-                </div>
+              <div className='main_nav_but_rec'>
+                <button onClick={onMain}> 메인페이지 </button>
+                <button onClick={onCommunity}> 커뮤니티 </button>
+                <button onClick={onTodo}> 투두리스트 </button>
+                <button onClick={onRandom}> 식물 성향 테스트 </button>
+                <button onClick={handleLogout}>로그아웃</button>
               </div>
-            </>
-          )}
-
-          {Array.isArray(response) && (
-            <div>
-              {response.map((plant) => (
-                <div className='recommend' key={plant.korName}>
-                  <button value={[[plant.korName], [plant.plant_characteristic]]} className='recbtn' onClick={showModal}>
-                    {plant.korName}
-                  </button>
-                  <div style={{ justifyContent: 'space-between' }}>
-                    <h3>Plant Images:</h3>
-                    {plantImages.length > 0 && (
-                      <div className='plantimg'>
-                        {plantImages.map((imageUrl, idx) => (
-                          <img key={idx} src={imageUrl} alt={`generated image ${idx}`} />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  <Modal
-                    title='식물요정'
-                    open={open}
-                    onOk={handleOk}
-                    onCancel={handleCancel}
-                    footer={[
-                      <Button key='enroll' onClick={handleOk}>
-                        등록
-                      </Button>,
-                      <Button key='cancel' onClick={handleCancel}>
-                        취소
-                      </Button>,
-                    ]}
-                  >
-                    <h2 className='enroll'>{recommendPlant} 키우시겠습니까?</h2>
-                  </Modal>
-                  <br />
-                  <div>{plant.plant_characteristic}</div>
-                  <br />
-                </div>
-              ))}
             </div>
-          )}
-        </>
-      );
+
+            <div className='result'>
+              {response ? (
+                <div>
+                  {Array.isArray(response) &&
+                    response.map((plant, idx1) => (
+                      <div className='recommend' key={plant.name}>
+                        <button key={idx1} value={[[plant.korName], [plant.plant_characteristic]]} className='recbtn' onClick={showModal}>
+                          {plant.korName}
+                        </button>
+                        <br></br>
+                        <div style={{ justifyContent: 'space-between' }}>
+                          {plantImages.length > 0 && (
+                            <div className='plantimg'>
+                              {plantImages.map((imageUrl, idx2) => (
+                                <img key={idx2} src={imageUrl} alt={`generated image ${idx2}`} style={{ display: idx2 === idx1 ? 'block' : 'none' }} />
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                        <br></br>
+
+                        <Modal
+                          title='식물요정'
+                          open={open}
+                          onOk={handleOk}
+                          onCancel={handleCancel}
+                          footer={[
+                            <Button key='enroll' onClick={handleOk}>
+                              등록
+                            </Button>,
+                            <Button key='cancel' onClick={handleCancel}>
+                              취소
+                            </Button>,
+                          ]}
+                        >
+                          <h2 className='enroll'>{recommendPlant} 키우시겠습니까?</h2>
+                        </Modal>
+                        <br></br>
+                        <div>{plant.plant_characteristic}</div>
+                        <br></br>
+                      </div>
+                    ))}
+                </div>
+              ) : (
+                <div className='spin'>
+                  <Space direction='vertical'>
+                    <Spin tip='Loading' size='large'>
+                      <div className='content' />
+                    </Spin>
+                  </Space>
+                </div>
+              )}
+            </div>
+          </>
+        );
+      } else {
+        return (
+          <>
+            <div className='main_nav_rec'>
+              <div className='main_logo_rec'>
+                <NavLink to={'http://localhost:3000/'}>
+                  <img src={logo} alt='My Image' width='160' height='60' />
+                </NavLink>
+              </div>
+
+              <div className='main_nav_but_rec'>
+                <button onClick={onMain}> 메인페이지 </button>
+                <button onClick={onCommunity}> 커뮤니티 </button>
+                <button onClick={onTodo}> 투두리스트 </button>
+                <button onClick={onRandom}> 식물 성향 테스트 </button>
+                <button onClick={handleLogout}>로그아웃</button>
+              </div>
+            </div>
+
+            <div className='Time'>
+              <div className='exx2'>
+                <p> (2/2) </p>
+              </div>
+              <br></br>
+              <p>
+                {/* {userPick}의 {plantName}와 비슷한 식물을 추천받으시겠어요? 아니면 새로 추천을 받으시겠어요? */}
+                {plantName}와 비슷한 식물을 추천받으시겠어요? 아니면 새로 추천을 받으시겠어요?
+              </p>
+              <p>(새로운 추천은 기존에 했던 선택에 추가로 구체적인 질문을 묻습니다!)</p>
+              <br></br>
+              <div>
+                <button className='btn' value={`${plantName}와/과 비슷한`} onClick={handleSimilarButton}>
+                  비슷한
+                </button>
+              </div>
+              <br />
+              <div>
+                <button className='btn' value='different' onClick={onNewRecommend}>
+                  새 추천
+                </button>
+              </div>
+            </div>
+          </>
+        );
+      }
     } else {
       return (
         <>
