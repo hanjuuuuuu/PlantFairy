@@ -33,7 +33,33 @@ const Random = () => {
   };
   const onTodo = () => {
     //투두리스트 페이지로 이동
-    navigate('/todo', { state: state });
+    navigate('/todo');
+  };
+  const onMain = () => {
+    //메인 페이지로 이동
+    navigate('/main', {state: state});
+  }
+  const onRandom = () => {
+    //성향테스트 페이지로 이동
+    try{
+      navigate('/random', { 
+        state: {
+          state: state
+        },
+      });
+    } catch(err){
+      console.log(err);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('http://localhost:8800/api/auth/logout');
+      navigate('/');
+    } catch (err) {
+      setError(err.response.data);
+    }
   };
 
    //main에서 usernum, points, level 받아오기
@@ -84,7 +110,7 @@ const Random = () => {
   const [err, setError] = useState(null);
   const { login } = useContext(AuthContext);
 
-  const handleSubmit = async (e) => {
+  const handleLogoutSubmit = async (e) => {
     e.preventDefault();
     try {
       let getUserNum = await login(inputs);
@@ -128,10 +154,10 @@ const Random = () => {
         </div>
 
         <div className='main_nav_but_random'>
-          <Link to='/main'> 메인 페이지 </Link>
-          <Link to='/community'> 커뮤니티 </Link>
-          <Link to='/todo'> to-do list </Link>
-          <Link to='/random'> 식물 성향 테스트 </Link>
+          <button onclick={onMain}> 메인 페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
           <button onClick={handleSubmit}>로그아웃</button>
         </div>
       </div>

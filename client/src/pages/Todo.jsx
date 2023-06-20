@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import '../design/todo.css';
 import axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
+import logo from '../img/logo.png';
+import { useLocation, useNavigate, NavLink } from 'react-router-dom';
 import { Typography, Checkbox, Space, Spin } from 'antd';
 import Calendar from 'react-calendar';
 //import 'react-calendar/dist/Calendar.css';
@@ -36,10 +37,12 @@ const Todo = () => {
     //마이 페이지로 이동
     navigate('/info', { state: state });
   };
+
   const onCommunity = () => {
     //커뮤니티 페이지로 이동
     navigate('/community', { state: state });
   };
+
   const onTodo = () => {
     //투두리스트 페이지로 이동
     navigate('/todo', { state: state });
@@ -49,6 +52,11 @@ const Todo = () => {
     //성향테스트 페이지로 이동
     navigate('/random', { state: state });
   };
+
+  const onMain = () => {
+    //메인 페이지로 이동
+    navigate('/main', {state: state});
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -125,7 +133,7 @@ const Todo = () => {
   console.log('handlecheckboxchange', taskKey,taskComplete);
     const updatedTasks = tasks.map((task) => 
       task.key === taskKey
-      ? { ...task, complete: 'true' } 
+      ? { ...task, complete: 'false' } 
       : task
     );
     setTasks(updatedTasks);
@@ -201,7 +209,7 @@ const Todo = () => {
   
   //할 일 체크 됐으면 파란점, 안됐으면 빨간점으로 표시
   const tileContent = ({ date, view }) => {
-    const todo = tasks.find((task) => task.complete === 'true');
+    const todo = tasks.find((task) => task.complete === 'false');
     if (todo) {
       var dotColor = 'dotblue';
       console.log('1',tasks.complete);
@@ -223,11 +231,28 @@ const Todo = () => {
 
   return loading ? (
     //todo 리스트 로딩중인 경우
+    <>
+    <div className='main_nav'>
+        <div className='main_logo'>
+          <NavLink to={'http://localhost:3000/'}>
+            <img src={logo} alt='My Image' width='160' height='60' />
+          </NavLink>
+        </div>
+
+        <div className='main_nav_but'>
+          <button onclick={onMain}> 메인 페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
+          <button onClick={handleSubmit}>로그아웃</button>
+        </div>
+      </div>
+
     <div>
-      <Typography.Title className='title' level={4}>
+      {/* <Typography.Title className='title' level={4}>
         투두 리스트
-      </Typography.Title>
-      <menu className='btnmenu'>
+      </Typography.Title> */}
+      {/* <menu className='btnmenu'>
         <button className='menubtn' onClick={onInfo}>
           마이페이지
         </button>
@@ -241,7 +266,7 @@ const Todo = () => {
         </button>
         <br></br>
         <button className='menubtn'>로그아웃</button>
-      </menu>
+      </menu> */}
 
       <div>
         <Calendar onClickDay={handleDateClick} />
@@ -263,13 +288,30 @@ const Todo = () => {
         </div>
       </div>
     </div> 
+    </>
   ) : hasData? (
     //저장된 투두리스트가 있을 경우
+    <>
+    <div className='main_nav'>
+        <div className='main_logo'>
+          <NavLink to={'http://localhost:3000/'}>
+            <img src={logo} alt='My Image' width='160' height='60' />
+          </NavLink>
+        </div>
+
+        <div className='main_nav_but'>
+          <button onclick={onMain}> 메인 페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
+          <button onClick={handleSubmit}>로그아웃</button>
+        </div>
+    </div>
   <div>
-  <Typography.Title className='title' level={4}>
+  {/* <Typography.Title className='title' level={4}>
     투두 리스트
-  </Typography.Title>
-  <menu className='btnmenu'>
+  </Typography.Title> */}
+  {/* <menu className='btnmenu'>
     <button className='menubtn' onClick={onInfo}>
       마이페이지
     </button>
@@ -283,10 +325,18 @@ const Todo = () => {
     </button>
     <br></br>
     <button className='menubtn'>로그아웃</button>
-  </menu>
+  </menu> */}
 
   <div>
-    <Calendar onClickDay={handleDateClick} />
+    <Calendar onClickDay={handleDateClick} tileContent={({date, view})=> {
+      const isComplete = tasks.some((task)=> task.day === moment(date).format('YYYYMMDD') && task.complete === 'false')
+      return(
+        <div>
+          <div className={isComplete ? 'dotblue' : 'dotred'}/>
+        </div>
+      )
+    }}
+    />
     <div className='text-gray-500 mt-4'>
       {moment(selectedDate).format('YYYY년 MM월 DD일')}
       <br></br>
@@ -306,14 +356,31 @@ const Todo = () => {
         ))}
     </div>
   </div>
-</div> ) :
+</div> 
+</>) :
   //저장된 투두리스트가 없는 경우
-  (
+  (<>
+    <div className='main_nav'>
+        <div className='main_logo'>
+          <NavLink to={'http://localhost:3000/'}>
+            <img src={logo} alt='My Image' width='160' height='60' />
+          </NavLink>
+        </div>
+
+        <div className='main_nav_but'>
+          <button onclick={onMain}> 메인 페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
+          <button onClick={handleSubmit}>로그아웃</button>
+        </div>
+    </div>
+
     <div>
-      <Typography.Title className='title' level={4}>
+      {/* <Typography.Title className='title' level={4}>
         투두 리스트
-      </Typography.Title>
-      <menu className='btnmenu'>
+      </Typography.Title> */}
+      {/* <menu className='btnmenu'>
         <button className='menubtn' onClick={onInfo}>
           마이페이지
         </button>
@@ -327,7 +394,7 @@ const Todo = () => {
         </button>
         <br></br>
         <button className='menubtn'>로그아웃</button>
-      </menu>
+      </menu> */}
 
       <div>
         <Calendar onClickDay={handleDateClick} />
@@ -340,6 +407,7 @@ const Todo = () => {
         </div>
       </div>
     </div> 
+    </>
   );
 };
 
