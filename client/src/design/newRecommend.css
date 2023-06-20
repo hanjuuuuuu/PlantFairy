@@ -1,0 +1,38 @@
+.Experience p {
+  text-align: center;
+  color: #6c6562;
+  font-size: 22px;
+}
+
+.Experience .exx p {
+  margin-top: 170px;
+  text-align: center;
+  color: #6c6562;
+  font-size: 16px;
+}
+
+.Time p {
+  text-align: center;
+  color: #6c6562;
+  font-size: 22px;
+}
+
+.Time .exx2 p {
+  margin-top: 170px;
+  text-align: center;
+  color: #6c6562;
+  font-size: 16px;
+}
+
+.Address p {
+  text-align: center;
+  color: #6c6562;
+  font-size: 22px;
+}
+
+.Address .exx3 p {
+  margin-top: 170px;
+  text-align: center;
+  color: #6c6562;
+  font-size: 16px;
+}

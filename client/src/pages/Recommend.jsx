@@ -1,10 +1,11 @@
 import { Button, Modal, Space, Spin } from 'antd';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, Component } from 'react';
 import axios from 'axios';
 import '../design/recommend.css';
 import Main from './Main.jsx';
 import { AuthContext } from '../context/authContext.js';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, NavLink, Link } from 'react-router-dom';
+import logo from '../img/logo.png';
 
 const App = ({ usernum, buttonValue }) => {
 
@@ -61,6 +62,16 @@ const App = ({ usernum, buttonValue }) => {
     //커뮤니티 페이지로 이동
     setIsCommunity(true);
   };
+  const onTodo = () => {
+    //투두리스트 페이지로 이동
+    navigate('/todo', { state: state });
+  };
+
+  const onRandom = () => {
+    //성향테스트 페이지로 이동
+    navigate('/random', { state: state });
+  };
+
 
   /**
 
@@ -104,10 +115,10 @@ const App = ({ usernum, buttonValue }) => {
 
   const handleSizeButton = (event) => {
     const name = event.target.value;
-    if (name === '크다') {
+    if (name === '식물의 크기가 1m 이상') {
       setSize('over 1m');
       buttonSetSize(name);
-    } else if (name === '중간') {
+    } else if (name === '식물의 크기가 30cm ~ 1m 사이') {
       setSize('30cm~1m size');
       buttonSetSize(name);
     } else {
@@ -140,7 +151,7 @@ const App = ({ usernum, buttonValue }) => {
     } else if (name === '장식') {
       setFunctions('for decoration');
       buttonSetFunctions(name);
-    } else if (name === '둘 다 원해요') {
+    } else if (name === '공기정화와 장식') {
       setFunctions('for air purication and decoration');
       buttonSetFunctions(name);
     } else {
@@ -196,13 +207,13 @@ const App = ({ usernum, buttonValue }) => {
         alert('등록되었습니다');
         console.log(response.data);
         setIsMain(true);
-        userMainPlant()
-          .then(() => {
-            handleTodo();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        // userMainPlant()
+        //   .then(() => {
+        //     handleTodo();
+        //   })
+        //   .catch((error) => {
+        //     console.log(error);
+        //   });
       })
       .catch((error) => {
         console.log(error);
@@ -211,16 +222,16 @@ const App = ({ usernum, buttonValue }) => {
   };
 
   //식물 투두리스트 todo 테이블에 저장
-  const handleTodo = () => {
-    axios.post('http://localhost:8800/rectodo', { 
-      plantname: recommendPlant, 
-      userplantnum: Number(userplantnum+1), 
-      usernum: usernum 
-    })
-    .then((res) => {
-      console.log('todotodotodo', res.data);
-    });
-  };
+  // const handleTodo = () => {
+  //   axios.post('http://localhost:8800/rectodo', { 
+  //     plantname: recommendPlant, 
+  //     userplantnum: Number(userplantnum+1), 
+  //     usernum: usernum 
+  //   })
+  //   .then((res) => {
+  //     console.log('todotodotodo', res.data);
+  //   });
+  // };
 
   const handleCancel = () => {
     setOpen(false);
@@ -272,6 +283,27 @@ const App = ({ usernum, buttonValue }) => {
     }
   };
 
+  const [inputs, setInputs] = useState({
+    username: '',
+    user_pw: '',
+  });
+
+  const [err, setError] = useState(null);
+  const { login } = useContext(AuthContext);
+
+  const navigate = useNavigate();
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    try {
+      let getUserNum = await login(inputs);
+      console.log('user_num: ', getUserNum);
+      navigate('/main', { state: getUserNum });
+    } catch (err) {
+      setError(JSON.stringify(err));
+    }
+  };
+
   useEffect(() => {
     userMainPlant();
   }, [userplantnum]);
@@ -285,33 +317,28 @@ const App = ({ usernum, buttonValue }) => {
           onLight ? (
             onFunctions ? (
               loading ? (
-                <div>
-                  <menu className='btnmenu'>
-                    <button className='menubtn' onClick={onInfo}>
-                      마이페이지
-                    </button>
+                <>
+                  <div className='main_nav_rec'>
+                    <div className='main_logo_rec'>
+                      <NavLink to={'http://localhost:3000/'}>
+                        <img src={logo} alt='My Image' width='160' height='60' />
+                      </NavLink>
+                    </div>
+
+                    <div className='main_nav_but_rec'>
+                      <Link to='/main'> 메인 페이지 </Link>
+                      <button onClick={onCommunity}> 커뮤니티 </button>
+                      <button onClick={onTodo}> 투두리스트 </button>
+                      <button onClick={onRandom}> 식물 성향 테스트 </button>
+                      <button onClick={handleLogout}>로그아웃</button>
+                    </div>
+                  </div>
+
+                  <div className='result'>
                     <br></br>
-                    <button className='menubtn' onClick={onCommunity}>
-                      커뮤니티
-                    </button>
                     <br></br>
-                    <button className='menubtn'>To-do list</button>
-                    <br></br>
-                    <button className='menubtn'>로그아웃</button>
-                  </menu>
-                  <form onSubmit={handleSubmit}>
-                    <button
-                      className='resultbtn'
-                      type='submit'
-                      value={`${text}`}
-                      onClick={() => {
-                        setMessage(`${text}`);
-                      }}
-                      disabled
-                    >
-                      결과를 보시겠습니까?
-                    </button>
-                  </form>
+                  </div>
+                  <h4>30초 정도 기다려주세요</h4>
                   <br></br>
                   <br></br>
                   <div className='spin'>
@@ -321,34 +348,41 @@ const App = ({ usernum, buttonValue }) => {
                       </Spin>
                     </Space>
                   </div>
-                </div>
+                </>
               ) : (
-                <div>
-                  <menu className='btnmenu'>
-                    <button className='menubtn' onClick={onInfo}>
-                      마이페이지
-                    </button>
-                    <br></br>
-                    <button className='menubtn' onClick={onCommunity}>
-                      커뮤니티
-                    </button>
-                    <br></br>
-                    <button className='menubtn'>To-do list</button>
-                    <br></br>
-                    <button className='menubtn'>로그아웃</button>
-                  </menu>
+                <>
+                  <div className='main_nav_rec'>
+                    <div className='main_logo_rec'>
+                      <NavLink to={'http://localhost:3000/'}>
+                        <img src={logo} alt='My Image' width='160' height='60' />
+                      </NavLink>
+                    </div>
+
+                    <div className='main_nav_but_rec'>
+                      <Link to='/main'> 메인 페이지 </Link>
+                      <button onClick={onCommunity}> 커뮤니티 </button>
+                      <button onClick={onTodo}> 투두리스트 </button>
+                      <button onClick={onRandom}> 식물 성향 테스트 </button>
+                      <button onClick={handleLogout}>로그아웃</button>
+                    </div>
+                  </div>
+
+                  <div className='result'>
                   <form onSubmit={handleSubmit}>
-                    <button
-                      className={`resultbtn ${showResult || response.length > 0 ? 'hidden' : ''}`}
-                      type='submit'
-                      value={`${text}`}
-                      onClick={() => {
-                        setMessage(`${text}`);
-                      }}
-                    >
-                      결과를 보시겠습니까?
-                    </button>
-                  </form>
+                      <button
+                        className='resultbtn'
+                        type='submit'
+                        value={`${text}`}
+                        onClick={() => {
+                          setMessage(`${text}`);
+                        }}
+                      >
+                        결과를 보시겠습니까?
+                      </button>
+                    </form>
+                    <br></br>
+                    <br></br>
+                  </div>
                   <br></br>
                   <br></br>
                   <div>
@@ -391,25 +425,34 @@ const App = ({ usernum, buttonValue }) => {
                         </div>
                       ))}
                   </div>
-                </div>
+                </>
               )
             ) : (
-              <div className='Functions'>
-                <menu className='btnmenu'>
-                  <button className='menubtn' onClick={onInfo}>
-                    마이페이지
-                  </button>
+              <>
+                <div className='main_nav_rec'>
+                  <div className='main_logo_rec'>
+                    <NavLink to={'http://localhost:3000/'}>
+                      <img src={logo} alt='My Image' width='160' height='60' />
+                    </NavLink>
+                  </div>
+
+                  <div className='main_nav_but_rec'>
+                    <Link to='/main'> 메인 페이지 </Link>
+                    <button onClick={onCommunity}> 커뮤니티 </button>
+                    <button onClick={onTodo}> 투두리스트 </button>
+                    <button onClick={onRandom}> 식물 성향 테스트 </button>
+                    <button onClick={handleSubmit}>로그아웃</button>
+                    <button onClick={handleLogout}>로그아웃</button>
+                  </div>
+                </div>
+
+                <div className='Functions'>
+                  <div className='exx6'>
+                    <p> (6/6) </p>
+                  </div>
                   <br></br>
-                  <button className='menubtn' onClick={onCommunity}>
-                    커뮤니티
-                  </button>
+                  <p>원하는 식물의 기능이 있나요?</p>
                   <br></br>
-                  <button className='menubtn'>To-do list</button>
-                  <br></br>
-                  <button className='menubtn'>로그아웃</button>
-                </menu>
-                <p>원하는 식물의 기능이 있나요?</p>
-                <div>
                   <button className='btn' value='공기정화' onClick={handleFunctionsButton}>
                     공기 정화
                   </button>
@@ -420,34 +463,42 @@ const App = ({ usernum, buttonValue }) => {
                   </button>
                   <br></br>
                   <br></br>
-                  <button className='btn' value='둘다' onClick={handleFunctionsButton}>
+                  <button className='btn' value='공기정화와 장식' onClick={handleFunctionsButton}>
                     둘 다 원해요
                   </button>
                   <br></br>
                   <br></br>
-                  <button className='btn' value='상관없어요' onClick={handleFunctionsButton}>
+                  <button className='btn' value='식물의 기능은 상관없음' onClick={handleFunctionsButton}>
                     상관없어요
-                  </button>
-                </div>{' '}
-              </div>
+                  </button>{' '}
+                </div>
+              </>
             )
           ) : (
-            <div className='Light'>
-              <menu className='btnmenu'>
-                <button className='menubtn' onClick={onInfo}>
-                  마이페이지
-                </button>
+            <>
+              <div className='main_nav_rec'>
+                <div className='main_logo_rec'>
+                  <NavLink to={'http://localhost:3000/'}>
+                    <img src={logo} alt='My Image' width='160' height='60' />
+                  </NavLink>
+                </div>
+
+                <div className='main_nav_but_rec'>
+                  <Link to='/main'> 메인 페이지 </Link>
+                  <Link to='/community'> 커뮤니티 </Link>
+                  <Link to='/todo'> to-do list </Link>
+                  <Link to='/random'> 식물 성향 테스트 </Link>
+                  <button onClick={handleLogout}>로그아웃</button>
+                </div>
+              </div>
+
+              <div className='Light'>
+                <div className='exx5'>
+                  <p> (5/6) </p>
+                </div>
                 <br></br>
-                <button className='menubtn' onClick={onCommunity}>
-                  커뮤니티
-                </button>
+                <p>광량 조건은 어떻게 되나요?</p>
                 <br></br>
-                <button className='menubtn'>To-do list</button>
-                <br></br>
-                <button className='menubtn'>로그아웃</button>
-              </menu>
-              <p>광량 조건은 어떻게 되나요?</p>
-              <div>
                 <button className='btn' value='많다' onClick={handleLightButton}>
                   많다
                 </button>
@@ -462,125 +513,158 @@ const App = ({ usernum, buttonValue }) => {
                   적다
                 </button>
               </div>
-            </div>
+            </>
           )
         ) : (
-          <div className='Size'>
-            <menu className='btnmenu'>
-              <button className='menubtn' onClick={onInfo}>
-                마이페이지
+          <>
+            <div className='main_nav_rec'>
+              <div className='main_logo_rec'>
+                <NavLink to={'http://localhost:3000/'}>
+                  <img src={logo} alt='My Image' width='160' height='60' />
+                </NavLink>
+              </div>
+
+              <div className='main_nav_but_rec'>
+                <Link to='/main'> 메인 페이지 </Link>
+                <Link to='/community'> 커뮤니티 </Link>
+                <Link to='/todo'> to-do list </Link>
+                <Link to='/random'> 식물 성향 테스트 </Link>
+                <button onClick={handleLogout}>로그아웃</button>
+              </div>
+            </div>
+
+            <div className='Size'>
+              <div className='exx4'>
+                <p> (4/6) </p>
+              </div>
+              <br></br>
+              <p>원하는 식물의 크기가 있나요?</p>
+              <br></br>
+              <button className='btn' value='식물의 크기가 1m 이상' onClick={handleSizeButton}>
+                크다(1m 이상)
               </button>
               <br></br>
-              <button className='menubtn' onClick={onCommunity}>
-                커뮤니티
-              </button>
               <br></br>
-              <button className='menubtn'>To-do list</button>
-              <br></br>
-              <button className='menubtn'>로그아웃</button>
-            </menu>
-            <p>원하는 식물의 크기가 있나요?</p>
-            <div>
-              <button className='btn' value='크다' onClick={handleSizeButton}>
-                크다(1m이상)
+              <button className='btn' value='식물의 크기가 30cm ~ 1m 사이' onClick={handleSizeButton}>
+                중간(30cm ~ 1m)
               </button>
               <br></br>
               <br></br>
-              <button className='btn' value='중간' onClick={handleSizeButton}>
-                중간(30cm~1m정도)
-              </button>
-              <br></br>
-              <br></br>
-              <button className='btn' value='작다' onClick={handleSizeButton}>
-                작다(30cm이하)
+              <button className='btn' value='식물의 크기가 30cm 이하' onClick={handleSizeButton}>
+                작다(30cm 이하)
               </button>
             </div>
-          </div>
+          </>
         )
       ) : (
-        <div className='Address'>
-          <menu className='btnmenu'>
-            <button className='menubtn' onClick={onInfo}>
-              마이페이지
-            </button>
+        <>
+          <div className='main_nav_rec'>
+            <div className='main_logo_rec'>
+              <NavLink to={'http://localhost:3000/'}>
+                <img src={logo} alt='My Image' width='160' height='60' />
+              </NavLink>
+            </div>
+
+            <div className='main_nav_but_rec'>
+              <Link to='/main'> 메인 페이지 </Link>
+              <Link to='/community'> 커뮤니티 </Link>
+              <Link to='/todo'> to-do list </Link>
+              <Link to='/random'> 식물 성향 테스트 </Link>
+              <button onClick={handleLogout}>로그아웃</button>
+            </div>
+          </div>
+
+          <div className='Address'>
+            <div className='exx3'>
+              <p> (3/6) </p>
+            </div>
             <br></br>
-            <button className='menubtn' onClick={onCommunity}>
-              커뮤니티
-            </button>
+            <p>식물을 키우는 장소는 어디인가요?</p>
             <br></br>
-            <button className='menubtn'>To-do list</button>
-            <br></br>
-            <button className='menubtn'>로그아웃</button>
-          </menu>
-          <p>식물을 키우는 장소는 어디인가요?</p>
-          <div>
-            <button className='btn' value='yes' onClick={handleAddressButton}>
+            <button className='btn' value='실내' onClick={handleAddressButton}>
               실내
             </button>
             <br></br>
             <br></br>
-            <button className='btn' value='no' onClick={handleAddressButton}>
+            <button className='btn' value='실외' onClick={handleAddressButton}>
               실외
             </button>
           </div>
-        </div>
+        </>
       )
     ) : (
-      <div className='Time'>
-        <menu className='btnmenu'>
-          <button className='menubtn' onClick={onInfo}>
-            마이페이지
-          </button>
+      <>
+        <div className='main_nav_rec'>
+          <div className='main_logo_rec'>
+            <NavLink to={'http://localhost:3000/'}>
+              <img src={logo} alt='My Image' width='160' height='60' />
+            </NavLink>
+          </div>
+
+          <div className='main_nav_but_rec'>
+            <Link to='/main'> 메인 페이지 </Link>
+            <button onClick={onCommunity}> 커뮤니티 </button>
+            <button onClick={onTodo}> 투두리스트 </button>
+            <button onClick={onRandom}> 식물 성향 테스트 </button>
+            <button onClick={handleLogout}>로그아웃</button>
+          </div>
+        </div>
+
+        <div className='Time'>
+          <div className='exx2'>
+            <p> (2/6) </p>
+          </div>
           <br></br>
-          <button className='menubtn' onClick={onCommunity}>
-            커뮤니티
-          </button>
+          <p>식물 관리에 참여할 수 있는 시간이 얼마나 되나요?</p>
           <br></br>
-          <button className='menubtn'>To-do list</button>
-          <br></br>
-          <button className='menubtn'>로그아웃</button>
-        </menu>
-        <p>식물 관리에 참여할 수 있는 시간이 얼마나 되나요?</p>
-        <div>
-          <button className='btn' value='yes' onClick={handleTimeButton}>
+          <button className='btn' value='주기적으로 참여 가능' onClick={handleTimeButton}>
             주기적으로 참여 가능
           </button>
           <br></br>
           <br></br>
-          <button className='btn' value='no' onClick={handleTimeButton}>
+          <button className='btn' value='체계적인 관리 없이도 잘 자랐으면 좋겠음' onClick={handleTimeButton}>
             체계적인 관리 없이도 잘 자랐으면 좋겠음
           </button>
         </div>
-      </div>
+      </>
     )
   ) : (
-    <div className='Experience'>
-      <menu className='btnmenu'>
-        <button className='menubtn' onClick={onInfo}>
-          마이페이지
-        </button>
+    <>
+      <div className='main_nav_rec'>
+        <div className='main_logo_rec'>
+          <NavLink to={'http://localhost:3000/'}>
+            <img src={logo} alt='My Image' width='160' height='60' />
+          </NavLink>
+        </div>
+
+        <div className='main_nav_but_rec'>
+          <Link to='/main'> 메인 페이지 </Link>
+          <Link to='/community'> 커뮤니티 </Link>
+          <Link to='/todo'> to-do list </Link>
+          <Link to='/random'> 식물 성향 테스트 </Link>
+          <button onClick={handleLogout}>로그아웃</button>
+        </div>
+      </div>
+
+      <div className='Experience'>
+        <div className='exx'>
+          <p> (1/6) </p>
+        </div>
         <br></br>
-        <button className='menubtn' onClick={onCommunity}>
-          커뮤니티
-        </button>
+        <p>식물을 키워본 적이 있으신가요?</p>
         <br></br>
-        <button className='menubtn'>To-do list</button>
-        <br></br>
-        <button className='menubtn'>로그아웃</button>
-      </menu>
-      <p>식물을 키워본 적이 있으신가요?</p>
-      <div>
-        <button className='btn' value='yes' onClick={handleExperienceButton}>
+        <button className='btn' value='초보자' onClick={handleExperienceButton}>
           yes
         </button>
         <br></br>
         <br></br>
-        <button className='btn' value='no' onClick={handleExperienceButton}>
+        <button className='btn' value='식물을 키워본 경험 있음' onClick={handleExperienceButton}>
           no
         </button>
       </div>
-    </div>
+    </>
 ) 
+
 };
 
 export default App;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, NavLink } from 'react-router-dom';
 import axios from 'axios';
 import '../design/register.css';
 import logo from '../img/logo.png';
@@ -32,75 +32,95 @@ const Register = () => {
   };
 
   return (
-    <div className='App'>
-      <div className='form'>
-        <img src={logo} alt='My Image' width='160' height='60' />
-        <div className='joinBox'>
-          <form>
-            <div className='joinBox2'>
-              <address> 아이디 * </address>
-              <br></br>
-              <label htmlFor='user_id'>아이디</label>
-              <input type='text' placeholder='아이디' name='user_id' onChange={handleChange} />
-              <br></br>
-              <br></br>
+    <>
+      <div className='main_nav_register'>
+        <div className='main_logo_register'>
+          <NavLink to={'http://localhost:3000/'}>
+            <img src={logo} alt='My Image' width='160' height='60' />
+          </NavLink>
+        </div>
 
-              <address> 패스워드 * </address>
-              <br></br>
-              <label htmlFor='password'>패스워드</label>
-              <input type='user_pw' placeholder='패스워드' name='user_pw' onChange={handleChange} />
-              <br></br>
-              <br></br>
-
-              {/* <address> 패스워드 확인 * </address>
-            <br></br>
-            <label for='userPw2'>패스워드 확인</label>
-            <input type='password' id='userPw2' placeholder='패스워드 확인' />
-            <br></br>
-            <br></br> */}
-
-              <address> 이름 * </address>
-              <br></br>
-              <label htmlFor='user_name'>이름</label>
-              <input type='text' placeholder='이름' name='user_name' onChange={handleChange} />
-              <br></br>
-              <br></br>
-
-              <address> 닉네임 * </address>
-              <br></br>
-              <label htmlFor='user_nickname'>닉네임</label>
-              <input type='text' placeholder='닉네임' name='user_nickname' onChange={handleChange} />
-              <br></br>
-              <br></br>
-
-              <address> 이메일 </address>
-              <br></br>
-              <label htmlFor='user_email'>이메일</label>
-              <input type='email' placeholder='이메일' name='user_email' onChange={handleChange} />
-              <br></br>
-              <br></br>
-
-              {/* <address> 나이 </address>
-            <br></br>
-            <label for='user_age'>나이</label>
-            <input type='text' id='user_age' placeholder='나이' name='user_age' onChange={handleChange} />
-            <br></br>
-            <br></br> */}
-            </div>
-            {/* <address> 성별 </address>
-          <label></label>
-          <input type='radio' name='userGender' value='남' /> 남<label></label>
-          <input type='radio' name='userGender' value='여' /> 여<br></br> */}
-
-            <button onClick={handleSubmit}>회원가입</button>
-            <div className='link'>
-              이미 계정이 있으십니까? &nbsp;
-              <Link to='/login'>로그인</Link>
-            </div>
-          </form>
+        <div className='main_nav_but_register'>
+          <Link to='/main'> 메인 페이지 </Link>
+          <Link to='/community'> 커뮤니티 </Link>
+          <Link to='/todo'> to-do list </Link>
+          <Link to='/random'> 식물 성향 테스트 </Link>
+          <button onClick={handleSubmit}>로그아웃</button>
         </div>
       </div>
-    </div>
+
+      <div className='App'>
+        <div className='form'>
+          <h1> 식물요정 </h1>
+          {/* <img src={logo} alt='My Image' width='160' height='60' /> */}
+
+          <div className='joinBox'>
+            <form>
+              <div className='joinBox2'>
+                <address> 아이디 * </address>
+                <br></br>
+                <label htmlFor='user_id'>아이디</label>
+                <input type='text' placeholder='아이디' name='user_id' onChange={handleChange} />
+                <br></br>
+                <br></br>
+
+                <address> 패스워드 * </address>
+                <br></br>
+                <label htmlFor='password'>패스워드</label>
+                <input type='user_pw' placeholder='패스워드' name='user_pw' onChange={handleChange} />
+                <br></br>
+                <br></br>
+
+                {/* <address> 패스워드 확인 * </address>
+  <br></br>
+  <label for='userPw2'>패스워드 확인</label>
+  <input type='password' id='userPw2' placeholder='패스워드 확인' />
+  <br></br>
+  <br></br> */}
+
+                <address> 이름 * </address>
+                <br></br>
+                <label htmlFor='user_name'>이름</label>
+                <input type='text' placeholder='이름' name='user_name' onChange={handleChange} />
+                <br></br>
+                <br></br>
+
+                <address> 닉네임 * </address>
+                <br></br>
+                <label htmlFor='user_nickname'>닉네임</label>
+                <input type='text' placeholder='닉네임' name='user_nickname' onChange={handleChange} />
+                <br></br>
+                <br></br>
+
+                <address> 이메일 </address>
+                <br></br>
+                <label htmlFor='user_email'>이메일</label>
+                <input type='email' placeholder='이메일' name='user_email' onChange={handleChange} />
+                <br></br>
+                <br></br>
+
+                {/* <address> 나이 </address>
+  <br></br>
+  <label for='user_age'>나이</label>
+  <input type='text' id='user_age' placeholder='나이' name='user_age' onChange={handleChange} />
+  <br></br>
+  <br></br> */}
+              </div>
+              {/* <address> 성별 </address>
+  <label></label>
+  <input type='radio' name='userGender' value='남' /> 남<label></label>
+  <input type='radio' name='userGender' value='여' /> 여<br></br> */}
+
+              <button onClick={handleSubmit}>회원가입</button>
+              <div className='link'>
+                이미 계정이 있으십니까? &nbsp;
+                <Link to='/login'>로그인</Link>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 

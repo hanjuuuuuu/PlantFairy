@@ -22,11 +22,23 @@
   text-align: center;
   margin-left: 300px;
 }
+.spin {
+  margin-top: 30px;
+  margin-left: 300px;
+}
 
-.dot {
+.dotred {
   height: 8px;
   width: 8px;
   background-color: #f87171;
+  border-radius: 50%;
+  display: flex;
+  margin-left: 1px;
+}
+.dotblue {
+  height: 8px;
+  width: 8px;
+  background-color: #231ff4;
   border-radius: 50%;
   display: flex;
   margin-left: 1px;

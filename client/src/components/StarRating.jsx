@@ -39,13 +39,13 @@ const StarRating = ({ onChangeHandler }) => {
   };
 
   return (
-    <div>
+    <div className='StarRating'>
       {[...Array(5)].map((star, i) => {
         const ratingValue = i + 1;
         return (
           <label key={i}>
             <input className='rating' type='radio' name='star' value={ratingValue} onChange={handleRatingChange} onClick={() => setRating(ratingValue)} />
-            <FaStar className='star' color={ratingValue <= (hover || rating) ? '#fcbe32' : '#e4e5e9'} size={40} onMouseEnter={() => setHover(ratingValue)} onMouseLeave={() => setHover(null)} />
+            <FaStar className='star' color={ratingValue <= (hover || rating) ? '#fcbe32' : '#e4e5e9'} size={60} onMouseEnter={() => setHover(ratingValue)} onMouseLeave={() => setHover(null)} />
           </label>
         );
       })}

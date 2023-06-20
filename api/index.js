@@ -13,6 +13,7 @@ import download from 'image-downloader';
 import path from 'path';
 import fs from 'fs';
 import multer from 'multer';
+import sharp from 'sharp';
 import { db } from './db.js';
 import { Configuration, OpenAIApi } from 'openai';
 
@@ -31,8 +32,6 @@ app.use(
   })
 );
 app.use(cookieParser());
-// app.use(bodyParser.json({ limit: '50mb' }));
-// app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.urlencoded({ extended: false }));
 
 const storage = multer.diskStorage({
@@ -58,7 +57,7 @@ app.use('/api/likes', likesRoutes);
 app.use('/api/comments', commentsRoutes);
 
 const configuration = new Configuration({
-  apiKey: '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', //process.env.API_KEY,
+  apiKey: process.env.API_KEY, //process.env.API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
@@ -110,16 +109,17 @@ app.post('/recommend', async (req, res) => {
 });
 
 let todoRecommendations;
+let date = new Date();
+let year = date.getFullYear();
+let month = ('0' + (1+date.getMonth())).slice(-2);
 app.post('/rectodo', async (req, res) => {
   //식물 투두리스트 생성
   const plant = req.body;
-  console.log('recplantname', plant.plantname);
-  console.log('recuserplantnum', plant.userplantnum);
-  console.log('recusernum', plant.usernum);
+  console.log(plant.plantname);
   try {
     const response = await openai.createCompletion({
       model: 'text-davinci-003',
-      prompt: `Please make a to-do list in Korean for 31 days with one thing to do to grow ${plant.plantname}, and the answer format is numbered as 01.02.03 `,
+      prompt: `Please make a detailed to-do list in Korean for 31 days of ${plant.engtodaymonth} with one thing to do to grow ${plant.plantname} plant, the answer format is numbered as 01.02.03`,
       max_tokens: 4000,
       temperature: 0.2,
     });
@@ -133,14 +133,14 @@ app.post('/rectodo', async (req, res) => {
         .filter((recommendation) => recommendation)
         .map((recommendation) => {
           const [day, context] = (recommendation || '').trim().split('.');
-          console.log('day', day, 'context', context);
-          return { day: day, context: context };
+          console.log('day', year+month+day, 'context', context);
+          return { day: year+month+day, context: context };
         });
 
       // MySQL 데이터베이스에 식물 투두리스트 데이터 삽입
       const sqlInsert = 'INSERT INTO todo(user_plant_num, day, task, complete) VALUES (?, ?, ?, ?)';
       todoRecommendations.forEach((recommendation) => {
-        db.query(sqlInsert, [plant.userplantnum, recommendation.day, recommendation.context, 'false'], (err, result) => {
+        db.query(sqlInsert, [plant.userplantnum, recommendation.day, recommendation.context, ''], (err, result) => {
           if (err) {
             console.log(err);
           }
@@ -151,7 +151,7 @@ app.post('/rectodo', async (req, res) => {
       res.json({ message: 'Error todo recommendations' });
     }
   } catch (error) {
-    console.log(error.response);
+    console.log(error);
   }
 });
 
@@ -191,10 +191,11 @@ app.post('/updatetaskcomplete', async(req, res) => {
   })
 })
 
-//todo list 체크하면 user 포인트 올리기
+//todo list 체크하면 user 포인트 올리기, 테스트하면 10포인트 차감하기
 app.post('/updateuserpoints', async (req, res) => {
   let usernum = req.body.usernum;
   let userpoints = req.body.userpoints;
+  console.log('points',usernum, userpoints)
 
   const sqluserpoint = `UPDATE user SET user_point = '${userpoints}' WHERE user_num = '${usernum}'`;
   db.query(sqluserpoint, (err, data) => {
@@ -289,7 +290,7 @@ app.post('/plantslot', async (req, res) => {
   let usernum = req.body.usernum;
   //console.log('slotnum',slotnum);
 
-  const sqluserplant = `SELECT user_plant_num AS "key",plant_name, plant_picture FROM user_plant WHERE user_num = ${usernum}`;
+  const sqluserplant = `SELECT user_plant_num AS "key",plant_name FROM user_plant WHERE user_num = ${usernum}`;
   db.query(sqluserplant, usernum, (err, data) => {
     if (!err) {
       res.send(data);
@@ -305,8 +306,6 @@ app.post('/plantenroll', async (req, res) => {
   let plantmain = req.body.plantmain;
   //let plantpicture = req.body.plantpicture;
   let plantcharacteristic = req.body.plantcharacteristic;
-  console.log('enroll', plantname);
-  //console.log('pp : ', plantpicture);
 
   const sqlplantenroll = 'INSERT INTO user_plant (user_num, plant_name, plant_main, plant_characteristic) values(?, ?, ?, ?)';
   db.query(sqlplantenroll, [usernum, plantname, plantmain, plantcharacteristic], (err, data) => {
@@ -350,17 +349,15 @@ app.post('/plantgame', async (req, res) => {
   }
 });
 
-// 여기는 돈나감!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// 여기는 돈나감!!!!!!!!!!!!!!!!!!!!!!!!!
 app.post('/', async (req, res) => {
   //const { message } = req.body;
   //console.log(message);
   const images = [];
-
   if (!plantRecommendations || !plantRecommendations.length) {
     console.log('plantRecommendations is not defined or is empty');
     return res.status(400).json({ message: 'plantRecommendations is not defined or is empty' });
   }
-
   for (let i = 0; i < plantRecommendations.length; i++) {
     const response = await openai.createImage({
       prompt: `${plantRecommendations[i].englishName} plant`,
@@ -370,22 +367,20 @@ app.post('/', async (req, res) => {
     const image_url = response.data.data[0].url;
     images.push(image_url);
   }
-
   if (images.length > 0) {
     for (let i = 0; i < images.length; i++) {
       const options = {
         url: images[i],
         dest: '../../sources',
       };
- 
+
       download
         .image(options)
         .then(({ filename }) => {
           console.log('Saved to', filename); // saved to /path/to/dest/image.jpg
-
           const imagePath = path.join('sources/', path.basename(filename)).replace(/\\/g, '/');
           // Save the path to the database
-          db.query(`UPDATE plant SET img ='${imagePath}' WHERE eng_name='${plantRecommendations[i].englishName}'`, (error, results) => {
+          db.query(`UPDATE plant SET img ='${imagePath}' WHERE eng_Name='${plantRecommendations[i].englishName}'`, (error, results) => {
             if (error) {
               console.log(error);
               res.status(500).send('Error saving image path to the database');
@@ -397,7 +392,6 @@ app.post('/', async (req, res) => {
           res.status(500).send('Error saving image to local file system');
         });
     }
-
     res.json({
       message: 'Image creation complete',
       images: images,
@@ -407,7 +401,7 @@ app.post('/', async (req, res) => {
   }
 });
 
-// 이미지 받아오는 기능
+// 이미지 path 받아오는 기능
 app.get('/imagespath/:plantName', (req, res) => {
   const plant_name = req.params.plantName.replace(/\n/g, '');
 
@@ -420,15 +414,17 @@ app.get('/imagespath/:plantName', (req, res) => {
     if (result.length === 0) {
       return res.status(404).send('Plant not found');
     }
-
     const imgPath = result[0].img;
+    console.log('IMGPATH!!', imgPath);
     res.send(imgPath);
   });
 });
 
+// 이미지 받아오는 기능
 app.get('/images/:plantName', (req, res) => {
   const plant_name = req.params.plantName.replace(/\n/g, '');
-  console.log('----', plant_name);
+  console.log('PlantNameParams', req.params.plantName);
+  console.log('PlantName', plant_name);
 
   // plant_name 대신 영어이름으로 바꾸기
   db.query(`SELECT img FROM plant WHERE plant_name = '${plant_name}'`, (err, result) => {
@@ -459,8 +455,7 @@ app.post('/saveRating', (req, res) => {
   console.log('starValue from api', userNum);
 
   db.query(
-    `INSERT INTO user_review (user_num, review)
-     SELECT ${userNum} AS user_num, '${starValue}' AS review`,
+    `INSERT INTO user_review (user_num, review) SELECT ${userNum} AS user_num, '${starValue}' AS review`,
     (err, data) => {
       if (!err) {
         res.send(data);
