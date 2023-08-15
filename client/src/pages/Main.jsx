@@ -14,6 +14,11 @@ import { makeRequest } from '../axios';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import fairy from '../img/fairy.png';
 import { AuthContext } from '../context/authContext';
+import level1 from '../img/1level_855_240.jpg';
+import level2 from '../img/2level_855_240.jpg';
+import level3 from '../img/3level_855_240.jpg';
+import level4 from '../img/4level_855_240.jpg';
+import level5 from '../img/5level_855_240.jpg';
 
 //import img from '../../../api/sources/'
 
@@ -100,12 +105,32 @@ const Main = () => {
 
   const onTodo = () => {
     //투두리스트 페이지로 이동
-    navigate('/todo', { state: state, userplantnum: userplantnum });
+    try {
+      navigate('/todo', {
+        state: {
+          state: state,
+          userplantnum: userplantnum,
+          userplantname1: userPlantEnroll1name,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const onRandom = () => {
-    // 페이지로 이동
-    navigate('/random', { state: state });
+    //성향테스트 페이지로 이동
+    try {
+      navigate('/random', {
+        state: {
+          state: state,
+          userpoints: userPoints,
+          userlevel: userLevel,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const onMain = () => {
@@ -225,6 +250,7 @@ const Main = () => {
         console.log(res.data[0]);
         setUserPoints(res.data[0].user_point);
         const currentLevel = res.data[0].user_level;
+
         if (currentLevel < 2 && userPoints >= 50) {
           //포인트가 50이상이면 레벨 2로 업데이트
           setUserLevel(2);
@@ -350,12 +376,12 @@ const Main = () => {
                 {userPlantEnroll2}
               </Button>
             </div>
-            <div style={{ display: userLevel >= 4 ? 'block' : 'none' }}>
+            <div style={{ display: userLevel >= 2 ? 'block' : 'none' }}>
               <Button value='3' className='slots3' onClick={onNewRecommend}>
                 {userPlantEnroll3}
               </Button>
             </div>
-            <div style={{ display: userLevel >= 4 ? 'block' : 'none' }}>
+            <div style={{ display: userLevel >= 2 ? 'block' : 'none' }}>
               <Button value='4' className='slots4' onClick={onNewRecommend}>
                 {userPlantEnroll4}
               </Button>
@@ -368,12 +394,16 @@ const Main = () => {
         </section>
 
         <div className='img'>
-          <h1>(식물 성장 이미지)</h1>
+          {currentUser.user_level === 1 && <img src={level1} alt='My Image' />}
+          {currentUser.user_level === 2 && <img src={level2} alt='My Image' />}
+          {currentUser.user_level === 3 && <img src={level3} alt='My Image' />}
+          {currentUser.user_level === 4 && <img src={level4} alt='My Image' />}
+          {currentUser.user_level === 5 && <img src={level5} alt='My Image' />}
         </div>
-        <div className='event'>
-          {/* <Button value='5'>식물 성장 모습</Button> */}
+        {/*<div className='event'>
+          <Button value='5'>식물 성장 모습</Button>
           <img src={fairy} alt='My Image' />
-        </div>
+        </div> */}
       </section>
     </>
   );

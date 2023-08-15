@@ -139,6 +139,74 @@ const Random = () => {
     resetPoints();
   }, []);
 
+  // return scary ? (
+  //   <ScaryGame />
+  // ) : fun ? (
+  //   <FunGame />
+  // ) : (
+  //   <>
+  //     <div className='main_nav_random'>
+  //       <div className='main_logo_random'>
+  //         <NavLink to={'http://localhost:3000/'}>
+  //           <img src={logo} alt='My Image' width='160' height='60' />
+  //         </NavLink>
+  //       </div>
+
+  //       <div className='main_nav_but_random'>
+  //         <button onclick={onMain}> 메인 페이지 </button>
+  //         <button onClick={onCommunity}> 커뮤니티 </button>
+  //         <button onClick={onTodo}> 투두리스트 </button>
+  //         <button onClick={onRandom}> 식물 성향 테스트 </button>
+  //         <button onClick={handleSubmit}>로그아웃</button>
+  //       </div>
+  //     </div>
+
+  //     <>
+  //       {' '}
+  //       <section className='random_anim'>
+  //         <div class='box_ani'>
+  //           <div class='wave -one'></div>
+  //           <div class='wave -two'></div>
+  //           <div class='wave -three'></div>
+
+  //           <div className='random-ani'>
+  //             <h1>
+  //               <span>식</span>
+  //               <span>물</span>
+  //               <span>성</span>
+  //               <span>향</span>
+  //               <span>테</span>
+  //               <span>스</span>
+  //               <span>트</span>
+  //             </h1>
+  //           </div>
+
+  //           <div class='title_ani'>
+  //             <Typography.Title className='title' level={4}>
+  //               {' '}
+  //               성향에 맞는 식물을 추천해 드립니다 !{' '}
+  //             </Typography.Title>
+  //             <h1 className='theme'>원하는 질문 테마를 선택해주세요.</h1>
+  //             <br></br>
+  //             <h4 className='theme'>테스트를 이용하시면 10포인트가 차감됩니다.</h4>
+  //           </div>
+  //         </div>
+  //       </section>{' '}
+  //       <div className='btn'>
+  //         <Button className='choose' onClick={userScaryGame}>
+  //           {' '}
+  //           공포{' '}
+  //         </Button>
+  //         <br></br>
+  //         <Button className='choose1' onClick={userFunGame}>
+  //           {' '}
+  //           재미{' '}
+  //         </Button>
+  //       </div>
+  //     </>
+  //   </>
+  // );
+
   return scary ? (
     <ScaryGame />
   ) : fun ? (
@@ -153,10 +221,11 @@ const Random = () => {
         </div>
 
         <div className='main_nav_but_random'>
-          <button onclick={onMain}> 메인 페이지 </button>
+          {/* 메인 onClick 수정해야함 */}
+          <button onClick={onTodo}> 메인페이지 </button>
           <button onClick={onCommunity}> 커뮤니티 </button>
           <button onClick={onTodo}> 투두리스트 </button>
-          <button onClick={onRandom}> 식물 성향 테스트 </button>
+          <button onClick={onRandom}> 식물성향테스트 </button>
           <button onClick={handleSubmit}>로그아웃</button>
         </div>
       </div>
@@ -187,8 +256,6 @@ const Random = () => {
                 성향에 맞는 식물을 추천해 드립니다 !{' '}
               </Typography.Title>
               <h1 className='theme'>원하는 질문 테마를 선택해주세요.</h1>
-              <br></br>
-              <h4 className='theme'>테스트를 이용하시면 10포인트가 차감됩니다.</h4>
             </div>
 
             <div>
@@ -205,6 +272,21 @@ const Random = () => {
           </div>
         </section>{' '}
       </>
+
+      {/*
+      <canvas id="c1"></canvas>
+      <canvas id="c2"></canvas>
+  */}
+
+      <div className='ran'>
+        {/* <Typography.Title className='title' level={4}> 성향에 맞는 식물을 추천해 드립니다 ! </Typography.Title>
+              <h1 className='theme'>원하는 질문 테마를 선택해주세요.</h1> 
+              <div>
+                  <Button className='choose' onClick={userScaryGame}> 공포 </Button>
+                  <br></br>
+                  <Button className='choose1' onClick={userFunGame}> 재미 </Button>
+              </div> */}
+      </div>
     </>
   );
 };

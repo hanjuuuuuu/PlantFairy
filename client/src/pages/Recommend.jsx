@@ -95,7 +95,7 @@ const App = ({ usernum, buttonValue }) => {
 
   const handleTimeButton = (event) => {
     const name = event.target.value;
-    if (name === '주기적으로 참여 가능') {
+    if (name === '관리에 주기적으로 참여 가능') {
       setTime('Can participate periodically');
       buttonSetTime(name);
     } else {
@@ -134,10 +134,10 @@ const App = ({ usernum, buttonValue }) => {
 
   const handleLightButton = (event) => {
     const name = event.target.value;
-    if (name === '많다') {
+    if (name === '광량은 많다') {
       setLight('receiving a lot of sunlight');
       buttonSetLight(name);
-    } else if (name === '적당하다') {
+    } else if (name === '광량은 적당하다') {
       setLight('get enough sunlight');
       buttonSetLight(name);
     } else {
@@ -149,13 +149,13 @@ const App = ({ usernum, buttonValue }) => {
 
   const handleFunctionsButton = (event) => {
     const name = event.target.value;
-    if (name === '공기정화') {
+    if (name === '공기정화 기능') {
       setFunctions('for air purification');
       buttonSetFunctions(name);
-    } else if (name === '장식') {
+    } else if (name === '장식 기능') {
       setFunctions('for decoration');
       buttonSetFunctions(name);
-    } else if (name === '공기정화와 장식') {
+    } else if (name === '공기정화와 장식 기능') {
       setFunctions('for air purication and decoration');
       buttonSetFunctions(name);
     } else {
@@ -482,17 +482,17 @@ const App = ({ usernum, buttonValue }) => {
                   <br></br>
                   <p>원하는 식물의 기능이 있나요?</p>
                   <br></br>
-                  <button className='btn' value='공기정화' onClick={handleFunctionsButton}>
+                  <button className='btn' value='공기정화 기능' onClick={handleFunctionsButton}>
                     공기 정화
                   </button>
                   <br></br>
                   <br></br>
-                  <button className='btn' value='장식' onClick={handleFunctionsButton}>
+                  <button className='btn' value='장식 기능' onClick={handleFunctionsButton}>
                     장식
                   </button>
                   <br></br>
                   <br></br>
-                  <button className='btn' value='공기정화와 장식' onClick={handleFunctionsButton}>
+                  <button className='btn' value='공기정화와 장식 기능' onClick={handleFunctionsButton}>
                     둘 다 원해요
                   </button>
                   <br></br>
@@ -528,17 +528,17 @@ const App = ({ usernum, buttonValue }) => {
                 <br></br>
                 <p>광량 조건은 어떻게 되나요?</p>
                 <br></br>
-                <button className='btn' value='많다' onClick={handleLightButton}>
+                <button className='btn' value='광량은 많다' onClick={handleLightButton}>
                   많다
                 </button>
                 <br></br>
                 <br></br>
-                <button className='btn' value='적당하다' onClick={handleLightButton}>
+                <button className='btn' value='광량은 적당하다' onClick={handleLightButton}>
                   적당하다
                 </button>
                 <br></br>
                 <br></br>
-                <button className='btn' value='적다' onClick={handleLightButton}>
+                <button className='btn' value='광량은 적다' onClick={handleLightButton}>
                   적다
                 </button>
               </div>
@@ -646,7 +646,7 @@ const App = ({ usernum, buttonValue }) => {
           <br></br>
           <p>식물 관리에 참여할 수 있는 시간이 얼마나 되나요?</p>
           <br></br>
-          <button className='btn' value='주기적으로 참여 가능' onClick={handleTimeButton}>
+          <button className='btn' value='관리에 주기적으로 참여 가능' onClick={handleTimeButton}>
             주기적으로 참여 가능
           </button>
           <br></br>
@@ -682,7 +682,7 @@ const App = ({ usernum, buttonValue }) => {
         <br></br>
         <p>식물을 키워본 적이 있으신가요?</p>
         <br></br>
-        <button className='btn' value='초보자' onClick={handleExperienceButton}>
+        <button className='btn' value='식물을 키워본 경험 없음' onClick={handleExperienceButton}>
           yes
         </button>
         <br></br>

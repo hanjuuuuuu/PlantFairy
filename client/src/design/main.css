@@ -141,7 +141,7 @@
   color: #6c6562;
 }
 
-.out .style_slot .style .slots1 {
+/* .out .style_slot .style .slots1 {
   clear: both;
   border: 3.15px outset #859c8a;
   background-color: white;
@@ -150,41 +150,59 @@
   height: 150px;
   margin-top: 10px;
   margin-left: 320px;
-}
+} */
 
-.out .style_slot .style .slots2 {
+.style_slot .style .slots1 {
+  clear: both;
   border: 3.15px outset #859c8a;
   background-color: white;
   border-radius: 10px;
-  width: 150px;
+  width: 150px; /* 원하는 가로 크기 */
+  height: 150px; /* 원하는 세로 크기 */
+  margin-top: 10px;
+  margin-left: 320px;
+  float: left;
+}
+
+.style_slot .style .slots2 {
+  border: 3.15px outset #859c8a;
+  background-color: white;
+  border-radius: 10px;
+  width: 150px; /* 원하는 가로 크기 */
   height: 150px;
   margin-left: 523px;
   top: -150px;
+  float: left;
 }
 
 .out .style_slot .style .slots3 {
   border: 3.15px outset #859c8a;
   background-color: white;
   border-radius: 10px;
-  width: 150px;
+  width: 150px; /* 원하는 가로 크기 */
   height: 150px;
   margin-left: 723px;
   top: -300px;
+  float: left;
 }
 
 .out .style_slot .style .slots4 {
   border: 3.15px outset #859c8a;
   background-color: white;
   border-radius: 10px;
-  width: 150px;
+  width: 150px; /* 원하는 가로 크기 */
   height: 150px;
   margin-left: 930px;
   top: -450px;
+  float: left;
 }
 
-.out .img h1 {
-  margin-left: 625px;
-  margin-top: 100px;
+.out .img {
+  position: absolute;
+  top: 550px;
+  left: 320px;
+  margin-left: 200px;
+  float: left;
 }
 
 .out .event button {

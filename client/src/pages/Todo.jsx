@@ -26,6 +26,7 @@ const Todo = () => {
   const [plantname, setPlantName] = useState('');
   const [loading, setLoading] = useState(false);
   const [hasData, setHasData] = useState(false);
+  const [isMain, setIsMain] = useState(false);
 
   //**
   /*
@@ -50,12 +51,23 @@ const Todo = () => {
 
   const onRandom = () => {
     //성향테스트 페이지로 이동
-    navigate('/random', { state: state });
+    try {
+      navigate('/random', {
+        state: {
+          state: state,
+          userpoints: userPoints,
+          userlevel: userLevel,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const onMain = () => {
     //메인 페이지로 이동
-    navigate('/main', { state: state });
+    // navigate('/main', { state: state });
+    setIsMain(true);
   };
 
   const handleSubmit = async (e) => {

@@ -39,6 +39,13 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
+// const configuration = new Configuration({
+//   organization: 'org-cZFLDQG7d7vOU4ui4WLdE5FF',
+//   apiKey: process.env.API_KEY,
+// });
+// const openai = new OpenAIApi(configuration);
+// const response = await openai.listEngines();
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, '../client/public/upload');

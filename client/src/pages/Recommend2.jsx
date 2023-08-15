@@ -462,7 +462,7 @@ const App = ({ usernum, buttonValue }) => {
                   <p> (5/6) </p>
                 </div>
                 <br></br>
-                <p>애완동물과 함께 키울 계획이 있으신가요?</p>
+                <p>반려동물과 함께 키울 계획이 있으신가요?</p>
                 <br></br>
                 <button className='btn' value='있다' onClick={handleLightButton}>
                   있다
