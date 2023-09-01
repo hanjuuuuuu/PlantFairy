@@ -1,256 +1,254 @@
 .Experience p {
-    text-align: center;
-    color: #6C6562;
-    font-size: 22px;
-  }
-  
-  .Experience .exx p {
-    margin-top: 170px;
-    text-align: center;
-    color: #6C6562;
-    font-size: 16px;
-  }
-  
-  .Time p {
-    text-align: center;
-    color: #6C6562;
-    font-size: 22px;
-  }
-  
-  .Time .exx2 p {
-    margin-top: 170px;
-    text-align: center;
-    color: #6C6562;
-    font-size: 16px;
-  }
-  
-  .Address p {
-    text-align: center;
-    color: #6C6562;
-    font-size: 22px;
-  }
-  
-  .Address .exx3 p {
-    margin-top: 170px;
-    text-align: center;
-    color: #6C6562;
-    font-size: 16px;
-  }
-  
-  .Size p {
-    text-align: center;
-    color: #6C6562;
-    font-size: 22px;
-  }
-  
-  .Size .exx4 p {
-    margin-top: 170px;
-    text-align: center;
-    color: #6C6562;
-    font-size: 16px;
-  }
-  
-  .Light p {
-    text-align: center;
-    color: #6C6562;
-    font-size: 22px;
-  }
-  
-  .Light .exx5 p {
-    margin-top: 170px;
-    text-align: center;
-    color: #6C6562;
-    font-size: 16px;
-  }
-  
-  .Functions p {
-    text-align: center;
-    color: #6C6562;
-    font-size: 22px;
-  }
-  
-  .Functions .exx6 p {
-    margin-top: 170px;
-    text-align: center;
-    color: #6C6562;
-    font-size: 16px;
-  }
-  
-  
-  .Experience .btn {
-    display: block;
-    margin: auto;
-    width: 470px;
-    height: 40px;
-    background-color: #859C8A;
-    color: white;
-    border: 1px solid #6C6562;
-    border-radius: 5px;
-    font-size: 23px;
-    transition: .5s ease;
-  }
-  
-  .Experience .btn:hover {
-    background: #BDCEBB;
-  }
-  
-  .Time .btn {
-    display: block;
-    margin: auto;
-    width: 470px;
-    height: 40px;
-    background-color: #859C8A;
-    color: white;
-    border: 1px solid #6C6562;
-    border-radius: 5px;
-    font-size: 23px;
-    transition: .5s ease;
-  }
-  
-  .Time .btn:hover {
-    background: #BDCEBB;
-  }
-  
-  .Address .btn {
-    display: block;
-    margin: auto;
-    width: 470px;
-    height: 40px;
-    background-color: #859C8A;
-    color: white;
-    border: 1px solid #6C6562;
-    border-radius: 5px;
-    font-size: 23px;
-    transition: .5s ease;
-  }
-  
-  .Address .btn:hover {
-    background: #BDCEBB;
-  }
-  
-  .Size .btn {
-    display: block;
-    margin: auto;
-    width: 470px;
-    height: 40px;
-    background-color: #859C8A;
-    color: white;
-    border: 1px solid #6C6562;
-    border-radius: 5px;
-    font-size: 23px;
-    transition: .5s ease;
-  }
-  
-  .Size .btn:hover {
-    background: #BDCEBB;
-  }
-  
-  .Light .btn {
-    display: block;
-    margin: auto;
-    width: 470px;
-    height: 40px;
-    background-color: #859C8A;
-    color: white;
-    border: 1px solid #6C6562;
-    border-radius: 5px;
-    font-size: 23px;
-    transition: .5s ease;
-  }
-  
-  .Light .btn:hover {
-    background: #BDCEBB;
-  }
-  
-  .Functions .btn {
-    display: block;
-    margin: auto;
-    width: 470px;
-    height: 40px;
-    background-color: #859C8A;
-    color: white;
-    border: 1px solid #6C6562;
-    border-radius: 5px;
-    font-size: 23px;
-    transition: .5s ease;
-  }
-  
-  .Functions .btn:hover {
-    background: #BDCEBB;
-  }
-  
-  .result .resultbtn {
-    display: block;
-    margin: auto;
-    margin-top: 300px;
-    width: 470px;
-    height: 40px;
-    background-color: #859C8A;
-    color: white;
-    border: 1px solid #6C6562;
-    border-radius: 5px;
-    font-size: 23px;
-    transition: .5s ease;
-  }
-  
-  .result .resultbtn:hover {
-    background: #BDCEBB;
-  }
-  
-  .recbtn { /* 이거 div classname 으로 해서  .(classname명) .recbtn 되야하는데 못 찾겠음 .. */
-    text-align: center;
-    background-color: #859C8A;
-    color: white;
-    border: 2px solid white;
-    border-radius: 5px;
-    padding: 10px 30px;
-    font-size: 15px;
-    transition: .5s ease;
-  }
-  
-  .recbtn :hover {
-    transform: .5s ease;
-    border: 2px solid #6C6562;
-    background: transparent;
-    color: black;
-  }
-  
-  .encan .enroll {
-    background-color: white;
-  }
-  
-  .encan .cancel {
-    background-color: white;
-  }
-  
-  .result .spin {
-    padding:50px 50px 10px 450px;
-    width: '100px',
-    }
-  
-    .main_nav_rec {
-      height: 70px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      max-width: 1000px;
-      margin: auto;
-      }
-      
-      .main_nav_rec .main_logo_rec img {
-        width: 140px;
-      }
-    
-      .main_nav_rec .main_nav_but_rec a {
-      text-decoration: none;
-      padding-left: 20px;
-      padding-right: 20px;
-      color: black;
-    }
-    
-    .main_nav_rec .main_nav_but_rec button {
-      background-color: white;
-      color: black;
-      border: 1px solid white;
-      font-size: 15px;
-    }
+  text-align: center;
+  color: #6c6562;
+  font-size: 22px;
+}
+
+.Experience .exx p {
+  margin-top: 170px;
+  text-align: center;
+  color: #6c6562;
+  font-size: 16px;
+}
+
+.Time p {
+  text-align: center;
+  color: #6c6562;
+  font-size: 22px;
+}
+
+.Time .exx2 p {
+  margin-top: 170px;
+  text-align: center;
+  color: #6c6562;
+  font-size: 16px;
+}
+
+.Address p {
+  text-align: center;
+  color: #6c6562;
+  font-size: 22px;
+}
+
+.Address .exx3 p {
+  margin-top: 170px;
+  text-align: center;
+  color: #6c6562;
+  font-size: 16px;
+}
+
+.Size p {
+  text-align: center;
+  color: #6c6562;
+  font-size: 22px;
+}
+
+.Size .exx4 p {
+  margin-top: 170px;
+  text-align: center;
+  color: #6c6562;
+  font-size: 16px;
+}
+
+.Light p {
+  text-align: center;
+  color: #6c6562;
+  font-size: 22px;
+}
+
+.Light .exx5 p {
+  margin-top: 170px;
+  text-align: center;
+  color: #6c6562;
+  font-size: 16px;
+}
+
+.Functions p {
+  text-align: center;
+  color: #6c6562;
+  font-size: 22px;
+}
+
+.Functions .exx6 p {
+  margin-top: 170px;
+  text-align: center;
+  color: #6c6562;
+  font-size: 16px;
+}
+
+.Experience .btn {
+  display: block;
+  margin: auto;
+  width: 470px;
+  height: 40px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 23px;
+  transition: 0.5s ease;
+}
+
+.Experience .btn:hover {
+  background: #bdcebb;
+}
+
+.Time .btn {
+  display: block;
+  margin: auto;
+  width: 470px;
+  height: 40px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 23px;
+  transition: 0.5s ease;
+}
+
+.Time .btn:hover {
+  background: #bdcebb;
+}
+
+.Address .btn {
+  display: block;
+  margin: auto;
+  width: 470px;
+  height: 40px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 23px;
+  transition: 0.5s ease;
+}
+
+.Address .btn:hover {
+  background: #bdcebb;
+}
+
+.Size .btn {
+  display: block;
+  margin: auto;
+  width: 470px;
+  height: 40px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 23px;
+  transition: 0.5s ease;
+}
+
+.Size .btn:hover {
+  background: #bdcebb;
+}
+
+.Light .btn {
+  display: block;
+  margin: auto;
+  width: 470px;
+  height: 40px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 23px;
+  transition: 0.5s ease;
+}
+
+.Light .btn:hover {
+  background: #bdcebb;
+}
+
+.Functions .btn {
+  display: block;
+  margin: auto;
+  width: 470px;
+  height: 40px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 23px;
+  transition: 0.5s ease;
+}
+
+.Functions .btn:hover {
+  background: #bdcebb;
+}
+
+.result .resultbtn {
+  display: block;
+  margin: auto;
+  margin-top: 300px;
+  width: 470px;
+  height: 40px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 5px;
+  font-size: 23px;
+  transition: 0.5s ease;
+}
+
+.result .resultbtn:hover {
+  background: #bdcebb;
+}
+
+.recbtn {
+  /* 이거 div classname 으로 해서  .(classname명) .recbtn 되야하는데 못 찾겠음 .. */
+  text-align: center;
+  background-color: #859c8a;
+  color: white;
+  border: 2px solid white;
+  border-radius: 5px;
+  padding: 10px 30px;
+  font-size: 15px;
+  transition: 0.5s ease;
+}
+
+.recbtn :hover {
+  transform: 0.5s ease;
+  border: 2px solid #6c6562;
+  background: transparent;
+  color: black;
+}
+
+.encan .enroll {
+  background-color: white;
+}
+
+.encan .cancel {
+  background-color: white;
+}
+
+.result .spin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.main_nav_rec {
+  height: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.main_nav_rec .main_logo_rec img {
+  width: 140px;
+}
+
+.main_nav_rec .main_nav_but_rec button {
+  text-decoration: none;
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color: white;
+  color: black;
+  border: 1px solid white;
+  font-size: 15px;
+}

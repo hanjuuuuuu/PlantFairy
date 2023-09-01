@@ -2,12 +2,61 @@ import Posts from '../components/Posts.jsx';
 import Share from '../components/Share.jsx';
 import '../design/community.scss';
 import logo from '../img/logo.png';
-import { Link, useNavigate, NavLink } from 'react-router-dom';
+import { Link, useNavigate, NavLink, useLocation } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import { AuthContext } from '../context/authContext';
 
 const Community = () => {
   const navigate = useNavigate();
+
+  const [userPoints, setUserPoints] = useState(0);
+  const [userLevel, setUserLevel] = useState(1);
+  const [userPlantEnroll1name, setUserPlantEnroll1name] = useState('');
+
+  const { state, userplantnum } = useLocation();
+
+  const onInfo = () => {
+    navigate('/info');
+  };
+  const onCommunity = () => {
+    //커뮤니티 페이지로 이동
+    navigate('/community', { state: state });
+  };
+
+  const onTodo = () => {
+    //투두리스트 페이지로 이동
+    try {
+      navigate('/todo', {
+        state: {
+          state: state,
+          userplantnum: userplantnum,
+          userplantname1: userPlantEnroll1name,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const onRandom = () => {
+    //성향테스트 페이지로 이동
+    try {
+      navigate('/random', {
+        state: {
+          state: state,
+          userpoints: userPoints,
+          userlevel: userLevel,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const onMain = () => {
+    // 페이지로 이동
+    navigate('/main', { state: state });
+  };
 
   const [inputs, setInputs] = useState({
     username: '',
@@ -38,10 +87,10 @@ const Community = () => {
         </div>
 
         <div className='main_nav_but_commu'>
-          <Link to='/main'> 메인 페이지 </Link>
-          <Link to='/community'> 커뮤니티 </Link>
-          <Link to='/todo'> to-do list </Link>
-          <Link to='/random'> 식물 성향 테스트 </Link>
+          <button onClick={onMain}> 메인페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
           <button onClick={handleSubmit}>로그아웃</button>
         </div>
       </div>

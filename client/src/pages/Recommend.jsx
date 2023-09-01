@@ -8,7 +8,6 @@ import { useLocation, useNavigate, NavLink, Link } from 'react-router-dom';
 import logo from '../img/logo.png';
 
 const App = ({ usernum, buttonValue }) => {
-
   /**
    * 페이지에서 사용하는 상태변수
    */
@@ -40,6 +39,7 @@ const App = ({ usernum, buttonValue }) => {
   const [open, setOpen] = useState(false);
   const [isMain, setIsMain] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [hasData, setHasData] = useState(false);
 
   const [message, setMessage] = useState('');
   const [response, setResponse] = useState('');
@@ -62,6 +62,20 @@ const App = ({ usernum, buttonValue }) => {
     //커뮤니티 페이지로 이동
     setIsCommunity(true);
   };
+  const onTodo = () => {
+    //투두리스트 페이지로 이동
+    navigate('/todo', { state: state });
+  };
+
+  const onRandom = () => {
+    //성향테스트 페이지로 이동
+    navigate('/random', { state: state });
+  };
+
+  const onMain = () => {
+    // 페이지로 이동
+    navigate('/main', { state: state });
+  };
 
   /**
 
@@ -81,7 +95,7 @@ const App = ({ usernum, buttonValue }) => {
 
   const handleTimeButton = (event) => {
     const name = event.target.value;
-    if (name === '주기적으로 참여 가능') {
+    if (name === '관리에 주기적으로 참여 가능') {
       setTime('Can participate periodically');
       buttonSetTime(name);
     } else {
@@ -120,10 +134,10 @@ const App = ({ usernum, buttonValue }) => {
 
   const handleLightButton = (event) => {
     const name = event.target.value;
-    if (name === '많다') {
+    if (name === '광량은 많다') {
       setLight('receiving a lot of sunlight');
       buttonSetLight(name);
-    } else if (name === '적당하다') {
+    } else if (name === '광량은 적당하다') {
       setLight('get enough sunlight');
       buttonSetLight(name);
     } else {
@@ -135,13 +149,13 @@ const App = ({ usernum, buttonValue }) => {
 
   const handleFunctionsButton = (event) => {
     const name = event.target.value;
-    if (name === '공기정화') {
+    if (name === '공기정화 기능') {
       setFunctions('for air purification');
       buttonSetFunctions(name);
-    } else if (name === '장식') {
+    } else if (name === '장식 기능') {
       setFunctions('for decoration');
       buttonSetFunctions(name);
-    } else if (name === '공기정화와 장식') {
+    } else if (name === '공기정화와 장식 기능') {
       setFunctions('for air purication and decoration');
       buttonSetFunctions(name);
     } else {
@@ -155,7 +169,6 @@ const App = ({ usernum, buttonValue }) => {
   console.log('recommend button', buttonValue);
   console.log('usernum', state);
 
-
   const showModal = (event) => {
     const value = event.target.value;
     const text = value.split(',');
@@ -167,19 +180,20 @@ const App = ({ usernum, buttonValue }) => {
 
   //식물이름 가져오기
   const userMainPlant = async () => {
-    axios.post('http://localhost:8800/plantall', { 
-      usernum: usernum })
+    axios
+      .post('http://localhost:8800/plantall', {
+        usernum: usernum,
+      })
       .then((res) => {
-        console.log(res.data)
-        if(res.data.length == 0){
-            console.log('first login');
-        }
-        else{
+        console.log(res.data);
+        if (res.data.length == 0) {
+          console.log('first login');
+        } else {
           setUserPlantNum(res.data[res.data.length - 1].key);
           setPlantName(res.data[res.data.length - 1].plant_name);
           console.log('recommend page', userplantnum, plantname);
         }
-    });
+      });
   };
 
   //등록 버튼 눌렀을 때
@@ -197,13 +211,13 @@ const App = ({ usernum, buttonValue }) => {
         alert('등록되었습니다');
         console.log(response.data);
         setIsMain(true);
-        userMainPlant()
-          .then(() => {
-            handleTodo();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        // userMainPlant()
+        //   .then(() => {
+        //     handleTodo();
+        //   })
+        //   .catch((error) => {
+        //     console.log(error);
+        //   });
       })
       .catch((error) => {
         console.log(error);
@@ -212,16 +226,16 @@ const App = ({ usernum, buttonValue }) => {
   };
 
   //식물 투두리스트 todo 테이블에 저장
-  const handleTodo = () => {
-    axios.post('http://localhost:8800/rectodo', { 
-      plantname: recommendPlant, 
-      userplantnum: Number(userplantnum+1), 
-      usernum: usernum 
-    })
-    .then((res) => {
-      console.log('todotodotodo', res.data);
-    });
-  };
+  // const handleTodo = () => {
+  //   axios.post('http://localhost:8800/rectodo', {
+  //     plantname: recommendPlant,
+  //     userplantnum: Number(userplantnum+1),
+  //     usernum: usernum
+  //   })
+  //   .then((res) => {
+  //     console.log('todotodotodo', res.data);
+  //   });
+  // };
 
   const handleCancel = () => {
     setOpen(false);
@@ -254,8 +268,7 @@ const App = ({ usernum, buttonValue }) => {
       const res2 = await axios.post('http://localhost:8800/', { message });
       setPlantImages(res2.data.images);
 
-
-      const result = await response.json().then((data) => setResponse(data.message), setLoading(false));
+      const result = await response.json().then((data) => setResponse(data.message), setHasData(true));
 
       // handleSubmit이 완료된 후에 추가 요청 보내기
       await handleInsertText();
@@ -307,64 +320,105 @@ const App = ({ usernum, buttonValue }) => {
           onLight ? (
             onFunctions ? (
               loading ? (
-                <>
-                  <div className='main_nav_rec'>
-                    <div className='main_logo_rec'>
-                      <NavLink to={'http://localhost:3000/'}>
-                        <img src={logo} alt='My Image' width='160' height='60' />
-                      </NavLink>
+                hasData ? (
+                  <>
+                    <div className='main_nav_rec'>
+                      <div className='main_logo_rec'>
+                        <NavLink to={'http://localhost:3000/'}>
+                          <img src={logo} alt='My Image' width='160' height='60' />
+                        </NavLink>
+                      </div>
+
+                      <div className='main_nav_but_rec'>
+                        <button onClick={onMain}> 메인페이지 </button>
+                        <button onClick={onCommunity}> 커뮤니티 </button>
+                        <button onClick={onTodo}> 투두리스트 </button>
+                        <button onClick={onRandom}> 식물 성향 테스트 </button>
+                        <button onClick={handleSubmit}>로그아웃</button>
+                      </div>
                     </div>
 
-                    <div className='main_nav_but_rec'>
-                      <Link to='/main'> 메인 페이지 </Link>
-                      <Link to='/community'> 커뮤니티 </Link>
-                      <Link to='/todo'> to-do list </Link>
-                      <Link to='/random'> 식물 성향 테스트 </Link>
-                      <button onClick={handleLogout}>로그아웃</button>
+                    <div className='result'>
+                      <br></br>
+                      <br></br>
                     </div>
-                  </div>
-
-                  <div className='result'>
-                    <form onSubmit={handleSubmit}>
-                      <button
-                        className='resultbtn'
-                        type='submit'
-                        value={`${text}`}
-                        onClick={() => {
-                          setMessage(`${text}`);
-                        }}
-                      >
-                        결과를 보시겠습니까?
-                      </button>
-                    </form>
                     <br></br>
                     <br></br>
-                    <button className='menubtn'>로그아웃</button>
-                  </menu>
-                  <form onSubmit={handleSubmit}>
-                    <button
-                      className='resultbtn'
-                      type='submit'
-                      value={`${text}`}
-                      onClick={() => {
-                        setMessage(`${text}`);
-                      }}
-                      disabled
-                    >
-                      결과를 보시겠습니까?
-                    </button>
-                  </form>
-                  <br></br>
-                  <br></br>
-                  <div className='spin'>
-                    <Space direction='vertical'>
-                      <Spin tip='Loading' size='large'>
-                        <div className='content' />
-                      </Spin>
-                    </Space>
+                    <div>
+                      {Array.isArray(response) &&
+                        response.map((plant, idx1) => (
+                          <div className='recommend' key={plant.name}>
+                            <button key={idx1} value={[[plant.korName], [plant.plant_characteristic]]} className='recbtn' onClick={showModal}>
+                              {plant.korName}
+                            </button>
+                            <br></br>
+                            <div style={{ justifyContent: 'space-between' }}>
+                              {plantImages.length > 0 && (
+                                <div className='plantimg'>
+                                  {plantImages.map((imageUrl, idx2) => (
+                                    <img key={idx2} src={imageUrl} alt={`generated image ${idx2}`} style={{ display: idx2 === idx1 ? 'block' : 'none' }} />
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                            <br></br>
+                            <div>{plant.plant_characteristic}</div>
+                            <br></br>
+                            <Modal
+                              title='식물요정'
+                              open={open}
+                              onOk={handleOk}
+                              onCancel={handleCancel}
+                              footer={[
+                                <Button key='enroll' onClick={handleOk}>
+                                  등록
+                                </Button>,
+                                <Button key='cancel' onClick={handleCancel}>
+                                  취소
+                                </Button>,
+                              ]}
+                            >
+                              <h2 className='enroll'>{recommendPlant} 키우시겠습니까?</h2>
+                            </Modal>
+                            <br></br>
+                          </div>
+                        ))}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className='main_nav_rec'>
+                      <div className='main_logo_rec'>
+                        <NavLink to={'http://localhost:3000/'}>
+                          <img src={logo} alt='My Image' width='160' height='60' />
+                        </NavLink>
+                      </div>
 
-                  </div>
-                </>
+                      <div className='main_nav_but_rec'>
+                        <button onClick={onMain}> 메인페이지 </button>
+                        <button onClick={onCommunity}> 커뮤니티 </button>
+                        <button onClick={onTodo}> 투두리스트 </button>
+                        <button onClick={onRandom}> 식물 성향 테스트 </button>
+                        <button onClick={handleSubmit}>로그아웃</button>
+                      </div>
+                    </div>
+
+                    <div className='result'>
+                      <br></br>
+                      <br></br>
+                    </div>
+                    <h4>30초 정도 기다려주세요</h4>
+                    <br></br>
+                    <br></br>
+                    <div className='spin'>
+                      <Space direction='vertical'>
+                        <Spin tip='Loading' size='large'>
+                          <div className='content' />
+                        </Spin>
+                      </Space>
+                    </div>
+                  </>
+                )
               ) : (
                 <>
                   <div className='main_nav_rec'>
@@ -375,11 +429,11 @@ const App = ({ usernum, buttonValue }) => {
                     </div>
 
                     <div className='main_nav_but_rec'>
-                      <Link to='/main'> 메인 페이지 </Link>
-                      <Link to='/community'> 커뮤니티 </Link>
-                      <Link to='/todo'> to-do list </Link>
-                      <Link to='/random'> 식물 성향 테스트 </Link>
-                      <button onClick={handleLogout}>로그아웃</button>
+                      <button onClick={onMain}> 메인페이지 </button>
+                      <button onClick={onCommunity}> 커뮤니티 </button>
+                      <button onClick={onTodo}> 투두리스트 </button>
+                      <button onClick={onRandom}> 식물 성향 테스트 </button>
+                      <button onClick={handleSubmit}>로그아웃</button>
                     </div>
                   </div>
 
@@ -398,63 +452,9 @@ const App = ({ usernum, buttonValue }) => {
                     </form>
                     <br></br>
                     <br></br>
-                           
-                    <button className='menubtn'>로그아웃</button>
-                  </menu>
-                  <form onSubmit={handleSubmit}>
-                    <button
-                      className={`resultbtn ${showResult || response.length > 0 ? 'hidden' : ''}`}
-                      type='submit'
-                      value={`${text}`}
-                      onClick={() => {
-                        setMessage(`${text}`);
-                      }}
-                    >
-                      결과를 보시겠습니까?
-                    </button>
-                  </form>
-                  <br></br>
-                  <br></br>
-                  <div>
-                    {Array.isArray(response) &&
-                      response.map((plant, idx1) => (
-                        <div className='recommend' key={plant.name}>
-                          <button key={idx1} value={[[plant.korName], [plant.plant_characteristic]]} className='recbtn' onClick={showModal}>
-                            {plant.korName}
-                          </button>
-                          <br></br>
-                          <div style={{ justifyContent: 'space-between' }}>
-                            {plantImages.length > 0 && (
-                              <div className='plantimg'>
-                                {plantImages.map((imageUrl, idx2) => (
-                                  <img key={idx2} src={imageUrl} alt={`generated image ${idx2}`} style={{display: idx2 === idx1 ? 'block' : 'none'}}/>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                          <br></br>
-                          <div>{plant.plant_characteristic}</div>
-                          <br></br>
-                          <Modal
-                            title='식물요정'
-                            open={open}
-                            onOk={handleOk}
-                            onCancel={handleCancel}
-                            footer={[
-                              <Button key='enroll' onClick={handleOk}>
-                                등록
-                              </Button>,
-                              <Button key='cancel' onClick={handleCancel}>
-                                취소
-                              </Button>,
-                            ]}
-                          >
-                            <h2 className='enroll'>{recommendPlant} 키우시겠습니까?</h2>
-                          </Modal>
-                          <br></br>
-                        </div>
-                      ))}
                   </div>
+                  <br></br>
+                  <br></br>
                 </>
               )
             ) : (
@@ -467,11 +467,11 @@ const App = ({ usernum, buttonValue }) => {
                   </div>
 
                   <div className='main_nav_but_rec'>
-                    <Link to='/main'> 메인 페이지 </Link>
-                    <Link to='/community'> 커뮤니티 </Link>
-                    <Link to='/todo'> to-do list </Link>
-                    <Link to='/random'> 식물 성향 테스트 </Link>
-                    <button onClick={handleLogout}>로그아웃</button>
+                    <button onClick={onMain}> 메인페이지 </button>
+                    <button onClick={onCommunity}> 커뮤니티 </button>
+                    <button onClick={onTodo}> 투두리스트 </button>
+                    <button onClick={onRandom}> 식물 성향 테스트 </button>
+                    <button onClick={handleSubmit}>로그아웃</button>
                   </div>
                 </div>
 
@@ -482,17 +482,17 @@ const App = ({ usernum, buttonValue }) => {
                   <br></br>
                   <p>원하는 식물의 기능이 있나요?</p>
                   <br></br>
-                  <button className='btn' value='공기정화' onClick={handleFunctionsButton}>
+                  <button className='btn' value='공기정화 기능' onClick={handleFunctionsButton}>
                     공기 정화
                   </button>
                   <br></br>
                   <br></br>
-                  <button className='btn' value='장식' onClick={handleFunctionsButton}>
+                  <button className='btn' value='장식 기능' onClick={handleFunctionsButton}>
                     장식
                   </button>
                   <br></br>
                   <br></br>
-                  <button className='btn' value='공기정화와 장식' onClick={handleFunctionsButton}>
+                  <button className='btn' value='공기정화와 장식 기능' onClick={handleFunctionsButton}>
                     둘 다 원해요
                   </button>
                   <br></br>
@@ -513,11 +513,11 @@ const App = ({ usernum, buttonValue }) => {
                 </div>
 
                 <div className='main_nav_but_rec'>
-                  <Link to='/main'> 메인 페이지 </Link>
-                  <Link to='/community'> 커뮤니티 </Link>
-                  <Link to='/todo'> to-do list </Link>
-                  <Link to='/random'> 식물 성향 테스트 </Link>
-                  <button onClick={handleLogout}>로그아웃</button>
+                  <button onClick={onMain}> 메인페이지 </button>
+                  <button onClick={onCommunity}> 커뮤니티 </button>
+                  <button onClick={onTodo}> 투두리스트 </button>
+                  <button onClick={onRandom}> 식물 성향 테스트 </button>
+                  <button onClick={handleSubmit}>로그아웃</button>
                 </div>
               </div>
 
@@ -528,17 +528,17 @@ const App = ({ usernum, buttonValue }) => {
                 <br></br>
                 <p>광량 조건은 어떻게 되나요?</p>
                 <br></br>
-                <button className='btn' value='많다' onClick={handleLightButton}>
+                <button className='btn' value='광량은 많다' onClick={handleLightButton}>
                   많다
                 </button>
                 <br></br>
                 <br></br>
-                <button className='btn' value='적당하다' onClick={handleLightButton}>
+                <button className='btn' value='광량은 적당하다' onClick={handleLightButton}>
                   적당하다
                 </button>
                 <br></br>
                 <br></br>
-                <button className='btn' value='적다' onClick={handleLightButton}>
+                <button className='btn' value='광량은 적다' onClick={handleLightButton}>
                   적다
                 </button>
               </div>
@@ -554,11 +554,11 @@ const App = ({ usernum, buttonValue }) => {
               </div>
 
               <div className='main_nav_but_rec'>
-                <Link to='/main'> 메인 페이지 </Link>
-                <Link to='/community'> 커뮤니티 </Link>
-                <Link to='/todo'> to-do list </Link>
-                <Link to='/random'> 식물 성향 테스트 </Link>
-                <button onClick={handleLogout}>로그아웃</button>
+                <button onClick={onMain}> 메인페이지 </button>
+                <button onClick={onCommunity}> 커뮤니티 </button>
+                <button onClick={onTodo}> 투두리스트 </button>
+                <button onClick={onRandom}> 식물 성향 테스트 </button>
+                <button onClick={handleSubmit}>로그아웃</button>
               </div>
             </div>
 
@@ -595,11 +595,11 @@ const App = ({ usernum, buttonValue }) => {
             </div>
 
             <div className='main_nav_but_rec'>
-              <Link to='/main'> 메인 페이지 </Link>
-              <Link to='/community'> 커뮤니티 </Link>
-              <Link to='/todo'> to-do list </Link>
-              <Link to='/random'> 식물 성향 테스트 </Link>
-              <button onClick={handleLogout}>로그아웃</button>
+              <button onClick={onMain}> 메인페이지 </button>
+              <button onClick={onCommunity}> 커뮤니티 </button>
+              <button onClick={onTodo}> 투두리스트 </button>
+              <button onClick={onRandom}> 식물 성향 테스트 </button>
+              <button onClick={handleSubmit}>로그아웃</button>
             </div>
           </div>
 
@@ -631,11 +631,11 @@ const App = ({ usernum, buttonValue }) => {
           </div>
 
           <div className='main_nav_but_rec'>
-            <Link to='/main'> 메인 페이지 </Link>
-            <Link to='/community'> 커뮤니티 </Link>
-            <Link to='/todo'> to-do list </Link>
-            <Link to='/random'> 식물 성향 테스트 </Link>
-            <button onClick={handleLogout}>로그아웃</button>
+            <button onClick={onMain}> 메인페이지 </button>
+            <button onClick={onCommunity}> 커뮤니티 </button>
+            <button onClick={onTodo}> 투두리스트 </button>
+            <button onClick={onRandom}> 식물 성향 테스트 </button>
+            <button onClick={handleSubmit}>로그아웃</button>
           </div>
         </div>
 
@@ -646,13 +646,13 @@ const App = ({ usernum, buttonValue }) => {
           <br></br>
           <p>식물 관리에 참여할 수 있는 시간이 얼마나 되나요?</p>
           <br></br>
-          <button className='btn' value='주기적으로 참여 가능' onClick={handleTimeButton}>
+          <button className='btn' value='관리에 주기적으로 참여 가능' onClick={handleTimeButton}>
             주기적으로 참여 가능
           </button>
           <br></br>
           <br></br>
-          <button className='btn' value='체계적인 관리 없이도 잘 자랐으면 좋겠음' onClick={handleTimeButton}>
-            체계적인 관리 없이도 잘 자랐으면 좋겠음
+          <button className='btn' value='체계적인 관리 없이도 자랐으면 좋겠음' onClick={handleTimeButton}>
+            체계적인 관리 없이도 자랐으면 좋겠음
           </button>
         </div>
       </>
@@ -667,11 +667,11 @@ const App = ({ usernum, buttonValue }) => {
         </div>
 
         <div className='main_nav_but_rec'>
-          <Link to='/main'> 메인 페이지 </Link>
-          <Link to='/community'> 커뮤니티 </Link>
-          <Link to='/todo'> to-do list </Link>
-          <Link to='/random'> 식물 성향 테스트 </Link>
-          <button onClick={handleLogout}>로그아웃</button>
+          <button onClick={onMain}> 메인페이지 </button>
+          <button onClick={onCommunity}> 커뮤니티 </button>
+          <button onClick={onTodo}> 투두리스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
+          <button onClick={handleSubmit}>로그아웃</button>
         </div>
       </div>
 
@@ -682,7 +682,7 @@ const App = ({ usernum, buttonValue }) => {
         <br></br>
         <p>식물을 키워본 적이 있으신가요?</p>
         <br></br>
-        <button className='btn' value='초보자' onClick={handleExperienceButton}>
+        <button className='btn' value='식물을 키워본 경험 없음' onClick={handleExperienceButton}>
           yes
         </button>
         <br></br>
@@ -691,9 +691,8 @@ const App = ({ usernum, buttonValue }) => {
           no
         </button>
       </div>
-    </div>
-) 
-
+    </>
+  );
 };
 
 export default App;

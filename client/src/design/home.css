@@ -14,26 +14,27 @@
   width: 140px;
 }
 
+/* 여기부터 */
 .nav .nav_but a {
   text-decoration: none;
   padding-left: 20px;
   padding-right: 20px;
   color: black;
 }
-
 .nav .nav_but button {
   background-color: white;
   color: black;
   border: 1px solid white;
   font-size: 15px;
 }
+/* 여기까지 빼기 (상단바) */
 
 .header {
   background: url(../img/homeimg4.png);
   background-position: center;
   background-size: cover;
   height: 600px;
-  display: felx;
+  display: flex;
   align-items: center;
   justify-content: center;
 }
@@ -43,7 +44,7 @@
 }
 
 .header .title img {
-  margin-top: 150px;
+  margin-top: -40px;
   width: 140px;
 }
 
@@ -90,7 +91,7 @@
 .intro .card {
   flex: 1;
   text-align: center;
-  margin: 150px 40px;
+  margin: 150px 30px;
 }
 
 .intro .card i {

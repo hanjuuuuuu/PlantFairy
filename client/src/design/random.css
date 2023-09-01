@@ -11,14 +11,10 @@
   width: 140px;
 }
 
-.main_nav_random .main_nav_but_random a {
+.main_nav_random .main_nav_but_random button {
   text-decoration: none;
   padding-left: 20px;
   padding-right: 20px;
-  color: black;
-}
-
-.main_nav_random .main_nav_but_random button {
   background-color: white;
   color: black;
   border: 1px solid white;
@@ -45,7 +41,7 @@
 .ran .choose {
   display: block;
   margin: auto;
-  margin-top: 80px;
+  margin-top: 20px;
   width: 130px;
   height: 42px;
   background-color: #859c8a;
@@ -75,5 +71,201 @@
 }
 
 .ran .choose1:hover {
+  background: #bdcebb;
+}
+
+/* 배경 애니메이션 효과*/
+/*
+.canvas {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.c1 {
+  opacity: 0;
+}
+
+.c2 {
+  background: #000;
+}
+*/
+
+/* 폰트 애니메이션 효과 */
+.random-ani h1 {
+  margin-top: 80px;
+  text-align: center;
+  height: 1px;
+}
+
+.random-ani h1 span {
+  position: relative;
+  top: 2px;
+  display: inline-block;
+  animation: bounce 0.6s ease infinite alternate;
+  font-family: '맑은고딕';
+  font-weight: bolder;
+  font-size: 25px;
+  color: #5b6960;
+  text-shadow: 0 1px 0 #859c8a, 0 1px 0 #859c8a, 0 3px 0 #859c8a, 0 4px 0 #859c8a, 0 5px 0 #859c8a, 0 6px 0 transparent, 0 7px 0 transparent, 0 10px 10px #859C8A(0, 0, 0, 0.4);
+}
+
+h1 span:nth-child(2) {
+  animation-delay: 0.1s;
+}
+h1 span:nth-child(3) {
+  animation-delay: 0.2s;
+}
+h1 span:nth-child(4) {
+  animation-delay: 0.3s;
+}
+h1 span:nth-child(5) {
+  animation-delay: 0.4s;
+}
+h1 span:nth-child(6) {
+  animation-delay: 0.5s;
+}
+h1 span:nth-child(7) {
+  animation-delay: 0.6s;
+}
+h1 span:nth-child(8) {
+  animation-delay: 0.7s;
+}
+
+@keyframes bounce {
+  100% {
+    top: -20px;
+    text-shadow: 0 1px 0 #ccc, 0 2px 0 #ccc, 0 3px 0 #ccc, 0 4px 0 #ccc, 0 5px 0 #ccc, 0 6px 0 #ccc, 0 7px 0 #ccc, 0 50px 25px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* 애니메이션3 */
+.random_anim .box_ani {
+  margin: 0px;
+  width: 100%;
+  height: 650px;
+  border-radius: 5px;
+  box-shadow: 0 2px 30px rgba(black, 0.2);
+  background: lighten(#f0f4c3, 10%);
+  position: relative;
+  overflow: hidden;
+  transform: translate3d(0, 0, 0);
+}
+
+.random_anim .wave {
+  opacity: 0.4;
+  position: absolute;
+  top: 3%;
+  left: 50%;
+  background: #859c8a;
+  width: 800px;
+  height: 800px;
+  margin-left: -390px;
+  margin-top: -250px;
+  transform-origin: 50% 48%;
+  border-radius: 43%;
+  animation: drift 3000ms infinite linear;
+}
+
+.random_anim .wave.-three {
+  animation: drift 5000ms infinite linear;
+}
+
+.random_anim .wave.-two {
+  animation: drift 7000ms infinite linear;
+  opacity: 0.1;
+  background: #bdcebb;
+}
+
+.random_anim .box_ani:after {
+  content: '';
+  display: block;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(#e1bdb5, 1), rgba(#def, 0) 80%, rgba(#e0dce6, 0.5));
+  z-index: 11;
+  transform: translate3d(0, 0, 0);
+}
+
+.random_anim .title_ani {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+  line-height: 300px;
+  text-align: center;
+  transform: translate3d(0, 0, 0);
+  text-transform: uppercase;
+  font-family: initial;
+  letter-spacing: 0.4em;
+  font-size: 15px;
+  text-shadow: 0 1px 0 rgba(#6c6562, 0.1);
+  text-indent: 0.3em;
+}
+
+@keyframes drift {
+  from {
+    transform: rotate(0deg);
+  }
+  from {
+    transform: rotate(360deg);
+  }
+}
+
+.box_ani .title_ani .title {
+  margin-top: 140px;
+  text-align: center;
+  font-size: 18px;
+  font-style: italic;
+  color: #6c6562;
+}
+
+.box_ani .title_ani .theme {
+  text-align: center;
+  margin: auto;
+  margin-top: -144px;
+  color: #6c6562;
+  font-size: 15px;
+  font-style: italic;
+}
+
+.random_anim .box_ani .choose {
+  display: block;
+  margin: auto;
+  margin-top: 225px;
+  width: 170px;
+  height: 42px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 10px;
+  font-size: 21px;
+  transition: 0.5s ease;
+}
+
+.random_anim .box_ani .choose:hover {
+  background: #bdcebb;
+}
+
+.random_anim .box_ani .choose1 {
+  display: block;
+  margin: auto;
+  margin-top: 5px;
+  width: 170px;
+  height: 42px;
+  background-color: #859c8a;
+  color: white;
+  border: 1px solid #6c6562;
+  border-radius: 10px;
+  font-size: 21px;
+  transition: 0.5s ease;
+}
+
+.random_anim .box_ani .choose1:hover {
   background: #bdcebb;
 }

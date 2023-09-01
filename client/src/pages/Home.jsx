@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate, NavLink } from 'react-router-dom';
 import '../design/home.css';
+import image11 from '../img/image11.png';
 import logo from '../img/logo.png';
 import homeimg5 from '../img/homeimg5.png';
 import homeimg6 from '../img/homeimg6.png';
@@ -23,7 +24,7 @@ function Home() {
 
   const [inputs, setInputs] = useState({
     username: '',
-    user_pw: '',
+    password: '',
   });
 
   const [err, setError] = useState(null);
@@ -53,13 +54,15 @@ function Home() {
                   </NavLink>
                 </div>
 
-                <div className='nav_but'>
-                  <Link to='/main'> 메인 페이지 </Link>
+                {/* 여기부터 */}
+                {/* <div className='nav_but'>
+                  <Link to='/main'> 메인페이지 </Link>
                   <Link to='/community'> 커뮤니티 </Link>
-                  <Link to='/todo'> to-do list </Link>
-                  <Link to='/random'> 식물 성향 테스트 </Link>
+                  <Link to='/todo'> 투두리스트 </Link>
+                  <Link to='/random'> 식물성향테스트 </Link>
                   <button onClick={handleSubmit}>로그아웃</button>
-                </div>
+                </div> */}
+                {/* 여기까지 빼기 (상단바) */}
               </div>
 
               <section className='header'>
@@ -110,9 +113,9 @@ function Home() {
               <div className='text'>
                 <h1> 식물요정 </h1>
                 <br></br>
-                <p> 작고 귀여운 요정은 사람들에게 도움을 주는 존재로 묘사됩니다. 요정이 항상 우리 곁에서 </p>
-                <p> 도움을 준다는 느낌을 주고 싶어서 웹 사이트 이름을 식물요정으로 지었습니다. 식물요정은 </p>
-                <p> 사용자에 맞는 식물을 추천해주고, 더욱 체계적으로 관리할 수 있도록 도와줍니다. </p>
+                <p> 작고 귀여운 요정은 사람들에게 도움을 주는 존재로 묘사됩니다. 요정이 항상 우리 </p>
+                <p> 곁에서 도움을 준다는 느낌을 주고 싶어서 웹 사이트 이름을 식물요정으로 지었습니다. </p>
+                <p> 사용자에 맞는 식물을 추천해주고, 체계적으로 관리할 수 있도록 도와줍니다. </p>
               </div>
             </div>
           </section>
@@ -145,16 +148,16 @@ function Home() {
             <div className='list'>
               <h2> CONTECT </h2>
               <ul>
-                <li> contect #1 </li>
-                <li> contect #2 </li>
+                <li> 사이트소개 </li>
+                <li> 이용약관 </li>
               </ul>
             </div>
             &nbsp; &nbsp;
             <div className='list'>
               <h2> ABOUT </h2>
               <ul>
-                <li> about #1 </li>
-                <li> about #2 </li>
+                <li> 운영정책 </li>
+                <li> 개인정보처리방침 </li>
               </ul>
             </div>
           </div>

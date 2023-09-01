@@ -33,30 +33,18 @@ const Register = () => {
 
   return (
     <>
-      <div className='main_nav_register'>
-        <div className='main_logo_register'>
-          <NavLink to={'http://localhost:3000/'}>
-            <img src={logo} alt='My Image' width='160' height='60' />
-          </NavLink>
-        </div>
+      <div className='App1'>
+        <NavLink to={'http://localhost:3000/'}>
+          <img src={logo} alt='My Image' width='160' height='60' />
+        </NavLink>
 
-        <div className='main_nav_but_register'>
-          <Link to='/main'> 메인 페이지 </Link>
-          <Link to='/community'> 커뮤니티 </Link>
-          <Link to='/todo'> to-do list </Link>
-          <Link to='/random'> 식물 성향 테스트 </Link>
-          <button onClick={handleSubmit}>로그아웃</button>
-        </div>
-      </div>
-
-      <div className='App'>
         <div className='form'>
-          <h1> 식물요정 </h1>
-          {/* <img src={logo} alt='My Image' width='160' height='60' /> */}
+          {/* <h1> 식물요정 </h1> */}
 
           <div className='joinBox'>
             <form>
               <div className='joinBox2'>
+                <br></br>
                 <address> 아이디 * </address>
                 <br></br>
                 <label htmlFor='user_id'>아이디</label>
@@ -67,7 +55,7 @@ const Register = () => {
                 <address> 패스워드 * </address>
                 <br></br>
                 <label htmlFor='password'>패스워드</label>
-                <input type='user_pw' placeholder='패스워드' name='user_pw' onChange={handleChange} />
+                <input type='password' placeholder='패스워드' name='user_pw' onChange={handleChange} />
                 <br></br>
                 <br></br>
 

@@ -6,6 +6,7 @@
 }
 
 .StarRating {
-  margin-left: 620px;
-  margin-top: 30px;
+  display: flex;
+  justify-content: center; /* 수평 가운데 정렬 */
+  margin-top: 20px;
 }

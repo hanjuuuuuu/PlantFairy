@@ -52,7 +52,7 @@ const Comments = ({ postid }) => {
             <div className='comment'>
               <img src={comment.profilePicture} alt='' />
               <div className='info'>
-                {<span>{comment.name}</span>}
+                {<span>{comment.user_nickname}</span>}
                 <p>{comment.desc}</p>
               </div>
               <span className='date'>{moment(comment.createdAt).fromNow()}</span>

@@ -18,7 +18,6 @@ export const addLike = (req, res) => {
     if (err) return res.status(403).json('Token is not valid!');
 
     const q = 'INSERT INTO likes (`userid`, `postid`) VALUES (?)';
-
     const values = [userInfo.id, req.body.postid];
 
     db.query(q, [values], (err, data) => {
@@ -29,14 +28,13 @@ export const addLike = (req, res) => {
 };
 
 export const deleteLike = (req, res) => {
-  console.log('work!!');
   const token = req.cookies.accessToken;
   if (!token) return res.status(401).json('Not logged in!');
 
   jwt.verify(token, 'jwtkey', (err, userInfo) => {
     if (err) return res.status(403).json('Token is not valid!');
 
-    const q = 'DELETE FROM likes WHERE `userid` = ? AND `postid`= ?';
+    const q = 'DELETE FROM likes WHERE `userid` = ? AND `postid` = ?';
 
     db.query(q, [userInfo.id, req.query.postid], (err, data) => {
       if (err) return res.status(500).json(err);

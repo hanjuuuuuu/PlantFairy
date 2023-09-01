@@ -1,4 +1,3 @@
-
 .main_nav {
   height: 70px;
   display: flex;
@@ -12,68 +11,81 @@
   width: 140px;
 }
 
-.main_nav .main_nav_but a {
+.main_nav .main_nav_but button {
   text-decoration: none;
   padding-left: 20px;
   padding-right: 20px;
-  color: black;
-}
-
-.main_nav .main_nav_but button {
   background-color: white;
   color: black;
   border: 1px solid white;
   font-size: 15px;
 }
-
 /* 여기부터 메뉴 하단 */
 
 .out {
   border: 3.15px outset #e1bdb5;
   border-radius: 10px;
   background-color: white;
-  width: 1020px;
-  height: 645px;
+  width: 1120px;
+  height: 700px;
   margin-left: 220px;
 }
 
-.out .printImg {
+.out .out1 .printImg {
   position: relative;
   left: 20px;
   top: 10px;
+  width: 1000px;
+  height: 280px;
 }
 
-/* .out .printImg button {
-  border: 3.15px outset #e1bdb5;
-  background-color: white;
-  border-radius: 10px;
-  width: 210px;
-  height: 210px;
-  margin-left: 30px;
-} */
+/* 식물 이름, 특성 창 */
+.out .out1 .tab .tableprint {
+  border: 3.15px outset #bdcebb;
+  border-radius: 4px;
+  width: 760px;
+  height: 211px;
+  position: absolute;
+  left: 545px; /* 550px */
+  top: 90px; /* 85 */
+}
 
-/* .out .printImg {
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  object-fit: cover;
-} */
-
-.out h1 {
+/* 닉네임 : */
+.out .info h1 {
   margin-top: 10px;
+  margin-left: 35px;
+  font-size: 15px;
+  font-style: italic;
+}
+
+/* 이메일, 레벨, 포인트*/
+.out .info p {
   margin-left: 30px;
+  margin-top: 10px;
+  font-size: 15px;
+  font-style: italic;
+}
+
+/* 이름 */
+.out .info p1 {
+  margin-left: 33px;
+  margin-top: 10px;
+  font-size: 15px;
+  font-style: italic;
+}
+
+.out .main_plant {
+  width: 25%;
+}
+
+.out .main_plant p {
+  margin-left: 30px;
+  margin-top: 10px;
   font-size: 13px;
   font-style: italic;
 }
 
-.out .style p {
-  margin-left: 30px;
-  margin-top: 10px;
-  font-size: 13px;
-  font-style: italic;
-}
-
-.out .style .logout {
+.out .main_plant .logout {
   background-color: white;
   border-radius: 5px;
   width: 210px;
@@ -83,7 +95,21 @@
   border: 3.15px outset #e1bdb5;
 }
 
-.out .style .logout:hover {
+.out .main_plant .logout:hover {
+  color: black;
+}
+
+.out .logout_ .logout {
+  background-color: white;
+  border-radius: 5px;
+  width: 210px;
+  margin-left: 30px;
+  margin-top: 15px;
+  padding: 10px 40px;
+  border: 3.15px outset #e1bdb5;
+}
+
+.out .logout_ .logout:hover {
   color: black;
 }
 
@@ -97,25 +123,26 @@
   margin-left: 80px;
 }
 
-.out .tab .tableprint {
-  border: 3.15px outset #bdcebb;
-  border-radius: 4px;
-  width: 45%;
-  height: 29.2%;
-  position: absolute;
-  left: 550px;
-  top: 85px;
+.out .style_slot {
+  width: 75%;
+  height: 200px;
 }
 
-.out .style h1 {
+.out .style_slot .style {
+  width: 75%;
+}
+
+/* 레벨이 올라가면 슬롯이 확장됩니다! */
+.out .style_slot .style h1 {
   margin-left: 320px;
-  margin-top: -170px;
+  margin-top: -270px;
   font-size: 13px;
   font-style: italic;
   color: #6c6562;
 }
 
-.out .style .slots1 {
+/* .out .style_slot .style .slots1 {
+  clear: both;
   border: 3.15px outset #859c8a;
   background-color: white;
   border-radius: 10px;
@@ -123,33 +150,59 @@
   height: 150px;
   margin-top: 10px;
   margin-left: 320px;
-}
+} */
 
-.out .style .slots2 {
+.style_slot .style .slots1 {
+  clear: both;
   border: 3.15px outset #859c8a;
   background-color: white;
   border-radius: 10px;
-  width: 150px;
-  height: 150px;
-  margin-left: 25px;
+  width: 150px; /* 원하는 가로 크기 */
+  height: 150px; /* 원하는 세로 크기 */
+  margin-top: 10px;
+  margin-left: 320px;
+  float: left;
 }
 
-.out .style .slots3 {
+.style_slot .style .slots2 {
   border: 3.15px outset #859c8a;
   background-color: white;
   border-radius: 10px;
-  width: 150px;
+  width: 150px; /* 원하는 가로 크기 */
   height: 150px;
-  margin-left: 25px;
+  margin-left: 523px;
+  top: -150px;
+  float: left;
 }
 
-.out .style .slots4 {
+.out .style_slot .style .slots3 {
   border: 3.15px outset #859c8a;
   background-color: white;
   border-radius: 10px;
-  width: 150px;
+  width: 150px; /* 원하는 가로 크기 */
   height: 150px;
-  margin-left: 25px;
+  margin-left: 723px;
+  top: -300px;
+  float: left;
+}
+
+.out .style_slot .style .slots4 {
+  border: 3.15px outset #859c8a;
+  background-color: white;
+  border-radius: 10px;
+  width: 150px; /* 원하는 가로 크기 */
+  height: 150px;
+  margin-left: 930px;
+  top: -450px;
+  float: left;
+}
+
+.out .img {
+  position: absolute;
+  top: 550px;
+  left: 320px;
+  margin-left: 200px;
+  float: left;
 }
 
 .out .event button {
@@ -160,12 +213,12 @@
   height: 180px;
   margin-top: 15px;
   margin-left: 320px;
+  pointer-events: none;
 }
 
 .out .event img {
   width: 310px;
   height: 210px;
   margin-left: -30px;
-  margin-top: -200px;
+  margin-top: -100px;
 }
-
