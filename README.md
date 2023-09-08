@@ -12,6 +12,11 @@
  - `Node.js`
  - `Express.js`
  - `MySQL`
+
+### OpenAI
+- `text-davinchi-003`
+- `chatGPT`
+- `DALLE2`
    
 ### <주요 기능>
 - 식물 추천 기능
