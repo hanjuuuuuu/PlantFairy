@@ -21,3 +21,10 @@
 - 포인트 적립
 - 식물 성향 테스트
 - 레벨 기능
+
+  <br></br>
+
+# 식물 추천 기능
+<p align="center"> 
+  <img src="https://github.com/hanjuuuuuu/PlantFairy/assets/69234804/f00f4c56-2062-4641-a018-acf3936150e7" width="700">
+</p> 
