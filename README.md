@@ -30,7 +30,7 @@
 ### DB 설계
 <img width="1045" alt="DBv_2" src="https://github.com/hanjuuuuuu/PlantFairy/assets/69234804/aa7bf86d-13f2-4b07-85aa-f0384f8bba34">
 
-  <br></br>
+<br></br>
 
 ## 식물 추천 기능
 <p align="center"> 
@@ -38,4 +38,21 @@
 </p>
 
 ## To-do list
+<p align="center"> 
+  <img src="https://github.com/hanjuuuuuu/PlantFairy/assets/69234804/9017f1ff-0b29-4299-989b-ad65c5c024b7" width="700">
+</p>
 
+## 식물 심리 테스트
+<p align="center"> 
+  <img src="https://github.com/hanjuuuuuu/PlantFairy/assets/69234804/5b2bb859-a7cd-4ad5-8efe-6808a54277da" width="700">
+</p>
+
+## 회원가입/로그인
+<p align="center"> 
+  <img src="https://github.com/hanjuuuuuu/PlantFairy/assets/69234804/0649078e-dc81-4bb9-b682-a6f6ee76f24b" width="700">
+</p>
+
+## 커뮤니티
+<p align="center"> 
+  <img src="https://github.com/hanjuuuuuu/PlantFairy/assets/69234804/2fa01160-03de-45aa-9d4c-34d74dc0435b" width="700">
+</p>
