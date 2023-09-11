@@ -20,16 +20,22 @@
    
 ### <주요 기능>
 - 식물 추천 기능
-- 회원가입 및 로그인
 - To-do list
+- 회원가입 및 로그인
 - 커뮤니티
 - 포인트 적립
 - 식물 성향 테스트
 - 레벨 기능
 
+### DB 설계
+<img width="1045" alt="DBv_2" src="https://github.com/hanjuuuuuu/PlantFairy/assets/69234804/aa7bf86d-13f2-4b07-85aa-f0384f8bba34">
+
   <br></br>
 
-# 식물 추천 기능
+## 식물 추천 기능
 <p align="center"> 
   <img src="https://github.com/hanjuuuuuu/PlantFairy/assets/69234804/f00f4c56-2062-4641-a018-acf3936150e7" width="700">
-</p> 
+</p>
+
+## To-do list
+
