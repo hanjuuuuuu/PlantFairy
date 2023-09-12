@@ -42,7 +42,7 @@
   <img src="https://github.com/hanjuuuuuu/PlantFairy/assets/69234804/9017f1ff-0b29-4299-989b-ad65c5c024b7" width="700">
 </p>
 
-## 식물 심리 테스트
+## 식물 성향 테스트
 <p align="center"> 
   <img src="https://github.com/hanjuuuuuu/PlantFairy/assets/69234804/5b2bb859-a7cd-4ad5-8efe-6808a54277da" width="700">
 </p>
