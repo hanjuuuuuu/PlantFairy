@@ -56,6 +56,7 @@ const NewReccomend = ({ usernum, buttonValue }) => {
   };
 
   const onNewRecommend = () => {
+    // 페이지로 이동
     navigate('/newRecommend', { state: state });
   };
 
@@ -63,6 +64,10 @@ const NewReccomend = ({ usernum, buttonValue }) => {
     // 페이지로 이동
     setIsMain(true);
   };
+
+  console.log('NEWWWWWWrecommend usernum', usernum);
+  console.log('NEWWWWWWrecommend button', buttonValue);
+  console.log('NEWWWWWusernum', state);
 
   const onUserPlantPrint = () => {
     // user_plant 테이블에서 사용자의 식물 정보 가져와 메인 식물 정보 테이블로 출력
@@ -84,7 +89,6 @@ const NewReccomend = ({ usernum, buttonValue }) => {
       .then((response) => {
         const user_pick = response.data[0].user_pick;
         setUserPick(user_pick);
-        console.log('픽미픽미 픽미업', user_pick);
       })
       .catch((error) => {
         console.log(error);
@@ -517,7 +521,7 @@ const NewReccomend = ({ usernum, buttonValue }) => {
             </div>
             <br></br>
             <div>
-              {plantName && <p>{plantName}에 대한 추천이 마음에 들었나요?</p>}
+              {{ usernum } && plantName && <p>{plantName}에 대한 추천이 마음에 들었나요?</p>}
               <div>
                 <br></br>
                 <div>

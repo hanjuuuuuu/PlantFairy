@@ -177,7 +177,8 @@ const Main = () => {
       console.log('userPlantALL ------------ ');
       setUserPlantEnroll1name(res.data[0].plant_name);
       console.log('DATA ___ ', res.data[0]);
-      setUserPlantEnroll2name(res.data[1]);
+      setUserPlantEnroll2name(res.data[1].plant_name);
+      console.log('DATA ___ ', res.data[1]);
       setUserPlantEnroll3name(res.data[2]);
       setUserPlantEnroll4name(res.data[3]);
     });
@@ -371,7 +372,7 @@ const Main = () => {
                 {userPlantEnroll1}
               </Button>
             </div>
-            <div style={{ display: userLevel >= 2 ? 'block' : 'none' }}>
+            <div style={{ display: userLevel >= 1 ? 'block' : 'none' }}>
               <Button value='2' className='slots2' onClick={onNewRecommend}>
                 {userPlantEnroll2}
               </Button>

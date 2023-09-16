@@ -35,16 +35,9 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
 const configuration = new Configuration({
-  apiKey: process.env.API_KEY,
+  apiKey: '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', //process.env.API_KEY,
 });
 const openai = new OpenAIApi(configuration);
-
-// const configuration = new Configuration({
-//   organization: 'org-cZFLDQG7d7vOU4ui4WLdE5FF',
-//   apiKey: process.env.API_KEY,
-// });
-// const openai = new OpenAIApi(configuration);
-// const response = await openai.listEngines();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
