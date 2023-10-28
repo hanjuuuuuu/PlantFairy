@@ -222,7 +222,7 @@ const Random = () => {
 
         <div className='main_nav_but_random'>
           {/* 메인 onClick 수정해야함 */}
-          <button onClick={onTodo}> 메인페이지 </button>
+          <button onClick={onMain}> 메인페이지 </button>
           <button onClick={onCommunity}> 커뮤니티 </button>
           <button onClick={onTodo}> 투두리스트 </button>
           <button onClick={onRandom}> 식물성향테스트 </button>

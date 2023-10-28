@@ -138,16 +138,17 @@ const Main = () => {
     navigate('/main', { state: state });
   };
 
-  const showModal = () => {
+  const showModal = (e) => {
     //메인식물 고르는 모달 창 띄우기
     console.log('modal');
+    userMainPlant();
     setIsModalOpen(true);
   };
 
   const handleOK = (e) => {
     //메인식물 고르고 확인버튼 눌렀을 때
     console.log(e.target.value);
-    userMainPlant(e.target.value);
+    // e.target.value로 백엔드 요청보내서 사진 변경하기
     setIsModalOpen(false);
   };
 
@@ -168,17 +169,15 @@ const Main = () => {
 
   //login에서 user_num 받아오기
   const { state } = useLocation();
-  console.log('usernum IN Main', state);
-  console.log('mainbutton', buttonValue);
 
   const userMainPlant = () => {
     //메인 식물 변경할 수 있게하기(main 0으로 바꾸기)
     axios.post('http://localhost:8800/plantall', { usernum: state }).then((res) => {
-      console.log('userPlantALL ------------ ');
       setUserPlantEnroll1name(res.data[0].plant_name);
-      console.log('DATA ___ ', res.data[0]);
+      console.log(userPlantEnroll1name);
+      //console.log(res.data[0].plant_name);
       setUserPlantEnroll2name(res.data[1].plant_name);
-      console.log('DATA ___ ', res.data[1]);
+      console.log(res.data[1].plant_name);
       setUserPlantEnroll3name(res.data[2]);
       setUserPlantEnroll4name(res.data[3]);
     });
@@ -226,13 +225,13 @@ const Main = () => {
     axios
       .post('http://localhost:8800/plantslot', { usernum: state, slotnum: buttonValue })
       .then((res) => {
-        console.log('onUserPlantSlot!');
+        //console.log('onUserPlantSlot!');
         //setUserPlantEnroll0(res.data[0].plant_picture);     //메인 식물 이미지
         //setUserPlantEnroll1(res.data[res.data.length - 1].plant_picture);
         const test = setUserPlantEnroll1name(res.data[res.data.length - 1].plant_name);
-        console.log(test); // undefined
+        //console.log(test); // undefined
         setUserPlantNum(res.data[res.data.length - 1].key);
-        console.log('slot', res.data[res.data.length - 1]);
+        //console.log('slot', res.data[res.data.length - 1]);
         //setUserPlantInfo(res.data);       //메인 식물 이름, 특성, 키우기 난이도
       })
       .catch((err) => {
@@ -248,7 +247,7 @@ const Main = () => {
         usernum: state,
       })
       .then((res) => {
-        console.log(res.data[0]);
+        //console.log(res.data[0]);
         setUserPoints(res.data[0].user_point);
         const currentLevel = res.data[0].user_level;
 
@@ -298,9 +297,9 @@ const Main = () => {
     setActiveSlots(calculateActiveSlots(userLevel));
   }, [userLevel]);
 
-  // useEffect(()=> {
-  //   onUserPoints();
-  // },[state]);
+  useEffect(() => {
+    userMainPlant();
+  }, [userPlantEnroll1name]);
 
   return isRecommend ? (
     <Recommend usernum={state} buttonValue={buttonValue} />

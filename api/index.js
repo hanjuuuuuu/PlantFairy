@@ -35,7 +35,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
 const configuration = new Configuration({
-  apiKey: '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', //process.env.API_KEY,
+  apiKey: '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', //process.env.API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
@@ -69,7 +69,7 @@ app.post('/recommend', async (req, res) => {
 
   try {
     const response = await openai.createCompletion({
-      model: 'text-davinci-003',
+      model: 'gpt-3.5-turbo-instruct',
       prompt: `The three plants in ${message} are recommended and explained, and the answer format is numbered as 1.2.3 and translated into Korean and Korean plant names and English plant names are separated by -, and English plant names and Korean plant descriptions are separated by :`,
       max_tokens: 1000,
       temperature: 0.8,
@@ -274,8 +274,8 @@ app.post('/plantall', async (req, res) => {
   const sqluserplant = `SELECT user_plant_num AS "key", plant_name FROM user_plant WHERE user_num = ${usernum}`;
   db.query(sqluserplant, (err, data) => {
     if (!err) {
-      console.log('data!!!!!!!!!', data);
       res.send(data);
+      console.log('plant all : ', data);
     } else {
       console.log(err);
     }
