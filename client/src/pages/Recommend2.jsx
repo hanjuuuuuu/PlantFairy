@@ -7,11 +7,13 @@ import { AuthContext } from '../context/authContext.js';
 import { useLocation, NavLink, Link, useNavigate } from 'react-router-dom';
 import logo from '../img/logo.png';
 
-const App = ({ usernum, buttonValue }) => {
+const App = () => {
   /**
    * 페이지에서 사용하는 상태변수
    */
   const { currentUser } = useContext(AuthContext);
+
+  const buttonValue = 2;
 
   const [isInfo, setIsInfo] = useState(false);
   const [isCommunity, setIsCommunity] = useState(false);
@@ -163,9 +165,9 @@ const App = ({ usernum, buttonValue }) => {
     setOnFunctions(true);
   };
 
-  console.log('recommend usernum', usernum);
-  console.log('recommend button', buttonValue);
-  console.log('usernum', state);
+  console.log('recommend2222222 usernum', currentUser.user_num);
+  console.log('button', buttonValue);
+  //console.log('state', state);
 
   const showModal = (event) => {
     const value = event.target.value;
@@ -178,7 +180,7 @@ const App = ({ usernum, buttonValue }) => {
 
   //식물이름 가져오기
   const userMainPlant = async () => {
-    axios.post('http://localhost:8800/plantall', { usernum: usernum }).then((res) => {
+    axios.post('http://localhost:8800/plantall', { usernum: currentUser.user_num }).then((res) => {
       setUserPlantNum(res.data[res.data.length - 1].key);
       setPlantName(res.data[res.data.length - 1].plant_name);
       console.log('recommend page', userplantnum, plantname);
@@ -189,7 +191,7 @@ const App = ({ usernum, buttonValue }) => {
     console.log('button', buttonValue);
     axios
       .post('http://localhost:8800/plantenroll', {
-        usernum: usernum,
+        usernum: currentUser.user_num,
         plantmain: buttonValue,
         plantname: recommendPlant,
         //plantpicture: 'png',    //경로로 바꾸기
@@ -198,14 +200,15 @@ const App = ({ usernum, buttonValue }) => {
       .then((response) => {
         alert('등록되었습니다');
         console.log(response.data);
-        setIsMain(true);
-        userMainPlant()
-          .then(() => {
-            handleTodo();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        //setIsMain(true);
+        onMain();
+        // userMainPlant()
+        //   .then(() => {
+        //     handleTodo();
+        //   })
+        //   .catch((error) => {
+        //     console.log(error);
+        //   });
       })
       .catch((error) => {
         console.log(error);
@@ -215,7 +218,7 @@ const App = ({ usernum, buttonValue }) => {
 
   //식물 투두리스트 todo 테이블에 저장
   const handleTodo = () => {
-    axios.post('http://localhost:8800/rectodo', { plantname: plantname, userplantnum: userplantnum, usernum: usernum }).then((res) => {
+    axios.post('http://localhost:8800/rectodo', { plantname: plantname, userplantnum: userplantnum, usernum: currentUser.user_num }).then((res) => {
       console.log('todotodotodo', res.data);
     });
   };
@@ -257,7 +260,7 @@ const App = ({ usernum, buttonValue }) => {
 
   const handleInsertText = async () => {
     try {
-      const res3 = await axios.post('http://localhost:8800/inserttext', { message: text2, usernum: state });
+      const res3 = await axios.post('http://localhost:8800/inserttext', { message: text2, usernum: currentUser.user_num });
       // 추가 요청에 대한 처리 코드
     } catch (error) {
       window.alert(error);

@@ -246,32 +246,61 @@ const App = ({ usernum, buttonValue }) => {
   console.log('text: ', text);
   console.log('text2: ', text2);
 
+  // const handleSubmit = async (e) => {
+  //   console.log(loading);
+  //   e.preventDefault();
+  //   try {
+  //     setLoading(true);
+  //     setShowResult(true);
+  //     const response = await fetch('http://localhost:8800/recommend', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ message }),
+  //     });
+
+  //     // plant recommendations API call
+  //     // const res1 = await axios.post('http://localhost:8800/recommend', { message });
+  //     // setPlantRecommendations(res1.data.message);
+
+  //     //plant image creation API call
+  //     const res2 = await axios.post('http://localhost:8800/', { message });
+  //     setPlantImages(res2.data.images);
+
+  //     const result = await response.json().then((data) => setResponse(data.message), setHasData(true));
+
+  //     // handleSubmit이 완료된 후에 추가 요청 보내기
+  //     //await handleInsertText();
+  //   } catch (error) {
+  //     window.alert(error);
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     console.log(loading);
     e.preventDefault();
     try {
       setLoading(true);
       setShowResult(true);
-      const response = await fetch('http://localhost:8800/recommend', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message }),
-      });
 
-      // plant recommendations API call
-      // const res1 = await axios.post('http://localhost:8800/recommend', { message });
-      // setPlantRecommendations(res1.data.message);
+      // 병렬로 요청 보내기
+      const [response, res2] = await Promise.all([
+        fetch('http://localhost:8800/recommend', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message }),
+        }),
+        axios.post('http://localhost:8800/', { message }),
+      ]);
 
-      //plant image creation API call
-      const res2 = await axios.post('http://localhost:8800/', { message });
+      const result = await response.json();
+      setResponse(result.message);
+      setHasData(true);
+
       setPlantImages(res2.data.images);
-
-      const result = await response.json().then((data) => setResponse(data.message), setHasData(true));
-
-      // handleSubmit이 완료된 후에 추가 요청 보내기
-      await handleInsertText();
     } catch (error) {
       window.alert(error);
     }
