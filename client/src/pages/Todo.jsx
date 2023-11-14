@@ -279,25 +279,25 @@ const Todo = () => {
         <button className='menubtn'>로그아웃</button>
       </menu> */}
 
-        <div>
+        <div className='todo-container' >
           <Calendar onClickDay={handleDateClick} />
-          <div className='text-gray-500 mt-4'>
+          <div className='text-gray-500 mt-4' style={{marginLeft: '45%', marginTop: '50px'}}>
             {moment(selectedDate).format('YYYY년 MM월 DD일')}
             <br></br>
           </div>
           <div>
-            <button onClick={createTodo} disabled>
+            <button onClick={createTodo} style={{marginLeft: '42%', marginTop: '30px'}} disabled >
               {todaymonth}월의 to-do list를 만드시겠습니까?
             </button>
           </div>
           <br></br>
-          <h4>1분정도 소요됩니다!</h4>
-          <div className='spin'>
-            <Space direction='vertical'>
-              <Spin tip='Loading' size='large'>
+          <h4 style={{marginLeft: '35%'}}>열심히 to-do list를 생성하고 있습니다! 1분정도 소요됩니다.</h4>
+          <div className='spin' style={{marginLeft: '48%', marginTop: '50px'}}>
+            
+              <Spin tip='Loading' size='large' style={{marginTop: '35%'}}>
                 <div className='content' />
               </Spin>
-            </Space>
+            
           </div>
         </div>
       </div>
@@ -352,11 +352,11 @@ const Todo = () => {
               );
             }}
           />
-          <div className='text-gray-500 mt-4'>
+          <div className='text-gray-500 mt-4' style={{marginLeft: '45%', marginTop: '50px'}}>
             {moment(selectedDate).format('YYYY년 MM월 DD일')}
             <br></br>
           </div>
-          <div>
+          <div style={{marginLeft: '30%', marginTop: '30px'}}>
             {tasks &&
               tasks.map((task) => (
                 <div key={task.key}>
@@ -410,12 +410,12 @@ const Todo = () => {
 
         <div>
           <Calendar onClickDay={handleDateClick} />
-          <div className='text-gray-500 mt-4'>
+          <div className='text-gray-500 mt-4' style={{marginLeft: '45%', marginTop: '50px'}}>
             {moment(selectedDate).format('YYYY년 MM월 DD일')}
             <br></br>
           </div>
           <div>
-            <button onClick={createTodo}>{todaymonth}월의 to-do list를 만드시겠습니까?</button>
+            <button style={{marginLeft: '42%', marginTop: '30px'}} onClick={createTodo}>{todaymonth}월의 to-do list를 만드시겠습니까?</button>
           </div>
         </div>
       </div>

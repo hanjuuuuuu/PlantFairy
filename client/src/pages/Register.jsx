@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { Link, useNavigate, NavLink } from 'react-router-dom';
-import axios from 'axios';
-import '../design/register.css';
-import logo from '../img/logo.png';
+import React, { useState } from "react";
+import { Link, useNavigate, NavLink } from "react-router-dom";
+import axios from "axios";
+import "../design/register.css";
+import logo from "../img/logo.png";
 
 const Register = () => {
   const [inputs, setInputs] = useState({
-    user_id: '',
-    user_pw: '',
-    user_name: '',
-    user_nickname: '',
-    user_email: '',
+    user_id: "",
+    user_pw: "",
+    user_name: "",
+    user_nickname: "",
+    user_email: "",
   });
   const [err, setError] = useState(null);
 
@@ -24,8 +24,8 @@ const Register = () => {
     e.preventDefault();
     console.log(inputs);
     try {
-      await axios.post('http://localhost:8800/api/auth/register', inputs);
-      navigate('/login');
+      await axios.post("http://localhost:8800/api/auth/register", inputs);
+      navigate("/login");
     } catch (err) {
       setError(err.response.data);
     }
@@ -33,29 +33,39 @@ const Register = () => {
 
   return (
     <>
-      <div className='App1'>
-        <NavLink to={'http://localhost:3000/'}>
-          <img src={logo} alt='My Image' width='160' height='60' />
+      <div className="App1">
+        <NavLink to={"http://localhost:3000/"}>
+          <img src={logo} alt="My Image" width="160" height="60" />
         </NavLink>
 
-        <div className='form'>
+        <div className="form">
           {/* <h1> 식물요정 </h1> */}
 
-          <div className='joinBox'>
+          <div className="joinBox">
             <form>
-              <div className='joinBox2'>
+              <div className="joinBox2">
                 <br></br>
                 <address> 아이디 * </address>
                 <br></br>
-                <label htmlFor='user_id'>아이디</label>
-                <input type='text' placeholder='아이디' name='user_id' onChange={handleChange} />
+                <label htmlFor="user_id">아이디</label>
+                <input
+                  type="text"
+                  placeholder="아이디"
+                  name="user_id"
+                  onChange={handleChange}
+                />
                 <br></br>
                 <br></br>
 
                 <address> 패스워드 * </address>
                 <br></br>
-                <label htmlFor='password'>패스워드</label>
-                <input type='password' placeholder='패스워드' name='user_pw' onChange={handleChange} />
+                <label htmlFor="password">패스워드</label>
+                <input
+                  type="password"
+                  placeholder="패스워드"
+                  name="user_pw"
+                  onChange={handleChange}
+                />
                 <br></br>
                 <br></br>
 
@@ -68,22 +78,37 @@ const Register = () => {
 
                 <address> 이름 * </address>
                 <br></br>
-                <label htmlFor='user_name'>이름</label>
-                <input type='text' placeholder='이름' name='user_name' onChange={handleChange} />
+                <label htmlFor="user_name">이름</label>
+                <input
+                  type="text"
+                  placeholder="이름"
+                  name="user_name"
+                  onChange={handleChange}
+                />
                 <br></br>
                 <br></br>
 
                 <address> 닉네임 * </address>
                 <br></br>
-                <label htmlFor='user_nickname'>닉네임</label>
-                <input type='text' placeholder='닉네임' name='user_nickname' onChange={handleChange} />
+                <label htmlFor="user_nickname">닉네임</label>
+                <input
+                  type="text"
+                  placeholder="닉네임"
+                  name="user_nickname"
+                  onChange={handleChange}
+                />
                 <br></br>
                 <br></br>
 
                 <address> 이메일 </address>
                 <br></br>
-                <label htmlFor='user_email'>이메일</label>
-                <input type='email' placeholder='이메일' name='user_email' onChange={handleChange} />
+                <label htmlFor="user_email">이메일</label>
+                <input
+                  type="email"
+                  placeholder="이메일"
+                  name="user_email"
+                  onChange={handleChange}
+                />
                 <br></br>
                 <br></br>
 
@@ -100,9 +125,9 @@ const Register = () => {
   <input type='radio' name='userGender' value='여' /> 여<br></br> */}
 
               <button onClick={handleSubmit}>회원가입</button>
-              <div className='link'>
+              <div className="link">
                 이미 계정이 있으십니까? &nbsp;
-                <Link to='/login'>로그인</Link>
+                <Link to="/login">로그인</Link>
               </div>
             </form>
           </div>
