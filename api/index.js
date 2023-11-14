@@ -35,9 +35,16 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
 const configuration = new Configuration({
-  apiKey: "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", //process.env.API_KEY,
+  apiKey: process.env.API_KEY,
 });
 const openai = new OpenAIApi(configuration);
+
+// const configuration = new Configuration({
+//   organization: 'org-cZFLDQG7d7vOU4ui4WLdE5FF',
+//   apiKey: process.env.API_KEY,
+// });
+// const openai = new OpenAIApi(configuration);
+// const response = await openai.listEngines();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -130,7 +137,7 @@ let month = ("0" + (1 + date.getMonth())).slice(-2);
 app.post("/rectodo", async (req, res) => {
   //식물 투두리스트 생성
   const plant = req.body;
-  console.log(plant.plantname);
+  console.log(plant.plantname, plant.usernum);
   try {
     const response = await openai.createCompletion({
       model: "text-davinci-003",
@@ -154,11 +161,17 @@ app.post("/rectodo", async (req, res) => {
 
       // MySQL 데이터베이스에 식물 투두리스트 데이터 삽입
       const sqlInsert =
-        "INSERT INTO todo(user_plant_num, day, task, complete) VALUES (?, ?, ?, ?)";
+        "INSERT INTO todo(user_num, user_plant_num, day, task, complete) VALUES (?, ?, ?, ?, ?)";
       todoRecommendations.forEach((recommendation) => {
         db.query(
           sqlInsert,
-          [plant.userplantnum, recommendation.day, recommendation.context, ""],
+          [
+            plant.usernum,
+            plant.userplantnum,
+            recommendation.day,
+            recommendation.context,
+            "",
+          ],
           (err, result) => {
             if (err) {
               console.log(err);
@@ -177,10 +190,13 @@ app.post("/rectodo", async (req, res) => {
 
 //todo 페이지에 출력할 식물 투두리스트 전달
 app.post("/planttodo", async (req, res) => {
+  let usernum = req.body.usernum;
   let plantname = req.body.plantname;
   let userplantnum = req.body.userplantnum; //req.body.userplantnum
   let tododay = req.body.day; //req.body.day
   console.log(
+    "todo usernum",
+    usernum,
     "todo plantname",
     plantname,
     "todo userplantnum",
@@ -193,9 +209,19 @@ app.post("/planttodo", async (req, res) => {
   db.query(sqlplanttodo, (err, data) => {
     if (!err) {
       console.log("planttodo", data);
-      res.send(data);
+      const responseData = {
+        plantname: plantname,
+        userplantnum: userplantnum,
+        tododay: tododay,
+        tasks: data,
+      };
+      console.log("planttodotodotodo", responseData);
+      res.send(responseData);
     } else {
       console.log(err);
+
+      // 에러 발생 시 응답
+      res.status(500).send("Internal Server Error");
     }
   });
 });
@@ -302,8 +328,8 @@ app.post("/plantall", async (req, res) => {
   const sqluserplant = `SELECT user_plant_num AS "key", plant_name FROM user_plant WHERE user_num = ${usernum}`;
   db.query(sqluserplant, (err, data) => {
     if (!err) {
+      console.log("data!!!!!!!!!", data);
       res.send(data);
-      console.log("plant all : ", data);
     } else {
       console.log(err);
     }
