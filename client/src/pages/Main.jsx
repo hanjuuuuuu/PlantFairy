@@ -1,24 +1,24 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Button, Table, Modal, Radio } from 'antd';
-import axios from 'axios';
-import '../design/main.css';
-import { useLocation, Link, NavLink, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from "react";
+import { Button, Table, Modal, Radio } from "antd";
+import axios from "axios";
+import "../design/main.css";
+import { useLocation, Link, NavLink, useNavigate } from "react-router-dom";
 //import App from './App.js';
-import Recommend from './Recommend.jsx';
-import Community from './Community.jsx';
-import logo from '../img/logo.png';
-import Info from './MyPage.jsx';
-import NewRecommend from './NewReccomend.jsx';
-import Todo from './Todo';
-import { makeRequest } from '../axios';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import fairy from '../img/fairy.png';
-import { AuthContext } from '../context/authContext';
-import level1 from '../img/1level_855_240.jpg';
-import level2 from '../img/2level_855_240.jpg';
-import level3 from '../img/3level_855_240.jpg';
-import level4 from '../img/4level_855_240.jpg';
-import level5 from '../img/5level_855_240.jpg';
+import Recommend from "./Recommend.jsx";
+import Community from "./Community.jsx";
+import logo from "../img/logo.png";
+import Info from "./MyPage.jsx";
+import NewRecommend from "./NewReccomend.jsx";
+import Todo from "./Todo";
+import { makeRequest } from "../axios";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import fairy from "../img/fairy.png";
+import { AuthContext } from "../context/authContext";
+import level1 from "../img/1level_855_240.jpg";
+import level2 from "../img/2level_855_240.jpg";
+import level3 from "../img/3level_855_240.jpg";
+import level4 from "../img/4level_855_240.jpg";
+import level5 from "../img/5level_855_240.jpg";
 
 //import img from '../../../api/sources/'
 
@@ -31,26 +31,26 @@ const Main = () => {
   const [isNewRecommend, setIsNewRecommend] = useState(false);
   const [isInfo, setIsInfo] = useState(false);
   const [isCommunity, setIsCommunity] = useState(false);
-  const [userPlantEnroll0, setUserPlantEnroll0] = useState('+');
-  const [userPlantEnroll1, setUserPlantEnroll1] = useState('+');
-  const [userPlantEnroll2, setUserPlantEnroll2] = useState('+');
-  const [userPlantEnroll3, setUserPlantEnroll3] = useState('+');
-  const [userPlantEnroll4, setUserPlantEnroll4] = useState('+');
-  const [userPlantEnroll1name, setUserPlantEnroll1name] = useState('');
-  const [userPlantEnroll2name, setUserPlantEnroll2name] = useState('');
-  const [userPlantEnroll3name, setUserPlantEnroll3name] = useState('');
-  const [userPlantEnroll4name, setUserPlantEnroll4name] = useState('');
-  const [buttonValue, setButtonValue] = useState('');
-  const [userplantnum, setUserPlantNum] = useState('');
+  const [userPlantEnroll0, setUserPlantEnroll0] = useState("+");
+  const [userPlantEnroll1, setUserPlantEnroll1] = useState("+");
+  const [userPlantEnroll2, setUserPlantEnroll2] = useState("+");
+  const [userPlantEnroll3, setUserPlantEnroll3] = useState("+");
+  const [userPlantEnroll4, setUserPlantEnroll4] = useState("+");
+  const [userPlantEnroll1name, setUserPlantEnroll1name] = useState("");
+  const [userPlantEnroll2name, setUserPlantEnroll2name] = useState("");
+  const [userPlantEnroll3name, setUserPlantEnroll3name] = useState("");
+  const [userPlantEnroll4name, setUserPlantEnroll4name] = useState("");
+  const [buttonValue, setButtonValue] = useState("");
+  const [userplantnum, setUserPlantNum] = useState("");
   const [userPoints, setUserPoints] = useState(0);
   const [userLevel, setUserLevel] = useState(1);
   const [activeSlots, setActiveSlots] = useState(1);
 
   const [userPlantInfo, setUserPlantInfo] = useState(null);
   const [plantImage, setPlantImage] = useState([]);
-  const [recommendPlant, setrecommendPlant] = useState('');
-  const [imagePath, setImagePath] = useState('');
-  const [newImgPath, setNewImagePath] = useState('');
+  const [recommendPlant, setrecommendPlant] = useState("");
+  const [imagePath, setImagePath] = useState("");
+  const [newImgPath, setNewImagePath] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [err, setError] = useState(null);
@@ -68,15 +68,15 @@ const Main = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8800/api/auth/logout');
-      navigate('/');
+      await axios.post("http://localhost:8800/api/auth/logout");
+      navigate("/");
     } catch (err) {
       setError(err.response.data);
     }
   };
 
   const onClick = (e) => {
-    console.log('click', e);
+    console.log("click", e);
   };
 
   const onRecommend = (e) => {
@@ -95,18 +95,18 @@ const Main = () => {
   };
 
   const onInfo = () => {
-    navigate('/info');
+    navigate("/info");
   };
 
   const onCommunity = () => {
     //커뮤니티 페이지로 이동
-    navigate('/community', { state: state });
+    navigate("/community", { state: state });
   };
 
   const onTodo = () => {
     //투두리스트 페이지로 이동
     try {
-      navigate('/todo', {
+      navigate("/todo", {
         state: {
           state: state,
           userplantnum: userplantnum,
@@ -121,7 +121,7 @@ const Main = () => {
   const onRandom = () => {
     //성향테스트 페이지로 이동
     try {
-      navigate('/random', {
+      navigate("/random", {
         state: {
           state: state,
           userpoints: userPoints,
@@ -135,12 +135,12 @@ const Main = () => {
 
   const onMain = () => {
     // 페이지로 이동
-    navigate('/main', { state: state });
+    navigate("/main", { state: state });
   };
 
   const showModal = (e) => {
     //메인식물 고르는 모달 창 띄우기
-    console.log('modal');
+    console.log("modal");
     userMainPlant();
     setIsModalOpen(true);
   };
@@ -158,12 +158,12 @@ const Main = () => {
 
   const columns = [
     {
-      title: '식물 이름',
-      dataIndex: 'plant_name',
+      title: "식물 이름",
+      dataIndex: "plant_name",
     },
     {
-      title: '식물 특성',
-      dataIndex: 'plant_characteristic',
+      title: "식물 특성",
+      dataIndex: "plant_characteristic",
     },
   ];
 
@@ -172,21 +172,23 @@ const Main = () => {
 
   const userMainPlant = () => {
     //메인 식물 변경할 수 있게하기(main 0으로 바꾸기)
-    axios.post('http://localhost:8800/plantall', { usernum: state }).then((res) => {
-      setUserPlantEnroll1name(res.data[0].plant_name);
-      console.log(userPlantEnroll1name);
-      //console.log(res.data[0].plant_name);
-      setUserPlantEnroll2name(res.data[1].plant_name);
-      console.log(res.data[1].plant_name);
-      setUserPlantEnroll3name(res.data[2]);
-      setUserPlantEnroll4name(res.data[3]);
-    });
+    axios
+      .post("http://localhost:8800/plantall", { usernum: state })
+      .then((res) => {
+        setUserPlantEnroll1name(res.data[0].plant_name);
+        console.log(userPlantEnroll1name);
+        //console.log(res.data[0].plant_name);
+        setUserPlantEnroll2name(res.data[1].plant_name);
+        console.log(res.data[1].plant_name);
+        setUserPlantEnroll3name(res.data[2]);
+        setUserPlantEnroll4name(res.data[3]);
+      });
   };
 
   const onUserPlantPrint = () => {
     // user_plant 테이블에서 사용자의 식물 정보 가져와 메인 식물 정보 테이블로 출력
     axios
-      .post('http://localhost:8800/plantpicture', { usernum: state })
+      .post("http://localhost:8800/plantpicture", { usernum: state })
       .then((res) => {
         const plant_name = res.data[res.data.length - 1].plant_name;
         setUserPlantNum(res.data[res.data.length - 1].key);
@@ -199,7 +201,7 @@ const Main = () => {
   };
 
   const userPlantEnroll = (plant_name) => {
-    const printImgContainer = document.querySelector('div.printImg');
+    const printImgContainer = document.querySelector("div.printImg");
 
     // 이전 이미지가 있으면 제거
     while (printImgContainer.firstChild) {
@@ -210,7 +212,7 @@ const Main = () => {
       .get(`http://localhost:8800/images/${plant_name}`)
       .then((response) => {
         if (response.data) {
-          const image = document.createElement('img');
+          const image = document.createElement("img");
           image.src = `data:image/png;base64,${response.data}`;
           printImgContainer.appendChild(image);
         }
@@ -223,12 +225,17 @@ const Main = () => {
   const onUserPlantSlot = () => {
     //user_plant 테이블에서 사용자의 식물 정보 가져와 슬롯별 식물 이미지 출력
     axios
-      .post('http://localhost:8800/plantslot', { usernum: state, slotnum: buttonValue })
+      .post("http://localhost:8800/plantslot", {
+        usernum: state,
+        slotnum: buttonValue,
+      })
       .then((res) => {
         //console.log('onUserPlantSlot!');
         //setUserPlantEnroll0(res.data[0].plant_picture);     //메인 식물 이미지
         //setUserPlantEnroll1(res.data[res.data.length - 1].plant_picture);
-        const test = setUserPlantEnroll1name(res.data[res.data.length - 1].plant_name);
+        const test = setUserPlantEnroll1name(
+          res.data[res.data.length - 1].plant_name
+        );
         //console.log(test); // undefined
         setUserPlantNum(res.data[res.data.length - 1].key);
         //console.log('slot', res.data[res.data.length - 1]);
@@ -241,9 +248,9 @@ const Main = () => {
 
   //유저 포인트, 레벨
   const userPointsLevel = () => {
-    console.log('pointslevel', userPoints);
+    console.log("pointslevel", userPoints);
     axios
-      .post('http://localhost:8800/userpointslevel', {
+      .post("http://localhost:8800/userpointslevel", {
         usernum: state,
       })
       .then((res) => {
@@ -265,7 +272,7 @@ const Main = () => {
         }
       })
       .catch((err) => {
-        console.log('error pointslevel', err);
+        console.log("error pointslevel", err);
       });
   };
 
@@ -307,14 +314,14 @@ const Main = () => {
     <NewRecommend usernum={state} buttonValue={buttonValue} />
   ) : (
     <>
-      <div className='main_nav'>
-        <div className='main_logo'>
-          <NavLink to={'http://localhost:3000/'}>
-            <img src={logo} alt='My Image' width='160' height='60' />
+      <div className="main_nav">
+        <div className="main_logo">
+          <NavLink to={"http://localhost:3000/"}>
+            <img src={logo} alt="My Image" width="160" height="60" />
           </NavLink>
         </div>
 
-        <div className='main_nav_but'>
+        <div className="main_nav_but">
           <button onClick={onMain}> 메인페이지 </button>
           <button onClick={onCommunity}> 커뮤니티 </button>
           <button onClick={onTodo}> 투두리스트 </button>
@@ -323,16 +330,22 @@ const Main = () => {
         </div>
       </div>
 
-      <section className='out'>
-        <section className='out1'>
-          <div className='printImg'> </div>
+      <section className="out">
+        <section className="out1">
+          <div className="printImg"> </div>
 
-          <div className='tab'>
-            <Table className='tableprint' columns={columns} pagination={false} dataSource={userPlantInfo} size='middle' />
+          <div className="tab">
+            <Table
+              className="tableprint"
+              columns={columns}
+              pagination={false}
+              dataSource={userPlantInfo}
+              size="middle"
+            />
           </div>
         </section>
 
-        <div className='info'>
+        <div className="info">
           <h1> 닉네임 : {currentUser.user_nickname}</h1>
 
           <br></br>
@@ -343,12 +356,18 @@ const Main = () => {
           <p> 포인트 : {currentUser.user_point} </p>
         </div>
 
-        <div className='main_plant'>
-          <button onClick={showModal} className='logout'>
+        <div className="main_plant">
+          <button onClick={showModal} className="logout">
             메인 식물 바꾸기
           </button>
-          <Modal title='메인 식물로 등록할 식물을 골라주세요' open={isModalOpen} onOk={handleOK} onCancel={handleCancel}>
-            <Radio.Group onChange={(e) => setSelectedPlant(e.target.value)} value={selectedPlant}>
+          <Modal
+            title="메인 식물로 등록할 식물을 골라주세요"
+            open={isModalOpen}
+            onOk={handleOK}
+            onCancel={handleCancel}>
+            <Radio.Group
+              onChange={(e) => setSelectedPlant(e.target.value)}
+              value={selectedPlant}>
               <Radio value={userPlantEnroll1name}>{userPlantEnroll1name}</Radio>
               <Radio value={userPlantEnroll2name}>{userPlantEnroll2name}</Radio>
               <Radio value={userPlantEnroll3name}>{userPlantEnroll3name}</Radio>
@@ -362,27 +381,27 @@ const Main = () => {
 
         <br></br>
         <br></br>
-        <section className='style_slot'>
-          <div className='style'>
+        <section className="style_slot">
+          <div className="style">
             {/* <div style={{ marginLeft: '50%' }}>레벨이 올라가면 슬롯이 확장됩니다!</div> */}
             <h1> 레벨이 올라가면 슬롯이 확장됩니다! </h1>
-            <div style={{ display: userLevel >= 1 ? 'block' : 'none' }}>
-              <Button value='1' className='slots1' onClick={onRecommend}>
+            <div style={{ display: userLevel >= 1 ? "block" : "none" }}>
+              <Button value="1" className="slots1" onClick={onRecommend}>
                 {userPlantEnroll1}
               </Button>
             </div>
-            <div style={{ display: userLevel >= 1 ? 'block' : 'none' }}>
-              <Button value='2' className='slots2' onClick={onNewRecommend}>
+            <div style={{ display: userLevel >= 1 ? "block" : "none" }}>
+              <Button value="2" className="slots2" onClick={onNewRecommend}>
                 {userPlantEnroll2}
               </Button>
             </div>
-            <div style={{ display: userLevel >= 2 ? 'block' : 'none' }}>
-              <Button value='3' className='slots3' onClick={onNewRecommend}>
+            <div style={{ display: userLevel >= 2 ? "block" : "none" }}>
+              <Button value="3" className="slots3" onClick={onNewRecommend}>
                 {userPlantEnroll3}
               </Button>
             </div>
-            <div style={{ display: userLevel >= 2 ? 'block' : 'none' }}>
-              <Button value='4' className='slots4' onClick={onNewRecommend}>
+            <div style={{ display: userLevel >= 2 ? "block" : "none" }}>
+              <Button value="4" className="slots4" onClick={onNewRecommend}>
                 {userPlantEnroll4}
               </Button>
             </div>
@@ -393,12 +412,12 @@ const Main = () => {
           </div>
         </section>
 
-        <div className='img'>
-          {currentUser.user_level === 1 && <img src={level1} alt='My Image' />}
-          {currentUser.user_level === 2 && <img src={level2} alt='My Image' />}
-          {currentUser.user_level === 3 && <img src={level3} alt='My Image' />}
-          {currentUser.user_level === 4 && <img src={level4} alt='My Image' />}
-          {currentUser.user_level === 5 && <img src={level5} alt='My Image' />}
+        <div className="img">
+          {currentUser.user_level === 1 && <img src={level1} alt="My Image" />}
+          {currentUser.user_level === 2 && <img src={level2} alt="My Image" />}
+          {currentUser.user_level === 3 && <img src={level3} alt="My Image" />}
+          {currentUser.user_level === 4 && <img src={level4} alt="My Image" />}
+          {currentUser.user_level === 5 && <img src={level5} alt="My Image" />}
         </div>
         {/*<div className='event'>
           <Button value='5'>식물 성장 모습</Button>

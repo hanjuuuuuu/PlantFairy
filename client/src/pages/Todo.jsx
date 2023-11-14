@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import '../design/todo.css';
-import axios from 'axios';
-import logo from '../img/logo.png';
-import { useLocation, useNavigate, NavLink } from 'react-router-dom';
-import { Typography, Checkbox, Space, Spin } from 'antd';
-import Calendar from 'react-calendar';
+import React, { useState, useEffect } from "react";
+import "../design/todo.css";
+import axios from "axios";
+import logo from "../img/logo.png";
+import { useLocation, useNavigate, NavLink } from "react-router-dom";
+import { Typography, Checkbox, Space, Spin } from "antd";
+import Calendar from "react-calendar";
 //import 'react-calendar/dist/Calendar.css';
-import moment from 'moment';
+import moment from "moment";
 
 const Todo = () => {
   /**
@@ -18,12 +18,12 @@ const Todo = () => {
   const [userPoints, setUserPoints] = useState(0);
   const [userLevel, setUserLevel] = useState(1);
   const [isChecked, setIsChecked] = useState(false);
-  const today = ('0' + new Date().getDate()).slice(-2);
+  const today = ("0" + new Date().getDate()).slice(-2);
   const todayday = new Date().getDate();
   const todaymonth = new Date().getMonth() + 1;
-  const todayfiltermonth = ('0' + (1 + new Date().getMonth())).slice(-2);
+  const todayfiltermonth = ("0" + (1 + new Date().getMonth())).slice(-2);
   const todayyear = new Date().getFullYear();
-  const [plantname, setPlantName] = useState('');
+  const [plantname, setPlantName] = useState("");
   const [loading, setLoading] = useState(false);
   const [hasData, setHasData] = useState(false);
   const [isMain, setIsMain] = useState(false);
@@ -34,27 +34,14 @@ const Todo = () => {
    */
   const navigate = useNavigate();
 
-  const onInfo = () => {
-    //마이 페이지로 이동
-    navigate('/info', { state: state });
-  };
-
   const onCommunity = () => {
     //커뮤니티 페이지로 이동
-    navigate('/community', { state: state });
-  };
-
-  const onTodo = () => {
-    //투두리스트 페이지로 이동
-    navigate('/todo', { state: state });
-  };
-
-  const onRandom = () => {
-    //성향테스트 페이지로 이동
     try {
-      navigate('/random', {
+      navigate("/community", {
         state: {
           state: state,
+          userplantnum: userplantnum,
+          userplantname1: userplantname1,
           userpoints: userPoints,
           userlevel: userLevel,
         },
@@ -64,17 +51,62 @@ const Todo = () => {
     }
   };
 
+  const onTodo = () => {
+    //투두리스트 페이지로 이동
+    try {
+      navigate("/todo", {
+        state: {
+          state: state,
+          userplantnum: userplantnum,
+          userplantname1: userplantname1,
+          userpoints: userPoints,
+          userlevel: userLevel,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const onRandom = () => {
+    //성향테스트 페이지로 이동
+    try {
+      navigate("/random", {
+        state: {
+          state: state,
+          userpoints: userPoints,
+          userlevel: userLevel,
+          userplantnum: userplantnum,
+          userplantname1: userplantname1,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const onMain = () => {
     //메인 페이지로 이동
-    // navigate('/main', { state: state });
-    setIsMain(true);
+    try {
+      navigate("/main", {
+        state: {
+          state: state.state,
+          userpoints: state.userPoints,
+          userlevel: state.userLevel,
+          userplantnum: state.userplantnum,
+          userplantname1: state.userplantname1,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8800/api/auth/logout');
-      navigate('/');
+      await axios.post("http://localhost:8800/api/auth/logout");
+      navigate("/");
     } catch (err) {
       console.log(err);
     }
@@ -82,12 +114,14 @@ const Todo = () => {
 
   //main에서 usernum, userplantnum 받아오기
   const location = useLocation();
-  const { state, userplantnum, userplantname1 } = location.state;
-  console.log('from main', state, userplantnum, userplantname1);
+  const { state, userpoints, userlevel, userplantnum, userplantname1 } =
+    location.state;
+  console.log("from main", state, userplantnum, userplantname1);
+  //from main 5 (2) [134, 135] (4) ['난초(Sansevieria)', '베르가못(Bergamot)', undefined, undefined]
 
   //캘린더에서 날짜를 클릭하면 날짜 변경, 투두 가져오기
   const handleDateClick = (date) => {
-    setSelectedDate(moment(date).format('YYYYMMDD'));
+    setSelectedDate(moment(date).format("YYYYMMDD"));
     console.log(selectedDate);
     userTodo();
   };
@@ -96,67 +130,129 @@ const Todo = () => {
     //투두리스트 생성하기
     //식물 투두리스트 todo 테이블에 저장
     setLoading(true);
-    setPlantName(userplantname1);
+
     let engtodaymonth;
-    let monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    let monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
     engtodaymonth = monthNames[todaymonth - 1];
-    console.log('month', engtodaymonth);
+    console.log("month", engtodaymonth);
     console.log(userplantnum, userplantname1);
 
-    try {
-      axios
-        .post('http://localhost:8800/rectodo', {
-          plantname: userplantname1,
-          userplantnum: userplantnum,
+    const todoCreationPromises = userplantname1
+      .filter((plantName) => plantName !== undefined)
+      .map((plantName, index) => {
+        const userPlantNum = userplantnum[index];
+
+        return axios.post("http://localhost:8800/rectodo", {
+          plantname: plantName,
+          userplantnum: userPlantNum,
           usernum: state,
           engtodaymonth: engtodaymonth,
-        })
-        .then((res) => {
-          setLoading(false);
-          console.log('todotodotodo', res.data);
-          userTodo();
         });
-    } catch (err) {
-      console.log(err);
-    }
+      });
+
+    Promise.all(todoCreationPromises)
+      .then((responses) => {
+        setLoading(false);
+        console.log(
+          "todotodotodo",
+          responses.map((res) => res.data)
+        );
+        userTodo();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    // try {
+    //   axios
+    //     .post("http://localhost:8800/rectodo", {
+    //       plantname: userplantname1,
+    //       userplantnum: userplantnum,
+    //       usernum: state,
+    //       engtodaymonth: engtodaymonth,
+    //     })
+    //     .then((res) => {
+    //       setLoading(false);
+    //       console.log("todotodotodo", res.data);
+    //       userTodo();
+    //     });
+    // } catch (err) {
+    //   console.log(err);
+    // }
   };
 
   const userTodo = () => {
     //등록된 식물 투두리스트 (날짜에 맞게) 가져오기
     //값이 와야지만 넘어가게
-    axios
-      .post('http://localhost:8800/planttodo', {
-        plantname: userplantname1, //plantname
-        userplantnum: userplantnum,
-        day: moment(selectedDate).format('YYYYMMDD'),
-      })
-      .then((res) => {
-        console.log('todotodotodo', res.data);
-        console.log('hey', res.data[today]);
-        setTasks(res.data);
-        setTodayTasks(res.data[today]);
-        setHasData(res.data.length > 0);
-        setIsChecked(res.data[0].complete);
+    const todoFetchPromises = userplantname1
+      .filter((plantName) => plantName !== undefined)
+      .map((plantName, index) => {
+        const userPlantNum = userplantnum[index];
+
+        return axios.post("http://localhost:8800/planttodo", {
+          usernum: state,
+          plantname: plantName,
+          userplantnum: userPlantNum,
+          day: moment(selectedDate).format("YYYYMMDD"),
+        });
+      });
+
+    Promise.all(todoFetchPromises)
+      .then((responses) => {
+        const combinedTasks = responses.map((res) => ({
+          plantname: res.data.plantname,
+          tododay: res.data.tododay,
+          userplantnum: res.data.userplantnum,
+          tasks: res.data.tasks,
+        }));
+
+        console.log("todotodotodo222", combinedTasks);
+
+        // 모든 tasks를 하나의 배열로 합침
+        const allTasks = combinedTasks.flatMap((plant) => plant.tasks);
+
+        // 첫 번째 식물의 tasks에서 첫 번째 task를 가져옴
+        const firstTask = allTasks.length > 0 ? allTasks[0] : null;
+
+        setTasks(allTasks);
+        setTodayTasks(firstTask);
+        setHasData(allTasks.length > 0);
+        setIsChecked(firstTask && firstTask.complete === "true");
       })
       .catch((error) => console.log(error));
   };
 
   //투두리스트 체크박스 클릭하면
   const handleCheckboxChange = (taskKey, taskComplete) => {
-    console.log('handlecheckboxchange', taskKey, taskComplete);
-    const updatedTasks = tasks.map((task) => (task.key === taskKey ? { ...task, complete: 'false' } : task));
+    console.log("handlecheckboxchange", taskKey, taskComplete);
+    const updatedTasks = tasks.map((task) =>
+      task.key === taskKey ? { ...task, complete: "false" } : task
+    );
     setTasks(updatedTasks);
     setIsChecked(taskComplete);
     updateUserPoints(taskKey, !taskComplete);
 
     //유저 체크 상태 변경
     axios
-      .post('http://localhost:8800/updatetaskcomplete', {
+      .post("http://localhost:8800/updatetaskcomplete", {
         todonum: taskKey,
         complete: !taskComplete,
       })
       .then((response) => {
-        console.log('Task complete', response);
+        console.log("Task complete", response);
       });
 
     //체크됐을 때 유저 포인트 올리기 2.
@@ -177,37 +273,37 @@ const Todo = () => {
       setUserPoints(userPoints - 1);
     }
     axios
-      .post('http://localhost:8800/updatetaskcomplete', {
+      .post("http://localhost:8800/updatetaskcomplete", {
         todonum: taskKey,
         complete: !taskComplete,
       })
       .then((response) => {
-        console.log('UpdateUserPoints');
+        console.log("UpdateUserPoints");
       });
 
     if (isChecked === true) {
       axios
-        .post('http://localhost:8800/updateuserpoints', {
+        .post("http://localhost:8800/updateuserpoints", {
           userplantnum: userplantnum,
           usernum: state,
           userpoints: userPoints,
           usercomplete: isChecked,
         })
         .then((res) => {
-          console.log('point up');
+          console.log("point up");
           console.log(res.data);
         })
         .catch((error) => {
-          console.log('error update points', error);
+          console.log("error update points", error);
         });
     }
   };
 
   //유저 포인트, 레벨
   const userPointsLevel = () => {
-    console.log('pointslevel', userPoints);
+    console.log("pointslevel", userPoints);
     axios
-      .post('http://localhost:8800/userpointslevel', {
+      .post("http://localhost:8800/userpointslevel", {
         usernum: state,
       })
       .then((res) => {
@@ -216,17 +312,17 @@ const Todo = () => {
         setUserLevel(res.data[0].user_level);
       })
       .catch((err) => {
-        console.log('error pointslevel', err);
+        console.log("error pointslevel", err);
       });
   };
 
   //할 일 체크 됐으면 파란점, 안됐으면 빨간점으로 표시
   const tileContent = ({ date, view }) => {
-    const todo = tasks.find((task) => task.complete === 'false');
+    const todo = tasks.find((task) => task.complete === "false");
     if (todo) {
-      var dotColor = 'dotblue';
-      console.log('1', tasks.complete);
-    } else dotColor = 'dotred';
+      var dotColor = "dotblue";
+      console.log("1", tasks.complete);
+    } else dotColor = "dotred";
     return <div className={`${dotColor}`} />;
   };
 
@@ -243,15 +339,15 @@ const Todo = () => {
   return loading ? (
     //todo 리스트 로딩중인 경우
     <>
-      <div className='main_nav'>
-        <div className='main_logo'>
-          <NavLink to={'http://localhost:3000/'}>
-            <img src={logo} alt='My Image' width='160' height='60' />
+      <div className="main_nav">
+        <div className="main_logo">
+          <NavLink to={"http://localhost:3000/"}>
+            <img src={logo} alt="My Image" width="160" height="60" />
           </NavLink>
         </div>
 
-        <div className='main_nav_but'>
-          <button onclick={onMain}> 메인 페이지 </button>
+        <div className="main_nav_but">
+          <button onClick={onMain}> 메인페이지 </button>
           <button onClick={onCommunity}> 커뮤니티 </button>
           <button onClick={onTodo}> 투두리스트 </button>
           <button onClick={onRandom}> 식물 성향 테스트 </button>
@@ -279,25 +375,32 @@ const Todo = () => {
         <button className='menubtn'>로그아웃</button>
       </menu> */}
 
-        <div className='todo-container' >
+        <div className="todo-container">
           <Calendar onClickDay={handleDateClick} />
-          <div className='text-gray-500 mt-4' style={{marginLeft: '45%', marginTop: '50px'}}>
-            {moment(selectedDate).format('YYYY년 MM월 DD일')}
+          <div
+            className="text-gray-500 mt-4"
+            style={{ marginLeft: "45%", marginTop: "50px" }}>
+            {moment(selectedDate).format("YYYY년 MM월 DD일")}
             <br></br>
           </div>
           <div>
-            <button onClick={createTodo} style={{marginLeft: '42%', marginTop: '30px'}} disabled >
+            <button
+              onClick={createTodo}
+              style={{ marginLeft: "42%", marginTop: "30px" }}
+              disabled>
               {todaymonth}월의 to-do list를 만드시겠습니까?
             </button>
           </div>
           <br></br>
-          <h4 style={{marginLeft: '35%'}}>열심히 to-do list를 생성하고 있습니다! 1분정도 소요됩니다.</h4>
-          <div className='spin' style={{marginLeft: '48%', marginTop: '50px'}}>
-            
-              <Spin tip='Loading' size='large' style={{marginTop: '35%'}}>
-                <div className='content' />
-              </Spin>
-            
+          <h4 style={{ marginLeft: "35%" }}>
+            열심히 to-do list를 생성하고 있습니다! 1분정도 소요됩니다.
+          </h4>
+          <div
+            className="spin"
+            style={{ marginLeft: "48%", marginTop: "50px" }}>
+            <Spin tip="Loading" size="large" style={{ marginTop: "35%" }}>
+              <div className="content" />
+            </Spin>
           </div>
         </div>
       </div>
@@ -305,15 +408,15 @@ const Todo = () => {
   ) : hasData ? (
     //저장된 투두리스트가 있을 경우
     <>
-      <div className='main_nav'>
-        <div className='main_logo'>
-          <NavLink to={'http://localhost:3000/'}>
-            <img src={logo} alt='My Image' width='160' height='60' />
+      <div className="main_nav">
+        <div className="main_logo">
+          <NavLink to={"http://localhost:3000/"}>
+            <img src={logo} alt="My Image" width="160" height="60" />
           </NavLink>
         </div>
 
-        <div className='main_nav_but'>
-          <button onclick={onMain}> 메인 페이지 </button>
+        <div className="main_nav_but">
+          <button onClick={onMain}> 메인 페이지 </button>
           <button onClick={onCommunity}> 커뮤니티 </button>
           <button onClick={onTodo}> 투두리스트 </button>
           <button onClick={onRandom}> 식물 성향 테스트 </button>
@@ -344,23 +447,36 @@ const Todo = () => {
           <Calendar
             onClickDay={handleDateClick}
             tileContent={({ date, view }) => {
-              const isComplete = tasks.some((task) => task.day === moment(date).format('YYYYMMDD') && task.complete === 'false');
+              const isComplete = tasks.some(
+                (task) =>
+                  task.day === moment(date).format("YYYYMMDD") &&
+                  task.complete === "false"
+              );
               return (
                 <div>
-                  <div className={isComplete ? 'dotblue' : 'dotred'} />
+                  <div className={isComplete ? "dotblue" : "dotred"} />
                 </div>
               );
             }}
           />
-          <div className='text-gray-500 mt-4' style={{marginLeft: '45%', marginTop: '50px'}}>
-            {moment(selectedDate).format('YYYY년 MM월 DD일')}
+          <div
+            className="text-gray-500 mt-4"
+            style={{ marginLeft: "45%", marginTop: "50px" }}>
+            {moment(selectedDate).format("YYYY년 MM월 DD일")}
             <br></br>
           </div>
-          <div style={{marginLeft: '30%', marginTop: '30px'}}>
+          <div style={{ marginLeft: "30%", marginTop: "30px" }}>
             {tasks &&
               tasks.map((task) => (
                 <div key={task.key}>
-                  <Checkbox checked={task.complete} onChange={() => handleCheckboxChange(task.key, task.complete)} disabled={task.day !== todayyear + todayfiltermonth + today}>
+                  <Checkbox
+                    checked={task.complete}
+                    onChange={() =>
+                      handleCheckboxChange(task.key, task.complete)
+                    }
+                    disabled={
+                      task.day !== todayyear + todayfiltermonth + today
+                    }>
                     {task.task}
                   </Checkbox>
                 </div>
@@ -372,15 +488,15 @@ const Todo = () => {
   ) : (
     //저장된 투두리스트가 없는 경우
     <>
-      <div className='main_nav'>
-        <div className='main_logo'>
-          <NavLink to={'http://localhost:3000/'}>
-            <img src={logo} alt='My Image' width='160' height='60' />
+      <div className="main_nav">
+        <div className="main_logo">
+          <NavLink to={"http://localhost:3000/"}>
+            <img src={logo} alt="My Image" width="160" height="60" />
           </NavLink>
         </div>
 
-        <div className='main_nav_but'>
-          <button onclick={onMain}> 메인 페이지 </button>
+        <div className="main_nav_but">
+          <button onClick={onMain}> 메인 페이지 </button>
           <button onClick={onCommunity}> 커뮤니티 </button>
           <button onClick={onTodo}> 투두리스트 </button>
           <button onClick={onRandom}> 식물 성향 테스트 </button>
@@ -410,12 +526,18 @@ const Todo = () => {
 
         <div>
           <Calendar onClickDay={handleDateClick} />
-          <div className='text-gray-500 mt-4' style={{marginLeft: '45%', marginTop: '50px'}}>
-            {moment(selectedDate).format('YYYY년 MM월 DD일')}
+          <div
+            className="text-gray-500 mt-4"
+            style={{ marginLeft: "45%", marginTop: "50px" }}>
+            {moment(selectedDate).format("YYYY년 MM월 DD일")}
             <br></br>
           </div>
           <div>
-            <button style={{marginLeft: '42%', marginTop: '30px'}} onClick={createTodo}>{todaymonth}월의 to-do list를 만드시겠습니까?</button>
+            <button
+              style={{ marginLeft: "42%", marginTop: "30px" }}
+              onClick={createTodo}>
+              {todaymonth}월의 to-do list를 만드시겠습니까?
+            </button>
           </div>
         </div>
       </div>
