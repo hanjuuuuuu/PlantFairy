@@ -147,22 +147,22 @@ const App = ({ usernum, buttonValue }) => {
     setOnLight(true);
   };
 
-  const handleFunctionsButton = (event) => {
-    const name = event.target.value;
-    if (name === "공기정화 기능") {
-      setFunctions("for air purification");
-      buttonSetFunctions(name);
-    } else if (name === "장식 기능") {
-      setFunctions("for decoration");
-      buttonSetFunctions(name);
-    } else if (name === "공기정화와 장식 기능") {
-      setFunctions("for air purication and decoration");
-      buttonSetFunctions(name);
-    } else {
-      setFunctions("");
-    }
-    setOnFunctions(true);
-  };
+  // const handleFunctionsButton = (event) => {
+  //   const name = event.target.value;
+  //   if (name === '공기정화 기능') {
+  //     setFunctions('for air purification');
+  //     buttonSetFunctions(name);
+  //   } else if (name === '장식 기능') {
+  //     setFunctions('for decoration');
+  //     buttonSetFunctions(name);
+  //   } else if (name === '공기정화와 장식 기능') {
+  //     setFunctions('for air purication and decoration');
+  //     buttonSetFunctions(name);
+  //   } else {
+  //     setFunctions('');
+  //   }
+  //   setOnFunctions(true);
+  // };
 
   //main에서 버튼 값 받아오기
   console.log("recommend usernum", usernum);
@@ -209,7 +209,7 @@ const App = ({ usernum, buttonValue }) => {
       })
       .then((response) => {
         alert("등록되었습니다");
-        console.log(response.data);
+        //console.log(response.data);
         setIsMain(true);
         // userMainPlant()
         //   .then(() => {
@@ -283,28 +283,24 @@ const App = ({ usernum, buttonValue }) => {
     try {
       setLoading(true);
       setShowResult(true);
-      const response = await fetch("http://localhost:8800/recommend", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message }),
-      });
 
-      // plant recommendations API call
-      // const res1 = await axios.post('http://localhost:8800/recommend', { message });
-      // setPlantRecommendations(res1.data.message);
+      // 병렬로 요청 보내기
+      const [response, res2] = await Promise.all([
+        fetch("http://localhost:8800/recommend", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ message }),
+        }),
+        axios.post("http://localhost:8800/", { message }),
+      ]);
 
-      //plant image creation API call
-      const res2 = await axios.post("http://localhost:8800/", { message });
+      const result = await response.json();
+      setResponse(result.message);
+      setHasData(true);
+
       setPlantImages(res2.data.images);
-
-      const result = await response
-        .json()
-        .then((data) => setResponse(data.message), setHasData(true));
-
-      // handleSubmit이 완료된 후에 추가 요청 보내기
-      await handleInsertText();
     } catch (error) {
       window.alert(error);
     }
@@ -349,143 +345,97 @@ const App = ({ usernum, buttonValue }) => {
 
   return isMain ? (
     <Main />
-  ) : onExperience ? (
-    onTime ? (
-      onAddress ? (
-        onSize ? (
-          onLight ? (
-            onFunctions ? (
-              loading ? (
-                hasData ? (
-                  <>
-                    <div className="main_nav_rec">
-                      <div className="main_logo_rec">
-                        <NavLink to={"http://localhost:3000/"}>
-                          <img
-                            src={logo}
-                            alt="My Image"
-                            width="160"
-                            height="60"
-                          />
-                        </NavLink>
-                      </div>
-
-                      <div className="main_nav_but_rec">
-                        <button onClick={onMain}> 메인페이지 </button>
-                        <button onClick={onCommunity}> 커뮤니티 </button>
-                        <button onClick={onTodo}> 투두리스트 </button>
-                        <button onClick={onRandom}> 식물 성향 테스트 </button>
-                        <button onClick={handleSubmit}>로그아웃</button>
-                      </div>
+  ) : onTime ? (
+    onAddress ? (
+      onSize ? (
+        onLight ? (
+          onFunctions ? (
+            loading ? (
+              hasData ? (
+                <>
+                  <div className="main_nav_rec">
+                    <div className="main_logo_rec">
+                      <NavLink to={"http://localhost:3000/"}>
+                        <img
+                          src={logo}
+                          alt="My Image"
+                          width="160"
+                          height="60"
+                        />
+                      </NavLink>
                     </div>
 
-                    <div className="result">
-                      <br></br>
-                      <br></br>
+                    <div className="main_nav_but_rec">
+                      <button onClick={onMain}> 메인페이지 </button>
+                      <button onClick={onCommunity}> 커뮤니티 </button>
+                      <button onClick={onTodo}> 투두리스트 </button>
+                      <button onClick={onRandom}> 식물 성향 테스트 </button>
+                      <button onClick={handleSubmit}>로그아웃</button>
                     </div>
+                  </div>
+
+                  <div className="result">
                     <br></br>
                     <br></br>
-                    <div>
-                      {Array.isArray(response) &&
-                        response.map((plant, idx1) => (
-                          <div className="recommend" key={plant.name}>
-                            <button
-                              key={idx1}
-                              value={[
-                                [plant.korName],
-                                [plant.plant_characteristic],
-                              ]}
-                              className="recbtn"
-                              onClick={showModal}>
-                              {plant.korName}
-                            </button>
-                            <br></br>
-                            <div style={{ justifyContent: "space-between" }}>
-                              {plantImages.length > 0 && (
-                                <div className="plantimg">
-                                  {plantImages.map((imageUrl, idx2) => (
-                                    <img
-                                      key={idx2}
-                                      src={imageUrl}
-                                      alt={`generated image ${idx2}`}
-                                      style={{
-                                        display:
-                                          idx2 === idx1 ? "block" : "none",
-                                      }}
-                                    />
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                            <br></br>
-                            <div>{plant.plant_characteristic}</div>
-                            <br></br>
-                            <Modal
-                              title="식물요정"
-                              open={open}
-                              onOk={handleOk}
-                              onCancel={handleCancel}
-                              footer={[
-                                <Button key="enroll" onClick={handleOk}>
-                                  등록
-                                </Button>,
-                                <Button key="cancel" onClick={handleCancel}>
-                                  취소
-                                </Button>,
-                              ]}>
-                              <h2 className="enroll">
-                                {recommendPlant} 키우시겠습니까?
-                              </h2>
-                            </Modal>
-                            <br></br>
+                  </div>
+                  <br></br>
+                  <br></br>
+                  <div>
+                    {Array.isArray(response) &&
+                      response.map((plant, idx1) => (
+                        <div className="recommend" key={plant.name}>
+                          <button
+                            key={idx1}
+                            value={[
+                              [plant.korName],
+                              [plant.plant_characteristic],
+                            ]}
+                            className="recbtn"
+                            onClick={showModal}>
+                            {plant.korName}
+                          </button>
+                          <br></br>
+                          <div style={{ justifyContent: "space-between" }}>
+                            {plantImages.length > 0 && (
+                              <div className="plantimg">
+                                {plantImages.map((imageUrl, idx2) => (
+                                  <img
+                                    key={idx2}
+                                    src={imageUrl}
+                                    alt={`generated image ${idx2}`}
+                                    style={{
+                                      display: idx2 === idx1 ? "block" : "none",
+                                    }}
+                                  />
+                                ))}
+                              </div>
+                            )}
                           </div>
-                        ))}
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="main_nav_rec">
-                      <div className="main_logo_rec">
-                        <NavLink to={"http://localhost:3000/"}>
-                          <img
-                            src={logo}
-                            alt="My Image"
-                            width="160"
-                            height="60"
-                          />
-                        </NavLink>
-                      </div>
-
-                      <div className="main_nav_but_rec">
-                        <button onClick={onMain}> 메인페이지 </button>
-                        <button onClick={onCommunity}> 커뮤니티 </button>
-                        <button onClick={onTodo}> 투두리스트 </button>
-                        <button onClick={onRandom}> 식물 성향 테스트 </button>
-                        <button onClick={handleSubmit}>로그아웃</button>
-                      </div>
-                    </div>
-
-                    <div className="result">
-                      <br></br>
-                      <br></br>
-                    </div>
-                    <div className="loader-container">
-                      <h4 style={{ marginTop: "100px" }}>
-                        맞춤형 식물을 추천 중입니다!
-                      </h4>
-                      <h4>30초 정도 소요됩니다.</h4>
-                      <br></br>
-                      <br></br>
-                      <div
-                        className="spin"
-                        style={{ marginLeft: "350px", marginTop: "80px" }}>
-                        <Spin tip="Loading" size="large">
-                          <div className="content" />
-                        </Spin>
-                      </div>
-                    </div>
-                  </>
-                )
+                          <br></br>
+                          <div>{plant.plant_characteristic}</div>
+                          <br></br>
+                          <Modal
+                            title="식물요정"
+                            open={open}
+                            onOk={handleOk}
+                            onCancel={handleCancel}
+                            footer={[
+                              <Button key="enroll" onClick={handleOk}>
+                                등록
+                              </Button>,
+                              <Button key="cancel" onClick={handleCancel}>
+                                취소
+                              </Button>,
+                            ]}>
+                            <h2 className="enroll">
+                              {recommendPlant} 키우시겠습니까?
+                            </h2>
+                          </Modal>
+                          <br></br>
+                        </div>
+                      ))}
+                  </div>
+                </>
               ) : (
                 <>
                   <div className="main_nav_rec">
@@ -510,22 +460,19 @@ const App = ({ usernum, buttonValue }) => {
                   </div>
 
                   <div className="result">
-                    <form onSubmit={handleSubmit}>
-                      <button
-                        className="resultbtn"
-                        type="submit"
-                        value={`${text}`}
-                        onClick={() => {
-                          setMessage(`${text}`);
-                        }}>
-                        결과를 보시겠습니까?
-                      </button>
-                    </form>
                     <br></br>
                     <br></br>
                   </div>
+                  <h4>30초 정도 기다려주세요</h4>
                   <br></br>
                   <br></br>
+                  <div className="spin">
+                    <Space direction="vertical">
+                      <Spin tip="Loading" size="large">
+                        <div className="content" />
+                      </Spin>
+                    </Space>
+                  </div>
                 </>
               )
             ) : (
@@ -546,44 +493,23 @@ const App = ({ usernum, buttonValue }) => {
                   </div>
                 </div>
 
-                <div className="Functions">
-                  <div className="exx6">
-                    <p> (6/6) </p>
-                  </div>
-                  <br></br>
-                  <p>원하는 식물의 기능이 있나요?</p>
-                  <br></br>
-                  <button
-                    className="btn"
-                    value="공기정화 기능"
-                    onClick={handleFunctionsButton}>
-                    공기 정화
-                  </button>
-                  <br></br>
-                  <br></br>
-                  <button
-                    className="btn"
-                    value="장식 기능"
-                    onClick={handleFunctionsButton}>
-                    장식
-                  </button>
+                <div className="result">
+                  <form onSubmit={handleSubmit}>
+                    <button
+                      className="resultbtn"
+                      type="submit"
+                      value={`${text}`}
+                      onClick={() => {
+                        setMessage(`${text}`);
+                      }}>
+                      결과를 보시겠습니까?
+                    </button>
+                  </form>
                   <br></br>
                   <br></br>
-                  <button
-                    className="btn"
-                    value="공기정화와 장식 기능"
-                    onClick={handleFunctionsButton}>
-                    둘 다 원해요
-                  </button>
-                  <br></br>
-                  <br></br>
-                  <button
-                    className="btn"
-                    value="식물의 기능은 상관없음"
-                    onClick={handleFunctionsButton}>
-                    상관없어요
-                  </button>{" "}
                 </div>
+                <br></br>
+                <br></br>
               </>
             )
           ) : (
@@ -606,16 +532,16 @@ const App = ({ usernum, buttonValue }) => {
 
               <div className="Light">
                 <div className="exx5">
-                  <p> (5/6) </p>
+                  <p> (5/5) </p>
                 </div>
                 <br></br>
-                <p>광량 조건은 어떻게 되나요?</p>
+                <p>물주기와 비료 관리가 복잡한 식물을 다루어도 괜찮은가요?</p>
                 <br></br>
                 <button
                   className="btn"
                   value="광량은 많다"
                   onClick={handleLightButton}>
-                  많다
+                  yes
                 </button>
                 <br></br>
                 <br></br>
@@ -623,15 +549,7 @@ const App = ({ usernum, buttonValue }) => {
                   className="btn"
                   value="광량은 적당하다"
                   onClick={handleLightButton}>
-                  적당하다
-                </button>
-                <br></br>
-                <br></br>
-                <button
-                  className="btn"
-                  value="광량은 적다"
-                  onClick={handleLightButton}>
-                  적다
+                  no
                 </button>
               </div>
             </>
@@ -656,7 +574,7 @@ const App = ({ usernum, buttonValue }) => {
 
             <div className="Size">
               <div className="exx4">
-                <p> (4/6) </p>
+                <p> (4/5) </p>
               </div>
               <br></br>
               <p>원하는 식물의 크기가 있나요?</p>
@@ -706,18 +624,27 @@ const App = ({ usernum, buttonValue }) => {
 
           <div className="Address">
             <div className="exx3">
-              <p> (3/6) </p>
+              <p> (3/5) </p>
             </div>
             <br></br>
-            <p>식물을 키우는 장소는 어디인가요?</p>
+            <p>
+              특별한 계절 관리가 필요한 식물을 고려할 수 있나요? (ex: 겨울에
+              실내로 들어오는 식물)
+            </p>
             <br></br>
-            <button className="btn" value="실내" onClick={handleAddressButton}>
-              실내
+            <button
+              className="btn"
+              value="계절관리 가능"
+              onClick={handleAddressButton}>
+              yes
             </button>
             <br></br>
             <br></br>
-            <button className="btn" value="실외" onClick={handleAddressButton}>
-              실외
+            <button
+              className="btn"
+              value="계절관리 불가능"
+              onClick={handleAddressButton}>
+              no
             </button>
           </div>
         </>
@@ -742,16 +669,18 @@ const App = ({ usernum, buttonValue }) => {
 
         <div className="Time">
           <div className="exx2">
-            <p> (2/6) </p>
+            <p> (2/5) </p>
           </div>
           <br></br>
-          <p>식물 관리에 참여할 수 있는 시간이 얼마나 되나요?</p>
+          <p>
+            식물이 자라는 모습을 주기적으로 관리하거나 다듬는 것을 선호하나요?
+          </p>
           <br></br>
           <button
             className="btn"
             value="관리에 주기적으로 참여 가능"
             onClick={handleTimeButton}>
-            주기적으로 참여 가능
+            yes
           </button>
           <br></br>
           <br></br>
@@ -759,7 +688,7 @@ const App = ({ usernum, buttonValue }) => {
             className="btn"
             value="체계적인 관리 없이도 자랐으면 좋겠음"
             onClick={handleTimeButton}>
-            체계적인 관리 없이도 자랐으면 좋겠음
+            no
           </button>
         </div>
       </>
@@ -784,14 +713,14 @@ const App = ({ usernum, buttonValue }) => {
 
       <div className="Experience">
         <div className="exx">
-          <p> (1/6) </p>
+          <p> (1/5) </p>
         </div>
         <br></br>
-        <p>식물을 키워본 적이 있으신가요?</p>
+        <p>식물을 자주 감상하고 관찰하는 것을 좋아하나요?</p>
         <br></br>
         <button
           className="btn"
-          value="식물을 키워본 경험 없음"
+          value="식물 감상을 좋아함"
           onClick={handleExperienceButton}>
           yes
         </button>
@@ -799,7 +728,7 @@ const App = ({ usernum, buttonValue }) => {
         <br></br>
         <button
           className="btn"
-          value="식물을 키워본 경험 있음"
+          value="식물 감상을 즐기지 않음"
           onClick={handleExperienceButton}>
           no
         </button>

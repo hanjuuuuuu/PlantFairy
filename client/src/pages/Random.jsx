@@ -1,12 +1,12 @@
-import React, { useEffect, useState, useContext } from 'react';
-import '../design/random.css';
-import axios from 'axios';
-import { Typography, Button, Radio } from 'antd';
-import { useNavigate, useLocation, NavLink, Link } from 'react-router-dom';
-import FunGame from './FunGame';
-import ScaryGame from './ScaryGame';
-import logo from '../img/logo.png';
-import { AuthContext } from '../context/authContext';
+import React, { useEffect, useState, useContext } from "react";
+import "../design/random.css";
+import axios from "axios";
+import { Typography, Button, Radio } from "antd";
+import { useNavigate, useLocation, NavLink, Link } from "react-router-dom";
+import FunGame from "./FunGame";
+import ScaryGame from "./ScaryGame";
+import logo from "../img/logo.png";
+import { AuthContext } from "../context/authContext";
 
 const Random = () => {
   /**
@@ -25,24 +25,24 @@ const Random = () => {
 
   const onInfo = () => {
     //마이 페이지로 이동
-    navigate('/info', { state: state });
+    navigate("/info", { state: state });
   };
   const onCommunity = () => {
     //커뮤니티 페이지로 이동
-    navigate('/community', { state: state });
+    navigate("/community", { state: state });
   };
   const onTodo = () => {
     //투두리스트 페이지로 이동
-    navigate('/todo');
+    navigate("/todo");
   };
   const onMain = () => {
     //메인 페이지로 이동
-    navigate('/main', { state: state });
+    navigate("/main", { state: state });
   };
   const onRandom = () => {
     //성향테스트 페이지로 이동
     try {
-      navigate('/random', {
+      navigate("/random", {
         state: {
           state: state,
         },
@@ -55,8 +55,8 @@ const Random = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8800/api/auth/logout');
-      navigate('/');
+      await axios.post("http://localhost:8800/api/auth/logout");
+      navigate("/");
     } catch (err) {
       setError(err.response.data);
     }
@@ -65,7 +65,7 @@ const Random = () => {
   //main에서 usernum, points, level 받아오기
   const location = useLocation();
   const { state, userpoints, userlevel } = location.state;
-  console.log('from main', state, userpoints, userlevel);
+  console.log("from main", state, userpoints, userlevel);
 
   const resetPoints = () => {
     setUserLevel(userlevel);
@@ -76,12 +76,12 @@ const Random = () => {
     setUserLevel(userlevel);
     setUserPoints(userpoints);
     if (userPoints < 10) {
-      alert('포인트가 부족합니다!');
+      alert("포인트가 부족합니다!");
     } else {
       const updatedPoints = userPoints - 10;
       setUserPoints(updatedPoints);
       updateUserPoints(updatedPoints);
-      console.log('here', userPoints);
+      console.log("here", userPoints);
       setFun(true);
     }
   };
@@ -90,19 +90,19 @@ const Random = () => {
     setUserLevel(userlevel);
     setUserPoints(userpoints);
     if (userPoints < 10) {
-      alert('포인트가 부족합니다!');
+      alert("포인트가 부족합니다!");
     } else {
       const updatedPoints = userPoints - 10;
       setUserPoints(updatedPoints);
       updateUserPoints(updatedPoints);
-      console.log('here', userPoints);
+      console.log("here", userPoints);
       setScary(true);
     }
   };
 
   const [inputs, setInputs] = useState({
-    username: '',
-    user_pw: '',
+    username: "",
+    user_pw: "",
   });
 
   const [err, setError] = useState(null);
@@ -112,8 +112,8 @@ const Random = () => {
     e.preventDefault();
     try {
       let getUserNum = await login(inputs);
-      console.log('user_num: ', getUserNum);
-      navigate('/main', { state: getUserNum });
+      console.log("user_num: ", getUserNum);
+      navigate("/main", { state: getUserNum });
     } catch (err) {
       setError(JSON.stringify(err));
     }
@@ -122,16 +122,16 @@ const Random = () => {
   //유저 10포인트 차감
   const updateUserPoints = (points) => {
     axios
-      .post('http://localhost:8800/updateuserpoints', {
+      .post("http://localhost:8800/updateuserpoints", {
         usernum: state,
         userpoints: points,
       })
       .then((res) => {
-        console.log('-10points');
+        console.log("-10points");
         console.log(res.data);
       })
       .catch((error) => {
-        console.log('error update points', error);
+        console.log("error update points", error);
       });
   };
 
@@ -213,32 +213,32 @@ const Random = () => {
     <FunGame />
   ) : (
     <>
-      <div className='main_nav_random'>
-        <div className='main_logo_random'>
-          <NavLink to={'http://localhost:3000/'}>
-            <img src={logo} alt='My Image' width='160' height='60' />
+      <div className="main_nav_random">
+        <div className="main_logo_random">
+          <NavLink to={"http://localhost:3000/"}>
+            <img src={logo} alt="My Image" width="160" height="60" />
           </NavLink>
         </div>
 
-        <div className='main_nav_but_random'>
+        <div className="main_nav_but_random">
           {/* 메인 onClick 수정해야함 */}
           <button onClick={onMain}> 메인페이지 </button>
           <button onClick={onCommunity}> 커뮤니티 </button>
           <button onClick={onTodo}> 투두리스트 </button>
-          <button onClick={onRandom}> 식물성향테스트 </button>
+          <button onClick={onRandom}> 식물 성향 테스트 </button>
           <button onClick={handleSubmit}>로그아웃</button>
         </div>
       </div>
 
       <>
-        {' '}
-        <section className='random_anim'>
-          <div class='box_ani'>
-            <div class='wave -one'></div>
-            <div class='wave -two'></div>
-            <div class='wave -three'></div>
+        {" "}
+        <section className="random_anim">
+          <div class="box_ani">
+            <div class="wave -one"></div>
+            <div class="wave -two"></div>
+            <div class="wave -three"></div>
 
-            <div className='random-ani'>
+            <div className="random-ani">
               <h1>
                 <span>식</span>
                 <span>물</span>
@@ -250,27 +250,27 @@ const Random = () => {
               </h1>
             </div>
 
-            <div class='title_ani'>
-              <Typography.Title className='title' level={4}>
-                {' '}
-                성향에 맞는 식물을 추천해 드립니다 !{' '}
+            <div class="title_ani">
+              <Typography.Title className="title" level={4}>
+                {" "}
+                성향에 맞는 식물을 추천해 드립니다 !{" "}
               </Typography.Title>
-              <h1 className='theme'>원하는 질문 테마를 선택해주세요.</h1>
+              <h1 className="theme">원하는 질문 테마를 선택해주세요.</h1>
             </div>
 
             <div>
-              <Button className='choose' onClick={userScaryGame}>
-                {' '}
-                공포{' '}
+              <Button className="choose" onClick={userScaryGame}>
+                {" "}
+                공포{" "}
               </Button>
               <br></br>
-              <Button className='choose1' onClick={userFunGame}>
-                {' '}
-                재미{' '}
+              <Button className="choose1" onClick={userFunGame}>
+                {" "}
+                재미{" "}
               </Button>
             </div>
           </div>
-        </section>{' '}
+        </section>{" "}
       </>
 
       {/*
@@ -278,7 +278,7 @@ const Random = () => {
       <canvas id="c2"></canvas>
   */}
 
-      <div className='ran'>
+      <div className="ran">
         {/* <Typography.Title className='title' level={4}> 성향에 맞는 식물을 추천해 드립니다 ! </Typography.Title>
               <h1 className='theme'>원하는 질문 테마를 선택해주세요.</h1> 
               <div>

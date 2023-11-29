@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 식물요정
 
 ## OpenAI를 이용한 식물 추천 및 관리 웹 사이트  
@@ -58,3 +59,6 @@
 <p align="center"> 
   <img src="https://github.com/hanjuuuuuu/PlantFairy/assets/69234804/2fa01160-03de-45aa-9d4c-34d74dc0435b" width="700">
 </p>
+=======
+# PlantFairy
+>>>>>>> 1bdb447 (fix: 로딩 문구, 화면배치 등 css 수정)

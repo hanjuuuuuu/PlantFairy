@@ -8,7 +8,7 @@
 }
 
 .main_nav_random .main_logo_random img {
-  width: 140px;
+  width: 160px;
 }
 
 .main_nav_random .main_nav_but_random button {
@@ -105,11 +105,13 @@
   top: 2px;
   display: inline-block;
   animation: bounce 0.6s ease infinite alternate;
-  font-family: '맑은고딕';
+  font-family: "맑은고딕";
   font-weight: bolder;
   font-size: 25px;
   color: #5b6960;
-  text-shadow: 0 1px 0 #859c8a, 0 1px 0 #859c8a, 0 3px 0 #859c8a, 0 4px 0 #859c8a, 0 5px 0 #859c8a, 0 6px 0 transparent, 0 7px 0 transparent, 0 10px 10px #859C8A(0, 0, 0, 0.4);
+  text-shadow: 0 1px 0 #859c8a, 0 1px 0 #859c8a, 0 3px 0 #859c8a,
+    0 4px 0 #859c8a, 0 5px 0 #859c8a, 0 6px 0 transparent, 0 7px 0 transparent,
+    0 10px 10px #859C8A(0, 0, 0, 0.4);
 }
 
 h1 span:nth-child(2) {
@@ -137,7 +139,8 @@ h1 span:nth-child(8) {
 @keyframes bounce {
   100% {
     top: -20px;
-    text-shadow: 0 1px 0 #ccc, 0 2px 0 #ccc, 0 3px 0 #ccc, 0 4px 0 #ccc, 0 5px 0 #ccc, 0 6px 0 #ccc, 0 7px 0 #ccc, 0 50px 25px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 1px 0 #ccc, 0 2px 0 #ccc, 0 3px 0 #ccc, 0 4px 0 #ccc,
+      0 5px 0 #ccc, 0 6px 0 #ccc, 0 7px 0 #ccc, 0 50px 25px rgba(0, 0, 0, 0.2);
   }
 }
 
@@ -180,13 +183,18 @@ h1 span:nth-child(8) {
 }
 
 .random_anim .box_ani:after {
-  content: '';
+  content: "";
   display: block;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, rgba(#e1bdb5, 1), rgba(#def, 0) 80%, rgba(#e0dce6, 0.5));
+  background: linear-gradient(
+    to bottom,
+    rgba(#e1bdb5, 1),
+    rgba(#def, 0) 80%,
+    rgba(#e0dce6, 0.5)
+  );
   z-index: 11;
   transform: translate3d(0, 0, 0);
 }
