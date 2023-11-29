@@ -90,11 +90,11 @@ const Todo = () => {
     try {
       navigate("/main", {
         state: {
-          state: state.state,
-          userpoints: state.userPoints,
-          userlevel: state.userLevel,
-          userplantnum: state.userplantnum,
-          userplantname1: state.userplantname1,
+          state: state,
+          userpoints: userPoints,
+          userlevel: userLevel,
+          userplantnum: userplantnum,
+          userplantname1: userplantname1,
         },
       });
     } catch (err) {
@@ -416,7 +416,7 @@ const Todo = () => {
         </div>
 
         <div className="main_nav_but">
-          <button onClick={onMain}> 메인 페이지 </button>
+          <button onClick={onMain}> 메인페이지 </button>
           <button onClick={onCommunity}> 커뮤니티 </button>
           <button onClick={onTodo}> 투두리스트 </button>
           <button onClick={onRandom}> 식물 성향 테스트 </button>

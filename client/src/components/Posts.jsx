@@ -1,23 +1,23 @@
-import Post from './Post';
-import './posts.scss';
-import { makeRequest } from '../axios';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import Post from "./Post";
+import "./posts.scss";
+import { makeRequest } from "../axios";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const Posts = () => {
-  const { isLoading, error, data } = useQuery(['posts'], () =>
-    makeRequest.get('/posts').then((res) => {
+  const { isLoading, error, data } = useQuery(["posts"], () =>
+    makeRequest.get("/posts").then((res) => {
       return res.data;
     })
   );
 
   console.log(data);
   return (
-    <div className='posts'>
+    <div className="posts">
       {error //
-        ? 'Something went wrong!'
+        ? "Something went wrong!"
         : isLoading
-        ? 'loading'
+        ? "loading"
         : data.map((post) => <Post post={post} key={post.id} />)}
     </div>
   );

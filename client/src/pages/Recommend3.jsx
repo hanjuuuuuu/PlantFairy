@@ -1,19 +1,17 @@
 import { Button, Modal, Space, Spin } from "antd";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, Component } from "react";
 import axios from "axios";
 import "../design/recommend.css";
 import Main from "./Main.jsx";
 import { AuthContext } from "../context/authContext.js";
-import { useLocation, NavLink, Link, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, NavLink, Link } from "react-router-dom";
 import logo from "../img/logo.png";
 
-const App = () => {
+const App = ({ usernum, buttonValue }) => {
   /**
    * 페이지에서 사용하는 상태변수
    */
   const { currentUser } = useContext(AuthContext);
-
-  const buttonValue = 2;
 
   const [isInfo, setIsInfo] = useState(false);
   const [isCommunity, setIsCommunity] = useState(false);
@@ -41,6 +39,7 @@ const App = () => {
   const [open, setOpen] = useState(false);
   const [isMain, setIsMain] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [hasData, setHasData] = useState(false);
 
   const [message, setMessage] = useState("");
   const [response, setResponse] = useState("");
@@ -51,20 +50,9 @@ const App = () => {
   const [plantImages, setPlantImages] = useState([]);
   const [plantname, setPlantName] = useState("");
   const [userplantnum, setUserPlantNum] = useState("");
+  const [showResult, setShowResult] = useState(false);
 
   const { state } = useLocation();
-
-  const navigate = useNavigate();
-
-  const onTodo = () => {
-    //투두리스트 페이지로 이동
-    navigate("/todo", { state: state, userplantnum: userplantnum });
-  };
-
-  const onRandom = () => {
-    // 페이지로 이동
-    navigate("/random", { state: state });
-  };
 
   const onInfo = () => {
     //마이 페이지로 이동
@@ -72,7 +60,16 @@ const App = () => {
   };
   const onCommunity = () => {
     //커뮤니티 페이지로 이동
-    navigate("/community", { state: state });
+    setIsCommunity(true);
+  };
+  const onTodo = () => {
+    //투두리스트 페이지로 이동
+    navigate("/todo", { state: state });
+  };
+
+  const onRandom = () => {
+    //성향테스트 페이지로 이동
+    navigate("/random", { state: state });
   };
 
   const onMain = () => {
@@ -81,15 +78,16 @@ const App = () => {
   };
 
   /**
+
    *  화면에서 사용하는 이벤트를 정의
    */
   const handleExperienceButton = (event) => {
     const name = event.target.value;
-    if (name === "자주 줄 수 있음") {
-      setExperience("I can water it frequently, ");
+    if (name === "식물을 키워본 경험 있음") {
+      setExperience("experienced person");
       buttonSetExperience(name);
     } else {
-      setExperience("I can water it infrequently, ");
+      setExperience("초보자");
       buttonSetExperience(name);
     }
     setOnExperience(true);
@@ -97,11 +95,11 @@ const App = () => {
 
   const handleTimeButton = (event) => {
     const name = event.target.value;
-    if (name === "계절마다 변화하는 식물") {
-      setTime("Plant that changes with the seasons, ");
+    if (name === "관리에 주기적으로 참여 가능") {
+      setTime("Can participate periodically");
       buttonSetTime(name);
     } else {
-      setTime("Plant that maintains a similar state throughout the year, ");
+      setTime("hope it grows well without systematic management");
       buttonSetTime(name);
     }
     setOnTime(true);
@@ -109,31 +107,26 @@ const App = () => {
 
   const handleAddressButton = (event) => {
     const name = event.target.value;
-    if (name === "꽃의 향기를 선호") {
-      setAddress("Prefer floral fragrance, ");
-      buttonSetAddress(name);
-    } else if (name === "상쾌하고 신선한 향기 선호") {
-      setAddress("Prefer fresh and refreshing fragrance, ");
-      buttonSetAddress(name);
-    } else if (name === "특별한 향기를 선호") {
-      setAddress("Prefer unique fragrance, ");
+    if (name === "실내") {
+      setAddress("Indoor");
       buttonSetAddress(name);
     } else {
-      setAddress("");
+      setAddress("Outdoor");
+      buttonSetAddress(name);
     }
     setOnAddress(true);
   };
 
   const handleSizeButton = (event) => {
     const name = event.target.value;
-    if (name === "화려하고 선명한 잎을 가진 식물") {
-      setSize("Plant with vibrant and vivid leaves, ");
+    if (name === "식물의 크기가 1m 이상") {
+      setSize("over 1m");
       buttonSetSize(name);
-    } else if (name === "조화롭고 차분한 분위기를 연출하는 식물") {
-      setSize("Plant that creates a harmonious and tranquil atmosphere, ");
+    } else if (name === "식물의 크기가 30cm ~ 1m 사이") {
+      setSize("30cm~1m size");
       buttonSetSize(name);
     } else {
-      setSize("");
+      setSize("under 30cm");
       buttonSetSize(name);
     }
     setOnSize(true);
@@ -141,33 +134,40 @@ const App = () => {
 
   const handleLightButton = (event) => {
     const name = event.target.value;
-    if (name === "있다") {
-      setLight("have the intention to raise a pet with plant, ");
+    if (name === "광량은 많다") {
+      setLight("receiving a lot of sunlight");
+      buttonSetLight(name);
+    } else if (name === "광량은 적당하다") {
+      setLight("get enough sunlight");
       buttonSetLight(name);
     } else {
-      setLight("have no intention to raise a pet with plant, ");
+      setLight("less sunlight");
       buttonSetLight(name);
     }
     setOnLight(true);
   };
 
-  const handleFunctionsButton = (event) => {
-    const name = event.target.value;
-    if (name === "빠른 성장") {
-      setFunctions("Rapid growth");
-      buttonSetFunctions(name);
-    } else if (name === "느린 성장") {
-      setFunctions("Slow growth");
-      buttonSetFunctions(name);
-    } else {
-      setFunctions("");
-    }
-    setOnFunctions(true);
-  };
+  // const handleFunctionsButton = (event) => {
+  //   const name = event.target.value;
+  //   if (name === '공기정화 기능') {
+  //     setFunctions('for air purification');
+  //     buttonSetFunctions(name);
+  //   } else if (name === '장식 기능') {
+  //     setFunctions('for decoration');
+  //     buttonSetFunctions(name);
+  //   } else if (name === '공기정화와 장식 기능') {
+  //     setFunctions('for air purication and decoration');
+  //     buttonSetFunctions(name);
+  //   } else {
+  //     setFunctions('');
+  //   }
+  //   setOnFunctions(true);
+  // };
 
-  console.log("recommend2222222 usernum", currentUser.user_num);
-  console.log("button", buttonValue);
-  //console.log('state', state);
+  //main에서 버튼 값 받아오기
+  console.log("recommend usernum", usernum);
+  console.log("recommend button", buttonValue);
+  console.log("usernum", state);
 
   const showModal = (event) => {
     const value = event.target.value;
@@ -181,19 +181,27 @@ const App = () => {
   //식물이름 가져오기
   const userMainPlant = async () => {
     axios
-      .post("http://localhost:8800/plantall", { usernum: currentUser.user_num })
+      .post("http://localhost:8800/plantall", {
+        usernum: usernum,
+      })
       .then((res) => {
-        setUserPlantNum(res.data[res.data.length - 1].key);
-        setPlantName(res.data[res.data.length - 1].plant_name);
-        console.log("recommend page", userplantnum, plantname);
+        console.log(res.data);
+        if (res.data.length == 0) {
+          console.log("first login");
+        } else {
+          setUserPlantNum(res.data[res.data.length - 1].key);
+          setPlantName(res.data[res.data.length - 1].plant_name);
+          console.log("recommend page", userplantnum, plantname);
+        }
       });
   };
 
+  //등록 버튼 눌렀을 때
   const handleOk = async () => {
     console.log("button", buttonValue);
     axios
       .post("http://localhost:8800/plantenroll", {
-        usernum: currentUser.user_num,
+        usernum: usernum,
         plantmain: buttonValue,
         plantname: recommendPlant,
         //plantpicture: 'png',    //경로로 바꾸기
@@ -201,9 +209,8 @@ const App = () => {
       })
       .then((response) => {
         alert("등록되었습니다");
-        console.log(response.data);
-        //setIsMain(true);
-        onMain();
+        //console.log(response.data);
+        setIsMain(true);
         // userMainPlant()
         //   .then(() => {
         //     handleTodo();
@@ -219,17 +226,16 @@ const App = () => {
   };
 
   //식물 투두리스트 todo 테이블에 저장
-  const handleTodo = () => {
-    axios
-      .post("http://localhost:8800/rectodo", {
-        plantname: plantname,
-        userplantnum: userplantnum,
-        usernum: currentUser.user_num,
-      })
-      .then((res) => {
-        console.log("todotodotodo", res.data);
-      });
-  };
+  // const handleTodo = () => {
+  //   axios.post('http://localhost:8800/rectodo', {
+  //     plantname: recommendPlant,
+  //     userplantnum: Number(userplantnum+1),
+  //     usernum: usernum
+  //   })
+  //   .then((res) => {
+  //     console.log('todotodotodo', res.data);
+  //   });
+  // };
 
   const handleCancel = () => {
     setOpen(false);
@@ -240,29 +246,61 @@ const App = () => {
   console.log("text: ", text);
   console.log("text2: ", text2);
 
+  // const handleSubmit = async (e) => {
+  //   console.log(loading);
+  //   e.preventDefault();
+  //   try {
+  //     setLoading(true);
+  //     setShowResult(true);
+  //     const response = await fetch('http://localhost:8800/recommend', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ message }),
+  //     });
+
+  //     // plant recommendations API call
+  //     // const res1 = await axios.post('http://localhost:8800/recommend', { message });
+  //     // setPlantRecommendations(res1.data.message);
+
+  //     //plant image creation API call
+  //     const res2 = await axios.post('http://localhost:8800/', { message });
+  //     setPlantImages(res2.data.images);
+
+  //     const result = await response.json().then((data) => setResponse(data.message), setHasData(true));
+
+  //     // handleSubmit이 완료된 후에 추가 요청 보내기
+  //     //await handleInsertText();
+  //   } catch (error) {
+  //     window.alert(error);
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     console.log(loading);
     e.preventDefault();
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:8800/recommend", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message }),
-      });
+      setShowResult(true);
 
-      //plant image creation API call
-      const res2 = await axios.post("http://localhost:8800/", { message });
+      // 병렬로 요청 보내기
+      const [response, res2] = await Promise.all([
+        fetch("http://localhost:8800/recommend", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ message }),
+        }),
+        axios.post("http://localhost:8800/", { message }),
+      ]);
+
+      const result = await response.json();
+      setResponse(result.message);
+      setHasData(true);
+
       setPlantImages(res2.data.images);
-
-      const result = await response
-        .json()
-        .then((data) => setResponse(data.message), setLoading(false));
-
-      // handleSubmit이 완료된 후에 추가 요청 보내기
-      await handleInsertText();
     } catch (error) {
       window.alert(error);
     }
@@ -272,7 +310,7 @@ const App = () => {
     try {
       const res3 = await axios.post("http://localhost:8800/inserttext", {
         message: text2,
-        usernum: currentUser.user_num,
+        usernum: state,
       });
       // 추가 요청에 대한 처리 코드
     } catch (error) {
@@ -280,19 +318,40 @@ const App = () => {
     }
   };
 
+  const [inputs, setInputs] = useState({
+    username: "",
+    user_pw: "",
+  });
+
+  const [err, setError] = useState(null);
+  const { login } = useContext(AuthContext);
+
+  const navigate = useNavigate();
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    try {
+      let getUserNum = await login(inputs);
+      console.log("user_num: ", getUserNum);
+      navigate("/main", { state: getUserNum });
+    } catch (err) {
+      setError(JSON.stringify(err));
+    }
+  };
+
   useEffect(() => {
     userMainPlant();
-  }, []);
+  }, [userplantnum]);
 
   return isMain ? (
     <Main />
-  ) : onExperience ? (
-    onTime ? (
-      onAddress ? (
-        onSize ? (
-          onLight ? (
-            onFunctions ? (
-              loading ? (
+  ) : onTime ? (
+    onAddress ? (
+      onSize ? (
+        onLight ? (
+          onFunctions ? (
+            loading ? (
+              hasData ? (
                 <>
                   <div className="main_nav_rec">
                     <div className="main_logo_rec">
@@ -311,29 +370,70 @@ const App = () => {
                       <button onClick={onCommunity}> 커뮤니티 </button>
                       <button onClick={onTodo}> 투두리스트 </button>
                       <button onClick={onRandom}> 식물 성향 테스트 </button>
-
                       <button onClick={handleSubmit}>로그아웃</button>
                     </div>
                   </div>
 
-                  <div className="resuit">
+                  <div className="result">
                     <br></br>
                     <br></br>
-                    <div className="loader-container">
-                      <h4 style={{ marginTop: "100px" }}>
-                        맞춤형 식물을 추천 중입니다!
-                      </h4>
-                      <h4>30초 정도 소요됩니다.</h4>
-                      <br></br>
-                      <br></br>
-                      <div
-                        className="spin"
-                        style={{ marginLeft: "350px", marginTop: "80px" }}>
-                        <Spin tip="Loading" size="large">
-                          <div className="content" />
-                        </Spin>
-                      </div>
-                    </div>
+                  </div>
+                  <br></br>
+                  <br></br>
+                  <div>
+                    {Array.isArray(response) &&
+                      response.map((plant, idx1) => (
+                        <div className="recommend" key={plant.name}>
+                          <button
+                            key={idx1}
+                            value={[
+                              [plant.korName],
+                              [plant.plant_characteristic],
+                            ]}
+                            className="recbtn"
+                            onClick={showModal}>
+                            {plant.korName}
+                          </button>
+                          <br></br>
+                          <div style={{ justifyContent: "space-between" }}>
+                            {plantImages.length > 0 && (
+                              <div className="plantimg">
+                                {plantImages.map((imageUrl, idx2) => (
+                                  <img
+                                    key={idx2}
+                                    src={imageUrl}
+                                    alt={`generated image ${idx2}`}
+                                    style={{
+                                      display: idx2 === idx1 ? "block" : "none",
+                                    }}
+                                  />
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                          <br></br>
+                          <div>{plant.plant_characteristic}</div>
+                          <br></br>
+                          <Modal
+                            title="식물요정"
+                            open={open}
+                            onOk={handleOk}
+                            onCancel={handleCancel}
+                            footer={[
+                              <Button key="enroll" onClick={handleOk}>
+                                등록
+                              </Button>,
+                              <Button key="cancel" onClick={handleCancel}>
+                                취소
+                              </Button>,
+                            ]}>
+                            <h2 className="enroll">
+                              {recommendPlant} 키우시겠습니까?
+                            </h2>
+                          </Modal>
+                          <br></br>
+                        </div>
+                      ))}
                   </div>
                 </>
               ) : (
@@ -355,78 +455,23 @@ const App = () => {
                       <button onClick={onCommunity}> 커뮤니티 </button>
                       <button onClick={onTodo}> 투두리스트 </button>
                       <button onClick={onRandom}> 식물 성향 테스트 </button>
-
                       <button onClick={handleSubmit}>로그아웃</button>
                     </div>
                   </div>
 
                   <div className="result">
-                    <form onSubmit={handleSubmit}>
-                      <button
-                        className="resultbtn"
-                        type="submit"
-                        value={`${text}`}
-                        onClick={() => {
-                          setMessage(`${text}`);
-                        }}>
-                        결과를 보시겠습니까?
-                      </button>
-                    </form>
                     <br></br>
                     <br></br>
-                    <div>
-                      {Array.isArray(response) &&
-                        response.map((plant) => (
-                          <div className="recommend" key={plant.name}>
-                            <button
-                              value={[
-                                [plant.korName],
-                                [plant.plant_characteristic],
-                              ]}
-                              className="recbtn"
-                              onClick={showModal}>
-                              {plant.korName}
-                            </button>
-                            <div style={{ justifyContent: "space-between" }}>
-                              <h3>Plant Images:</h3>
-                              {plantImages.length > 0 && (
-                                <div className="plantimg">
-                                  {plantImages.map((imageUrl, idx) => (
-                                    <img
-                                      key={idx}
-                                      src={imageUrl}
-                                      alt={`generated image ${idx}`}
-                                    />
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-
-                            <div className="encan">
-                              <Modal
-                                title="식물요정"
-                                open={open}
-                                onOk={handleOk}
-                                onCancel={handleCancel}
-                                footer={[
-                                  <Button key="enroll" onClick={handleOk}>
-                                    등록
-                                  </Button>,
-                                  <Button key="cancel" onClick={handleCancel}>
-                                    취소
-                                  </Button>,
-                                ]}>
-                                <h2 className="enroll">
-                                  {recommendPlant} 키우시겠습니까?
-                                </h2>
-                              </Modal>
-                            </div>
-                            <br></br>
-                            <div>{plant.plant_characteristic}</div>
-                            <br></br>
-                          </div>
-                        ))}
-                    </div>
+                  </div>
+                  <h4>30초 정도 기다려주세요</h4>
+                  <br></br>
+                  <br></br>
+                  <div className="spin">
+                    <Space direction="vertical">
+                      <Spin tip="Loading" size="large">
+                        <div className="content" />
+                      </Spin>
+                    </Space>
                   </div>
                 </>
               )
@@ -448,36 +493,23 @@ const App = () => {
                   </div>
                 </div>
 
-                <div className="Functions">
-                  <div className="exx6">
-                    <p> (6/6) </p>
-                  </div>
-                  <br></br>
-                  <p>원하는 식물의 성장속도가 있나요?</p>
-                  <br></br>
-                  <button
-                    className="btn"
-                    value="빠른 성장"
-                    onClick={handleFunctionsButton}>
-                    빠른 성장
-                  </button>
-                  <br></br>
-                  <br></br>
-                  <button
-                    className="btn"
-                    value="느린 성장"
-                    onClick={handleFunctionsButton}>
-                    느린 성장
-                  </button>
+                <div className="result">
+                  <form onSubmit={handleSubmit}>
+                    <button
+                      className="resultbtn"
+                      type="submit"
+                      value={`${text}`}
+                      onClick={() => {
+                        setMessage(`${text}`);
+                      }}>
+                      결과를 보시겠습니까?
+                    </button>
+                  </form>
                   <br></br>
                   <br></br>
-                  <button
-                    className="btn"
-                    value="상관없어요"
-                    onClick={handleFunctionsButton}>
-                    상관없어요
-                  </button>{" "}
                 </div>
+                <br></br>
+                <br></br>
               </>
             )
           ) : (
@@ -500,24 +532,24 @@ const App = () => {
 
               <div className="Light">
                 <div className="exx5">
-                  <p> (5/6) </p>
+                  <p> (5/5) </p>
                 </div>
                 <br></br>
-                <p>반려동물과 함께 키울 계획이 있으신가요?</p>
+                <p>물주기와 비료 관리가 복잡한 식물을 다루어도 괜찮은가요?</p>
                 <br></br>
                 <button
                   className="btn"
-                  value="있다"
+                  value="광량은 많다"
                   onClick={handleLightButton}>
-                  있다
+                  yes
                 </button>
                 <br></br>
                 <br></br>
                 <button
                   className="btn"
-                  value="없다"
+                  value="광량은 적당하다"
                   onClick={handleLightButton}>
-                  없다
+                  no
                 </button>
               </div>
             </>
@@ -542,32 +574,32 @@ const App = () => {
 
             <div className="Size">
               <div className="exx4">
-                <p> (4/6) </p>
+                <p> (4/5) </p>
               </div>
               <br></br>
-              <p>식물의 장식적 가치에 대해 어떻게 생각하시나요?</p>
+              <p>원하는 식물의 크기가 있나요?</p>
               <br></br>
               <button
                 className="btn"
-                value="화려하고 선명한 잎을 가진 식물"
+                value="식물의 크기가 1m 이상"
                 onClick={handleSizeButton}>
-                화려하고 선명한 잎을 가진 식물
+                크다(1m 이상)
               </button>
               <br></br>
               <br></br>
               <button
                 className="btn"
-                value="조화롭고 차분한 분위기를 연출하는 식물"
+                value="식물의 크기가 30cm ~ 1m 사이"
                 onClick={handleSizeButton}>
-                조화롭고 차분한 분위기를 연출하는 식물
+                중간(30cm ~ 1m)
               </button>
               <br></br>
               <br></br>
               <button
                 className="btn"
-                value="장식적 가치를 고려하지 않음"
+                value="식물의 크기가 30cm 이하"
                 onClick={handleSizeButton}>
-                장식적 가치를 고려하지 않음
+                작다(30cm 이하)
               </button>
             </div>
           </>
@@ -592,41 +624,28 @@ const App = () => {
 
           <div className="Address">
             <div className="exx3">
-              <p> (3/6) </p>
+              <p> (3/5) </p>
             </div>
             <br></br>
-            <p>식물의 향기에 대해 어떤 것을 선호하시나요?</p>
+            <p>
+              특별한 계절 관리가 필요한 식물을 고려할 수 있나요? (ex: 겨울에
+              실내로 들어오는 식물)
+            </p>
             <br></br>
             <button
               className="btn"
-              value="꽃의 향기를 선호"
+              value="계절관리 가능"
               onClick={handleAddressButton}>
-              꽃의 향기를 선호
+              yes
             </button>
             <br></br>
             <br></br>
             <button
               className="btn"
-              value="상쾌하고 신선한 향기 선호"
+              value="계절관리 불가능"
               onClick={handleAddressButton}>
-              상쾌하고 신선한 향기 선호
+              no
             </button>
-            <br></br>
-            <button
-              className="btn"
-              value="특별한 향기를 선호"
-              onClick={handleAddressButton}>
-              특별한 향기를 선호
-            </button>
-            <br></br>
-            <br></br>
-            <button
-              className="btn"
-              value="향기를 선호하지 않음"
-              onClick={handleAddressButton}>
-              향기를 선호하지 않음
-            </button>
-            <br></br>
           </div>
         </>
       )
@@ -650,24 +669,26 @@ const App = () => {
 
         <div className="Time">
           <div className="exx2">
-            <p> (2/6) </p>
+            <p> (2/5) </p>
           </div>
           <br></br>
-          <p>식물의 수명 주기에 대해 어떤 것을 선호하시나요?</p>
+          <p>
+            식물이 자라는 모습을 주기적으로 관리하거나 다듬는 것을 선호하나요?
+          </p>
           <br></br>
           <button
             className="btn"
-            value="계절마다 변화하는 식물"
+            value="관리에 주기적으로 참여 가능"
             onClick={handleTimeButton}>
-            계절마다 변화하는 식물
+            yes
           </button>
           <br></br>
           <br></br>
           <button
             className="btn"
-            value="일년내내 비슷한 상태를 유지하는 식물"
+            value="체계적인 관리 없이도 자랐으면 좋겠음"
             onClick={handleTimeButton}>
-            일년내내 비슷한 상태를 유지하는 식물
+            no
           </button>
         </div>
       </>
@@ -692,24 +713,24 @@ const App = () => {
 
       <div className="Experience">
         <div className="exx">
-          <p> (1/6) </p>
+          <p> (1/5) </p>
         </div>
         <br></br>
-        <p>식물의 수분 요구량에 대해 어떻게 생각하세요?</p>
+        <p>식물을 자주 감상하고 관찰하는 것을 좋아하나요?</p>
         <br></br>
         <button
           className="btn"
-          value="자주 줄 수 있음"
+          value="식물 감상을 좋아함"
           onClick={handleExperienceButton}>
-          자주 줄 수 있음
+          yes
         </button>
         <br></br>
         <br></br>
         <button
           className="btn"
-          value="드물게 줄 수 있음"
+          value="식물 감상을 즐기지 않음"
           onClick={handleExperienceButton}>
-          드물게 줄 수 있음
+          no
         </button>
       </div>
     </>

@@ -41,7 +41,7 @@ const Main = () => {
   const [userPlantEnroll3name, setUserPlantEnroll3name] = useState("");
   const [userPlantEnroll4name, setUserPlantEnroll4name] = useState("");
   const [buttonValue, setButtonValue] = useState("");
-  const [userplantnum, setUserPlantNum] = useState("");
+  const [userplantnum, setUserPlantNum] = useState([]);
   const [userPoints, setUserPoints] = useState(0);
   const [userLevel, setUserLevel] = useState(1);
   const [activeSlots, setActiveSlots] = useState(1);
@@ -94,13 +94,26 @@ const Main = () => {
     //navigate('/newRecommend', { state: state });
   };
 
-  const onInfo = () => {
-    navigate("/info");
-  };
-
   const onCommunity = () => {
     //커뮤니티 페이지로 이동
-    navigate("/community", { state: state });
+    try {
+      navigate("/community", {
+        state: {
+          state: state,
+          userplantnum: userplantnum,
+          userplantname1: [
+            userPlantEnroll1name,
+            userPlantEnroll2name,
+            userPlantEnroll3name,
+            userPlantEnroll4name,
+          ],
+          userpoints: userPoints,
+          userlevel: userLevel,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const onTodo = () => {
@@ -110,7 +123,14 @@ const Main = () => {
         state: {
           state: state,
           userplantnum: userplantnum,
-          userplantname1: userPlantEnroll1name,
+          userplantname1: [
+            userPlantEnroll1name,
+            userPlantEnroll2name,
+            userPlantEnroll3name,
+            userPlantEnroll4name,
+          ],
+          userpoints: userPoints,
+          userlevel: userLevel,
         },
       });
     } catch (err) {
@@ -126,6 +146,13 @@ const Main = () => {
           state: state,
           userpoints: userPoints,
           userlevel: userLevel,
+          userplantnum: userplantnum,
+          userplantname1: [
+            userPlantEnroll1name,
+            userPlantEnroll2name,
+            userPlantEnroll3name,
+            userPlantEnroll4name,
+          ],
         },
       });
     } catch (err) {
@@ -138,17 +165,16 @@ const Main = () => {
     navigate("/main", { state: state });
   };
 
-  const showModal = (e) => {
+  const showModal = () => {
     //메인식물 고르는 모달 창 띄우기
     console.log("modal");
-    userMainPlant();
     setIsModalOpen(true);
   };
 
   const handleOK = (e) => {
     //메인식물 고르고 확인버튼 눌렀을 때
     console.log(e.target.value);
-    // e.target.value로 백엔드 요청보내서 사진 변경하기
+    userMainPlant(e.target.value);
     setIsModalOpen(false);
   };
 
@@ -169,17 +195,18 @@ const Main = () => {
 
   //login에서 user_num 받아오기
   const { state } = useLocation();
+  console.log("usernum IN Main", state);
+  console.log("mainbutton", buttonValue);
 
   const userMainPlant = () => {
     //메인 식물 변경할 수 있게하기(main 0으로 바꾸기)
     axios
       .post("http://localhost:8800/plantall", { usernum: state })
       .then((res) => {
+        console.log("userPlantALL ------------ ");
         setUserPlantEnroll1name(res.data[0].plant_name);
-        console.log(userPlantEnroll1name);
-        //console.log(res.data[0].plant_name);
-        setUserPlantEnroll2name(res.data[1].plant_name);
-        console.log(res.data[1].plant_name);
+        console.log("DATA ___ ", res.data[0]);
+        setUserPlantEnroll2name(res.data[1]);
         setUserPlantEnroll3name(res.data[2]);
         setUserPlantEnroll4name(res.data[3]);
       });
@@ -190,10 +217,16 @@ const Main = () => {
     axios
       .post("http://localhost:8800/plantpicture", { usernum: state })
       .then((res) => {
+        const plantCount = res.data.length;
+        const userPlantNumArray = Array.from(
+          { length: plantCount },
+          (_, index) => res.data[index].key
+        );
         const plant_name = res.data[res.data.length - 1].plant_name;
-        setUserPlantNum(res.data[res.data.length - 1].key);
+        setUserPlantNum(userPlantNumArray);
         setUserPlantInfo(res.data); // 메인 식물 이름, 특성
         userPlantEnroll(plant_name); // 해당 식물의 이미지 출력
+        console.log("heeeeeeeee", userPlantNumArray); //[134,135]
       })
       .catch((error) => {
         console.log(error);
@@ -230,15 +263,28 @@ const Main = () => {
         slotnum: buttonValue,
       })
       .then((res) => {
-        //console.log('onUserPlantSlot!');
+        console.log("onUserPlantSlot!");
         //setUserPlantEnroll0(res.data[0].plant_picture);     //메인 식물 이미지
         //setUserPlantEnroll1(res.data[res.data.length - 1].plant_picture);
-        const test = setUserPlantEnroll1name(
-          res.data[res.data.length - 1].plant_name
+        console.log("____________________", res.data);
+        const plantCount = res.data.length;
+        const userPlantArray = Array.from(
+          { length: plantCount },
+          (_, index) => res.data[index].plant_name
         );
-        //console.log(test); // undefined
-        setUserPlantNum(res.data[res.data.length - 1].key);
-        //console.log('slot', res.data[res.data.length - 1]);
+        console.log(userPlantArray);
+        setUserPlantEnroll1name(userPlantArray[0]);
+        setUserPlantEnroll2name(userPlantArray[1]);
+        setUserPlantEnroll3name(userPlantArray[2]);
+        setUserPlantEnroll4name(userPlantArray[3]);
+        //setUserPlantNum(res.data[res.data.length - 1].key);
+        console.log(
+          "slot",
+          userPlantEnroll1name,
+          userPlantEnroll2name,
+          userPlantEnroll3name,
+          userPlantEnroll4name
+        );
         //setUserPlantInfo(res.data);       //메인 식물 이름, 특성, 키우기 난이도
       })
       .catch((err) => {
@@ -254,7 +300,7 @@ const Main = () => {
         usernum: state,
       })
       .then((res) => {
-        //console.log(res.data[0]);
+        console.log(res.data[0]);
         setUserPoints(res.data[0].user_point);
         const currentLevel = res.data[0].user_level;
 
@@ -304,9 +350,9 @@ const Main = () => {
     setActiveSlots(calculateActiveSlots(userLevel));
   }, [userLevel]);
 
-  useEffect(() => {
-    userMainPlant();
-  }, [userPlantEnroll1name]);
+  // useEffect(()=> {
+  //   onUserPoints();
+  // },[state]);
 
   return isRecommend ? (
     <Recommend usernum={state} buttonValue={buttonValue} />
@@ -338,7 +384,11 @@ const Main = () => {
             <Table
               className="tableprint"
               columns={columns}
-              pagination={false}
+              pagination={{
+                total: 4, // 전체 항목 수를 1로 설정
+                defaultCurrent: 1, // 기본 페이지 번호
+                defaultPageSize: 1, // 기본 페이지 크기
+              }}
               dataSource={userPlantInfo}
               size="middle"
             />
@@ -390,17 +440,17 @@ const Main = () => {
                 {userPlantEnroll1}
               </Button>
             </div>
-            <div style={{ display: userLevel >= 1 ? "block" : "none" }}>
+            <div style={{ display: userLevel >= 2 ? "block" : "none" }}>
               <Button value="2" className="slots2" onClick={onNewRecommend}>
                 {userPlantEnroll2}
               </Button>
             </div>
-            <div style={{ display: userLevel >= 2 ? "block" : "none" }}>
+            <div style={{ display: userLevel >= 3 ? "block" : "none" }}>
               <Button value="3" className="slots3" onClick={onNewRecommend}>
                 {userPlantEnroll3}
               </Button>
             </div>
-            <div style={{ display: userLevel >= 2 ? "block" : "none" }}>
+            <div style={{ display: userLevel >= 4 ? "block" : "none" }}>
               <Button value="4" className="slots4" onClick={onNewRecommend}>
                 {userPlantEnroll4}
               </Button>
